@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Taco Ria — MVP</title>
+  <style>
+    :root{
+      --bg:#000;
+      --panel:#0b0b0b;
+      --panel2:#111;
+      --text:#fff;
+      --muted:rgba(255,255,255,.72);
+      --muted2:rgba(255,255,255,.55);
+      --border:rgba(255,255,255,.14);
+      --shadow: 0 16px 40px rgba(0,0,0,.55);
+      --radius:16px;
+      --radius2:12px;
+      --accent:#d11111;
+      --accent2: rgba(209,17,17,.18);
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --tile:#101010;
+      --tile2:#141414;
+      --tileSel: rgba(255,255,255,.08);
+      --tap: rgba(255,255,255,.06);
+      --safe: env(safe-area-inset-bottom, 0px);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(255,255,255,.06), transparent 55%),
+                  radial-gradient(1000px 800px at 110% 10%, rgba(255,255,255,.05), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .app{max-width:980px;margin:0 auto;padding:14px 14px calc(92px + var(--safe))}
+    .topbar{
+      display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;
+      position:sticky;top:0;z-index:20;
+      padding:12px 0 10px;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(0,0,0,.78), rgba(0,0,0,.15));
+    }
+    .brand{
+      flex:1 1 260px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      padding:12px 12px;
+      box-shadow: var(--shadow);
+      min-width:260px;
+    }
+    .brand .row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .title{font-weight:900;letter-spacing:.5px}
+    .subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+    .phase{
+      margin-top:10px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:14px;
+      padding:10px 10px;
+    }
+    .phase .pname{font-weight:800}
+    .phase .phelp{margin-top:4px;font-size:12px;color:var(--muted)}
+    .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .pill{
+      font-size:12px;color:var(--text);
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding:8px 10px;border-radius:999px;
+      display:flex;gap:8px;align-items:center;
+    }
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 3px var(--accent2)}
+    .stats{
+      flex:1 1 320px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      padding:12px;
+      box-shadow: var(--shadow);
+      min-width:320px;
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .card{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.35);
+      border-radius:14px;
+      padding:10px;
+    }
+    .k{font-size:11px;color:var(--muted)}
+    .v{font-size:18px;font-weight:900;margin-top:4px}
+    .v.small{font-size:14px;font-weight:800;color:var(--muted)}
+    .main{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+      margin-top:8px;
+    }
+    @media(min-width:860px){
+      .main{grid-template-columns: 1.25fr .75fr}
+    }
+    .panel{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel .ph{
+      padding:12px 12px 10px;
+      border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+      background: rgba(0,0,0,.25);
+    }
+    .ph .h{font-weight:900}
+    .ph .sub{font-size:12px;color:var(--muted)}
+    .panel .pb{padding:12px}
+    .btnrow{display:flex;gap:8px;flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+    }
+    button:active{transform: scale(.985)}
+    button.primary{
+      border-color: rgba(255,255,255,.22);
+      background: linear-gradient(180deg, var(--accent), rgba(0,0,0,.35));
+      box-shadow: 0 10px 24px rgba(0,0,0,.35), 0 0 0 4px var(--accent2);
+    }
+    button.ghost{background: rgba(255,255,255,.03)}
+    button.danger{background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35)}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .seg{
+      display:flex;gap:6px;flex-wrap:wrap;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      padding:6px;border-radius:16px;
+    }
+    .seg button{padding:8px 10px;border-radius:12px;border-color:transparent}
+    .seg button.on{background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.18)}
+    .tiles{
+      display:flex;flex-wrap:wrap;gap:8px;
+    }
+    .tile{
+      max-width:100%;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      padding:10px 10px;
+      border-radius:14px;
+      font-weight:850;
+      font-size:12px;
+      line-height:1.15;
+      cursor:pointer;
+      user-select:none;
+      display:flex;gap:10px;align-items:center;
+      min-width: 130px;
+    }
+    .tile .name{flex:1}
+    .tile .tag{font-size:11px;color:var(--muted);font-weight:700}
+    .tile.sel{outline:2px solid rgba(255,255,255,.26); background: rgba(255,255,255,.08)}
+    .tile.small{min-width:unset;padding:8px 10px}
+    .tile.badge{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(255,255,255,.06);
+    }
+    .tile .chip{
+      width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.22);
+      flex:0 0 auto;
+    }
+    .tile .chip.accent{background:var(--accent); box-shadow:0 0 0 3px var(--accent2)}
+    .dishShell{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.28);
+      border-radius:var(--radius);
+      padding:12px;
+    }
+    .dishHead{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;
+    }
+    .dishHead .lhs{min-width:0}
+    .dishTitle{font-weight:900}
+    .dishMeta{font-size:12px;color:var(--muted);margin-top:2px}
+    .badge{
+      font-size:12px;font-weight:900;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+    .badge.good{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12)}
+    .badge.warn{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.12)}
+    .badge.bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.12)}
+    .carouselNav{
+      display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:10px;
+    }
+    .navBtns{display:flex;gap:8px}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    .lineList{display:flex;flex-direction:column;gap:10px}
+    .lineDish{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.28);
+      border-radius:var(--radius);
+      padding:12px;
+    }
+    .lineDishTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+    .lineDishTop .who{font-size:12px;color:var(--muted)}
+    .footerNav{
+      position:fixed;left:0;right:0;bottom:0;
+      padding:10px 10px calc(10px + var(--safe));
+      background: linear-gradient(to top, rgba(0,0,0,.88), rgba(0,0,0,.45));
+      border-top:1px solid var(--border);
+      backdrop-filter: blur(10px);
+      z-index:30;
+    }
+    .tabs{max-width:980px;margin:0 auto;display:flex;gap:8px;justify-content:space-between}
+    .tab{
+      flex:1 1 auto;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding:10px 10px;
+      border-radius:16px;
+      font-weight:900;
+      font-size:12px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.on{
+      background: rgba(255,255,255,.09);
+      border-color: rgba(255,255,255,.20);
+      box-shadow: 0 0 0 4px var(--accent2);
+    }
+
+    /* Modal */
+    .modalWrap{
+      position:fixed;inset:0;
+      background: rgba(0,0,0,.68);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:16px 16px calc(16px + var(--safe));
+      z-index:100;
+    }
+    .modalWrap.on{display:flex}
+    .modal{
+      width:min(760px, 100%);
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(12,12,12,.98), rgba(0,0,0,.92));
+      border-radius:20px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      max-height: 88vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal .mh{
+      padding:12px 12px;
+      border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+    }
+    .modal .mh .t{font-weight:1000}
+    .modal .mb{padding:12px; overflow:auto}
+    .modal .mf{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+    .blankGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .blank{
+      border:1px dashed rgba(255,255,255,.25);
+      background: rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:16px;
+      text-align:center;
+      font-weight:1000;
+      cursor:pointer;
+      user-select:none;
+    }
+    .blank.on{
+      border-color: rgba(255,255,255,.55);
+      background: rgba(255,255,255,.09);
+      box-shadow: 0 0 0 4px var(--accent2);
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:92px;
+      max-width:min(760px, calc(100% - 24px));
+      background: rgba(0,0,0,.75);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px 12px;
+      color:var(--text);
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:200;
+    }
+    .toast.on{display:block; animation: pop .18s ease-out}
+    @keyframes pop{from{transform:translateX(-50%) translateY(8px);opacity:.0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+
+    /* Settings */
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+    .label{font-size:12px;color:var(--muted);font-weight:800}
+    select,input{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:800;
+      outline:none;
+    }
+    .hr{height:1px;background:var(--border);margin:12px 0}
+    .muted{color:var(--muted);font-size:12px}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    /* Remix layout */
+    .remixGrid{display:grid;gap:12px}
+    @media(min-width:860px){
+      .remixGrid{grid-template-columns: 1fr 1fr}
+    }
+    .pool{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.22);
+      border-radius:16px;
+      padding:12px;
+    }
+    .poolHead{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;
+    }
+    .poolHead .t{font-weight:1000}
+    .poolHead .s{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="row">
+          <div>
+            <div class="title">Taco Ria</div>
+            <div class="subtitle">Rummikub-style recipe drafting • Private Prep + Public Line + Remix</div>
+          </div>
+          <div class="pill"><span class="dot"></span><span id="activePlayerLabel">P1</span></div>
+        </div>
+
+        <div class="phase">
+          <div class="pname" id="phaseName">Not Seated Yet</div>
+          <div class="phelp" id="phaseHelp">Serve 10+ points in one turn to open the kitchen. No remixes yet.</div>
+        </div>
+
+        <div class="pillrow">
+          <div class="pill"><span class="k">Hand</span> <span id="handIndex" class="mono">1</span>/<span id="handsTarget" class="mono">12</span></div>
+          <div class="pill"><span class="k">Rounds left</span> <span id="roundsLeft" class="mono">12</span></div>
+          <div class="pill"><span class="k">Draw pile</span> <span id="drawCount" class="mono">54</span></div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="grid2">
+          <div class="card">
+            <div class="k">Current score (match)</div>
+            <div class="v" id="scoreNow">0</div>
+            <div class="v small" id="scoreByPlayers"></div>
+          </div>
+          <div class="card">
+            <div class="k">Pending (Prep valid)</div>
+            <div class="v" id="pendingPts">0</div>
+            <div class="v small"><span class="k">Served this turn</span> <span class="mono" id="servedThisTurn">0</span></div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px" class="btnrow">
+          <button class="primary" id="btnDraw">Draw</button>
+          <button id="btnPublishAll">Publish All</button>
+          <button id="btnServeSelected">Serve Selected</button>
+          <button id="btnEndTurn">End Turn</button>
+        </div>
+
+        <div class="hint" id="actionHint">Draft dishes in Prep, publish them to the public Kitchen Line, then serve for points.</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- Left: Main content based on tab -->
+      <div class="panel">
+        <div class="ph">
+          <div>
+            <div class="h" id="panelTitle">Your Hand</div>
+            <div class="sub" id="panelSub">Tap cards to move them into the current Prep dish.</div>
+          </div>
+          <div class="seg" id="tabSeg">
+            <button data-tab="hand" class="on">Hand</button>
+            <button data-tab="prep">Prep</button>
+            <button data-tab="line">Line</button>
+            <button data-tab="scores">Scores</button>
+            <button data-tab="settings">Settings</button>
+          </div>
+        </div>
+        <div class="pb" id="panelBody"></div>
+      </div>
+
+      <!-- Right: Quick recipe reference -->
+      <div class="panel">
+        <div class="ph">
+          <div>
+            <div class="h">Menu Reference</div>
+            <div class="sub">What “valid” looks like</div>
+          </div>
+        </div>
+        <div class="pb">
+          <div class="tiles">
+            <div class="tile badge"><div class="name">Hard Shell Taco</div><div class="tag">5 pts • Corn + Protein + 1 Topper</div></div>
+            <div class="tile badge"><div class="name">Soft Taco</div><div class="tag">5 pts • Flour + Protein + 1 Topper</div></div>
+            <div class="tile badge"><div class="name">Chips & Dip</div><div class="tag">5 pts • Chips + 1 Dip</div></div>
+            <div class="tile badge"><div class="name">Pico de Gallo</div><div class="tag">8 pts • Tomato + Onion + Cilantro + Lime</div></div>
+            <div class="tile badge"><div class="name">Enchiladas</div><div class="tag">10 pts • Tortilla + Protein + Cheese + Sauce</div></div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="muted">
+            <div><b>Starter Pass:</b> before you unlock, you may serve <b>one Chips & Dip</b> per hand without unlocking remix.</div>
+            <div style="margin-top:8px"><b>First Laydown (unlock turn):</b> tacos must use <b>dry toppers</b> (no salsa/queso/guac).</div>
+            <div style="margin-top:8px"><b>Prep is private.</b> Kitchen Line is public.</div>
+            <div style="margin-top:8px"><b>Remix (Kitchen Open):</b> move public line cards into a pool, rebuild, then commit (no loose ingredients).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom quick tabs (mobile friendly) -->
+  <div class="footerNav">
+    <div class="tabs">
+      <div class="tab on" data-tab="hand">Hand</div>
+      <div class="tab" data-tab="prep">Prep</div>
+      <div class="tab" data-tab="line">Line</div>
+      <div class="tab" data-tab="scores">Scores</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modalWrap" id="modalWrap" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="mh">
+        <div class="t" id="modalTitle">Modal</div>
+        <button class="ghost" id="modalClose">Close</button>
+      </div>
+      <div class="mb" id="modalBody"></div>
+      <div class="mf" id="modalFoot"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* =========================
+   Taco Ria — MVP (single file)
+   + TRUE KITCHEN REMIX
+   ========================= */
+
+const APP_VERSION = "0.1.1";
+
+/* --- Theme presets (secondary color) --- */
+const THEME_PRESETS = [
+  { key:"red",    label:"Red (classic)",    accent:"#d11111" },
+  { key:"cyan",   label:"Cyan (hi-vis)",    accent:"#22d3ee" },
+  { key:"lime",   label:"Lime (hi-vis)",    accent:"#84cc16" },
+  { key:"amber",  label:"Amber (hi-vis)",   accent:"#f59e0b" },
+  { key:"magenta",label:"Magenta (hi-vis)", accent:"#e879f9" },
+  { key:"violet", label:"Violet (hi-vis)",  accent:"#a78bfa" }
+];
+
+const GAME = {
+  phases: {
+    NOT_SEATED_YET: { name:"Not Seated Yet", help:"Serve 10+ points in one turn to open the kitchen. No remixes yet." },
+    APPETIZERS_OUT: { name:"Appetizers Out", help:"Starter served. Hit 10+ in one turn to unlock the kitchen." },
+    KITCHEN_OPEN:   { name:"Kitchen Open",   help:"Remix the Kitchen Line, then serve dishes for points." }
+  },
+  rules: {
+    defaultHandsTarget: 12,
+    handsTargetMin: 1,
+    handsTargetMax: 12,
+    firstLaydownThreshold: 10,
+    tacoMaxCards: 3,
+    endHandPenaltyPerCard: 1,
+    starterPassMaxPerHand: 1
+  },
+  roles: {
+    tortilla_corn: ["Corn Tortillas"],
+    tortilla_flour: ["Flour Tortillas"],
+    tortilla_any: ["Corn Tortillas","Flour Tortillas"],
+    protein: ["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"],
+    cheese: ["Shredded yellow Cheese","Shredded white cheese"],
+    dry_topping: ["Onion","Cilantro","Jalapenos","Lettuce","Tomato","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"],
+    wet_topping: ["Salsa Roja","Salsa Verde","Queso","Guacamole"],
+    dip: ["Salsa Roja","Salsa Verde","Queso","Guacamole"],
+    sauce_enchiladas: ["Salsa Roja","Salsa Verde","Queso"],
+    pico: ["Tomato","Onion","Cilantro","Lime Juice"],
+    wild: ["Grocery Run"]
+  },
+  deckCounts: {
+    "Fish":1,
+    "Ground Beef":2,
+    "Shredded Chicken":2,
+    "Carne Guisada":1,
+    "Al Pastor":1,
+    "Carnitas":1,
+    "Egg":2,
+    "Chicken Fajita":2,
+    "Chorizo":1,
+
+    "Tortilla Chips":3,
+    "Flour Tortillas":2,
+    "Corn Tortillas":2,
+
+    "Shredded yellow Cheese":2,
+    "Shredded white cheese":2,
+
+    "Rice":2,
+    "Charro Beans":1,
+    "Refried Beans":1,
+    "Black Beans":1,
+
+    "Cilantro":2,
+    "Jalapenos":2,
+    "Lettuce":1,
+    "Lime Juice":2,
+    "Onion":2,
+    "Tomato":2,
+    "Sour Cream":2,
+    "Avocado":2,
+
+    "Salsa Roja":2,
+    "Salsa Verde":2,
+    "Queso":2,
+    "Guacamole":2,
+
+    "Grocery Run":2
+  },
+  recipes: {
+    hard_shell_taco: { points:5, type:"taco", slots:["Corn Tortillas","protein","taco_topper"], exactCards:3 },
+    soft_taco:       { points:5, type:"taco", slots:["Flour Tortillas","protein","taco_topper"], exactCards:3 },
+    chips_and_dip:   { points:5, type:"app",  slots:["Tortilla Chips","dip"], exactCards:2 },
+    pico_de_gallo:   { points:8, type:"app",  slots:["Tomato","Onion","Cilantro","Lime Juice"], exactCards:4 },
+    enchiladas:      { points:10,type:"main", slots:["tortilla_any","protein","cheese","sauce_enchiladas"], exactCards:4 }
+  },
+  toasts: {
+    notSeatedYet: [
+      "Host says: serve 10+ points in one turn to get a table.",
+      "Almost! Hit 10+ served points in one turn to open the kitchen."
+    ],
+    appetizersOut: [
+      "Starter’s down. Still need 10+ in one turn before remixes unlock.",
+      "Chips are out—main orders unlock at 10+ served points in one turn."
+    ],
+    kitchenOpen: [
+      "Kitchen’s open! Remix away—just leave valid dishes on the line.",
+      "All yours now. Rearrange the line, then serve it up."
+    ],
+    starterPass: [
+      "Appetizer served. Kitchen’s still closed—no remixing yet.",
+      "Starter Pass used for this hand. Next up: hit 10+ to unlock."
+    ],
+    firstLaydownTacoRule: [
+      "First Laydown rule: no wet taco toppings this turn.",
+      "Dry toppers only on tacos for your first big order."
+    ],
+    invalidRecipe: [
+      "That plate’s missing something. Finish the recipe to serve it."
+    ],
+    invalidEndState: [
+      "No loose ingredients—everything on the line must be a real dish."
+    ],
+    wildNeedsPick: [
+      "Grocery Run needs a pick—tell us what ingredient it’s standing in for."
+    ],
+    remixBlocked: [
+      "Kitchen isn’t open yet—no remixing until you unlock.",
+      "Finish remix: Commit or Cancel before ending your turn."
+    ]
+  }
+};
+
+/* --- Util --- */
+const $ = (id)=>document.getElementById(id);
+const uid = ()=>Math.random().toString(16).slice(2)+Date.now().toString(16);
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function sum(arr, fn){let s=0;for(const x of arr)s+=fn?fn(x):x;return s;}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function deepCopy(x){return JSON.parse(JSON.stringify(x));}
+
+/* --- Build full deck of unique cards --- */
+function buildDeck(){
+  const cards=[];
+  let n=0;
+  for(const [name,qty] of Object.entries(GAME.deckCounts)){
+    for(let i=0;i<qty;i++){
+      cards.push({ id:`c_${String(n++).padStart(3,"0")}`, name, wildAs:null });
+    }
+  }
+  return cards;
+}
+
+/* =========================
+   Game State
+   ========================= */
+let state = null;
+
+function defaultState(){
+  const deck = shuffle(buildDeck());
+  return {
+    settings: {
+      themeKey: "red",
+      handsTarget: GAME.rules.defaultHandsTarget,
+      numPlayers: 4
+    },
+    match: {
+      handIndex: 1,
+      scores: { P1:0, P2:0, P3:0, P4:0 }
+    },
+    hand: {
+      drawPile: deck,
+      players: {
+        P1: mkPlayer(),
+        P2: mkPlayer(),
+        P3: mkPlayer(),
+        P4: mkPlayer()
+      },
+      kitchenLine: { dishes: [] }, // {id, recipeKey, cards:[card], publishedBy:"P1"}
+      // per-hand gating
+      starterPassUsed: { P1:false, P2:false, P3:false, P4:false },
+      unlocked: { P1:false, P2:false, P3:false, P4:false },
+      // turn
+      active: "P1",
+      servedPtsThisTurn: 0,
+      startedUnlocked: false,
+      usedStarterPassThisTurn: false,
+      selectedLineDishId: null,
+      // TRUE REMIX WORKSPACE (public line manipulation)
+      remix: {
+        active: false,
+        originalLineSnapshot: [],
+        poolCards: [],
+        dishes: [],
+        dishIndex: 0
+      }
+    }
+  };
+}
+
+function mkPlayer(){
+  return {
+    hand: [],
+    prep: { dishIndex: 0, dishes: [ mkDish(0) ] },
+    served: [] // {id, recipeKey, cards, points}
+  };
+}
+function mkDish(idx, labelPrefix="Dish"){
+  return { id:`d_${uid()}`, label:`${labelPrefix} ${idx+1}`, cards:[] };
+}
+
+/* =========================
+   Validation (Dish -> recipe)
+   ========================= */
+function isWild(card){ return card.name === "Grocery Run"; }
+
+function validateDish(dish, ctx){
+  const cards = dish.cards || dish; // allow passing cards array directly
+  const list = Array.isArray(cards) ? cards : cards.cards;
+
+  if(!list || list.length===0) return { status:"draft", valid:false, recipeKey:null, points:0, errors:["Empty dish."], warnings:[] };
+
+  const wildsUnpicked = list.some(c => isWild(c) && !c.wildAs);
+  if(wildsUnpicked){
+    return { status:"invalid", valid:false, recipeKey:null, points:0, errors:["Grocery Run needs a pick."], warnings:["Tap Grocery Run to choose a substitute."] };
+  }
+
+  const eff = list.map(c => (isWild(c) ? c.wildAs : c.name));
+
+  for(const [rk, r] of Object.entries(GAME.recipes)){
+    if(eff.length !== r.exactCards) continue;
+    const match = matchRecipe(eff, r.slots);
+    if(match.ok){
+      if(r.type==="taco"){
+        if(eff.length > GAME.rules.tacoMaxCards){
+          return { status:"invalid", valid:false, recipeKey:rk, points:r.points, errors:["Tacos are capped at 3 cards."], warnings:[] };
+        }
+        if(ctx && ctx.beforeUnlocked && ctx.firstLaydownTacoNoWet){
+          const usedWet = eff.some(n => GAME.roles.wet_topping.includes(n));
+          if(usedWet){
+            return { status:"invalid", valid:false, recipeKey:rk, points:r.points, errors:["First Laydown rule: no wet taco toppings this turn."], warnings:[] };
+          }
+        }
+      }
+      return { status:"valid", valid:true, recipeKey:rk, points:r.points, errors:[], warnings:[] };
+    }
+  }
+
+  const hints = [];
+  if(eff.length===2 && eff.includes("Tortilla Chips")) hints.push("Chips & Dip needs a dip: Roja/Verde/Queso/Guac.");
+  if(eff.length===3 && (eff.includes("Corn Tortillas") || eff.includes("Flour Tortillas"))) hints.push("Tacos need Tortilla + Protein + 1 topper.");
+  if(eff.length===4 && eff.some(n=>["Tomato","Onion","Cilantro","Lime Juice"].includes(n))) hints.push("Pico is Tomato + Onion + Cilantro + Lime Juice.");
+
+  return { status:"invalid", valid:false, recipeKey:null, points:0, errors:["Not a valid menu item (yet)."], warnings:hints };
+}
+
+function matchRecipe(effNames, slots){
+  const names = [...effNames];
+  const used = new Array(names.length).fill(false);
+
+  for(const s of slots){
+    let idx = -1;
+    if(GAME.roles[s]){
+      for(let i=0;i<names.length;i++){
+        if(used[i]) continue;
+        if(GAME.roles[s].includes(names[i])) { idx=i; break; }
+      }
+    } else if(s==="taco_topper"){
+      const pool = [...GAME.roles.dry_topping, ...GAME.roles.wet_topping];
+      for(let i=0;i<names.length;i++){
+        if(used[i]) continue;
+        if(pool.includes(names[i])) { idx=i; break; }
+      }
+    } else {
+      for(let i=0;i<names.length;i++){
+        if(used[i]) continue;
+        if(names[i]===s) { idx=i; break; }
+      }
+    }
+    if(idx<0) return { ok:false };
+    used[idx]=true;
+  }
+
+  if(used.some(u => !u)) return { ok:false };
+  return { ok:true };
+}
+
+/* =========================
+   Core Game Operations
+   ========================= */
+function dealNewHand(){
+  cancelRemixIfActive(true);
+
+  const deck = shuffle(buildDeck());
+  state.hand.drawPile = deck;
+  state.hand.kitchenLine.dishes = [];
+  state.hand.selectedLineDishId = null;
+
+  for(const pid of ["P1","P2","P3","P4"]){
+    state.hand.players[pid] = mkPlayer();
+    state.hand.starterPassUsed[pid] = false;
+    state.hand.unlocked[pid] = false;
+  }
+
+  const n = state.settings.numPlayers;
+  const dealCount = (n===2)?14 : (n===3)?12 : 10;
+  const pids = ["P1","P2","P3","P4"].slice(0,n);
+
+  for(let i=0;i<dealCount;i++){
+    for(const pid of pids){
+      const c = state.hand.drawPile.pop();
+      if(!c) break;
+      state.hand.players[pid].hand.push(c);
+    }
+  }
+
+  state.hand.active = "P1";
+  state.hand.servedPtsThisTurn = 0;
+  state.hand.startedUnlocked = false;
+  state.hand.usedStarterPassThisTurn = false;
+
+  toast(pick(GAME.toasts.notSeatedYet));
+}
+
+function nextPlayer(pid){
+  const pids = ["P1","P2","P3","P4"].slice(0,state.settings.numPlayers);
+  const idx = pids.indexOf(pid);
+  return pids[(idx+1)%pids.length];
+}
+
+function beginTurn(pid){
+  state.hand.active = pid;
+  state.hand.servedPtsThisTurn = 0;
+  state.hand.startedUnlocked = state.hand.unlocked[pid];
+  state.hand.usedStarterPassThisTurn = false;
+  state.hand.selectedLineDishId = null;
+  clearSelections();
+}
+
+function drawOne(pid){
+  if(state.hand.drawPile.length===0){
+    toast("No more cards in the draw pile.");
+    return false;
+  }
+  const c = state.hand.drawPile.pop();
+  state.hand.players[pid].hand.push(c);
+  return true;
+}
+
+function tryUnlock(pid){
+  if(state.hand.unlocked[pid]) return;
+  if(state.hand.usedStarterPassThisTurn) return;
+  if(state.hand.servedPtsThisTurn >= GAME.rules.firstLaydownThreshold){
+    state.hand.unlocked[pid] = true;
+    toast(pick(GAME.toasts.kitchenOpen));
+  }
+}
+
+function endTurn(){
+  if(state.hand.remix.active){
+    toast(pick(GAME.toasts.remixBlocked));
+    return;
+  }
+
+  const pid = state.hand.active;
+  tryUnlock(pid);
+
+  const nxt = nextPlayer(pid);
+  beginTurn(nxt);
+  render();
+
+  if(nxt !== "P1") runAiTurns();
+}
+
+function endHandIfNeeded(){
+  const pids = ["P1","P2","P3","P4"].slice(0,state.settings.numPlayers);
+  let winner = null;
+
+  for(const pid of pids){
+    const p = state.hand.players[pid];
+    const prepCount = sum(p.prep.dishes, d=>d.cards.length);
+    if(p.hand.length===0 && prepCount===0){
+      winner = pid; break;
+    }
+  }
+  if(!winner) return false;
+
+  for(const pid of pids){
+    const p = state.hand.players[pid];
+    const servedPts = sum(p.served, s=>s.points);
+    const penalty = p.hand.length * GAME.rules.endHandPenaltyPerCard;
+    state.match.scores[pid] += (servedPts - penalty);
+  }
+
+  toast(`${winner} cleared their hand! Hand scored.`);
+  state.match.handIndex += 1;
+
+  if(state.match.handIndex > state.settings.handsTarget){
+    showMatchSummary();
+    return true;
+  }
+
+  dealNewHand();
+  render();
+  return true;
+}
+
+/* =========================
+   AI Opponents (MVP)
+   ========================= */
+function runAiTurns(){
+  const pid = state.hand.active;
+  if(pid==="P1") return;
+
+  setTimeout(()=>{
+    if(endHandIfNeeded()) return;
+
+    const beforeUnlocked = !state.hand.unlocked[pid];
+
+    if(beforeUnlocked && !state.hand.starterPassUsed[pid]){
+      const canChips = aiCanMakeRecipeFromHand(pid, "chips_and_dip", true);
+      if(canChips && Math.random() < 0.35){
+        aiMakeAndServe(pid, "chips_and_dip", true, true);
+        endTurn();
+        return;
+      }
+    }
+
+    const recipeOrder = ["enchiladas","pico_de_gallo","hard_shell_taco","soft_taco","chips_and_dip"];
+    let acted = false;
+    for(const rk of recipeOrder){
+      const ok = aiCanMakeRecipeFromHand(pid, rk, true);
+      if(ok){
+        aiMakeAndServe(pid, rk, true, false);
+        acted = true;
+        break;
+      }
+    }
+
+    if(!acted) drawOne(pid);
+    endTurn();
+  }, 650);
+}
+
+function aiCanMakeRecipeFromHand(pid, recipeKey){
+  const r = GAME.recipes[recipeKey];
+  const hand = state.hand.players[pid].hand;
+  const idxs = [...Array(hand.length).keys()];
+  const combos = kComb(idxs, r.exactCards, 2000);
+
+  for(const cidx of combos){
+    const cards = cidx.map(i => hand[i]);
+    if(!tryAssignWildsForRecipe(cards, r)) { cleanupWilds(cards); continue; }
+
+    const beforeUnlocked = !state.hand.unlocked[pid];
+    const ctx = { beforeUnlocked, firstLaydownTacoNoWet:true };
+    const vd = validateDish(cards, ctx);
+
+    if(vd.valid && vd.recipeKey === recipeKey){
+      cleanupWilds(cards, true); // keep chosen? no — AI should not mutate hand cards long-term
+      return true;
+    }
+    cleanupWilds(cards);
+  }
+  return false;
+}
+
+function aiMakeAndServe(pid, recipeKey, starterPass){
+  const r = GAME.recipes[recipeKey];
+  const hand = state.hand.players[pid].hand;
+  const idxs = [...Array(hand.length).keys()];
+  const combos = kComb(idxs, r.exactCards, 4000);
+
+  for(const cidx of combos){
+    const cards = cidx.map(i => hand[i]);
+    if(!tryAssignWildsForRecipe(cards, r)) { cleanupWilds(cards); continue; }
+
+    if(r.type==="taco" && !state.hand.unlocked[pid]){
+      const eff = cards.map(card => isWild(card) ? card.wildAs : card.name);
+      const usedWet = eff.some(n => GAME.roles.wet_topping.includes(n));
+      if(usedWet){ cleanupWilds(cards); continue; }
+    }
+
+    const sortedIdx = [...cidx].sort((a,b)=>b-a);
+    for(const i of sortedIdx) hand.splice(i,1);
+
+    const lineDish = { id:`L_${uid()}`, recipeKey, cards: cards.map(c=>({...c})), publishedBy: pid };
+    state.hand.kitchenLine.dishes.push(lineDish);
+
+    serveLineDishById(pid, lineDish.id, true, !!starterPass);
+
+    return true;
+  }
+  return false;
+}
+
+function cleanupWilds(cards, keep=false){
+  if(keep) return;
+  for(const c of cards) if(isWild(c)) c.wildAs = null;
+}
+
+function tryAssignWildsForRecipe(cards, recipe){
+  const wilds = cards.filter(isWild);
+  if(wilds.length===0) return true;
+
+  let pool = [];
+  for(const s of recipe.slots){
+    if(s==="taco_topper") pool.push(...GAME.roles.dry_topping, ...GAME.roles.wet_topping);
+    else if(GAME.roles[s]) pool.push(...GAME.roles[s]);
+    else pool.push(s);
+  }
+  pool = [...new Set(pool)];
+
+  function backtrack(i){
+    if(i>=wilds.length) return true;
+    const w = wilds[i];
+    for(const cand of pool){
+      w.wildAs = cand;
+      const eff = cards.map(card => isWild(card) ? card.wildAs : card.name);
+      if(matchRecipe(eff, recipe.slots).ok) return true;
+    }
+    w.wildAs = null;
+    return false;
+  }
+  return backtrack(0);
+}
+
+function kComb(arr, k, limit=2000){
+  const res = [];
+  const n = arr.length;
+  if(k>n) return res;
+  const idx = Array.from({length:k}, (_,i)=>i);
+  let count = 0;
+  while(true){
+    res.push(idx.map(i=>arr[i]));
+    if(++count>=limit) break;
+    let i=k-1;
+    while(i>=0 && idx[i]===i+n-k) i--;
+    if(i<0) break;
+    idx[i]++;
+    for(let j=i+1;j<k;j++) idx[j]=idx[j-1]+1;
+  }
+  return res;
+}
+
+/* =========================
+   Publish / Serve
+   ========================= */
+function publishAllFromPrep(pid){
+  const p = state.hand.players[pid];
+  const beforeUnlocked = !state.hand.unlocked[pid];
+  const ctx = { beforeUnlocked, firstLaydownTacoNoWet:true };
+  const dishes = p.prep.dishes;
+
+  const valid = [];
+  const invalid = [];
+
+  for(const d of dishes){
+    const vd = validateDish(d, ctx);
+    if(vd.valid) valid.push({ dish:d, vd });
+    else if(d.cards.length>0) invalid.push({ dish:d, vd });
+  }
+
+  if(valid.length===0){
+    toast("No valid dishes to publish.");
+    return;
+  }
+
+  for(const item of valid){
+    state.hand.kitchenLine.dishes.push({
+      id: `L_${uid()}`,
+      recipeKey: item.vd.recipeKey,
+      cards: item.dish.cards.map(c=>({...c})),
+      publishedBy: pid
+    });
+    item.dish.cards = [];
+  }
+
+  normalizePrep(pid);
+  toast(invalid.length ? "Published valid dishes. Some drafts are still incomplete." : "Published to the Kitchen Line.");
+}
+
+function serveLineDishById(pid, dishId, silent=false, starterPassOverride=false){
+  const idx = state.hand.kitchenLine.dishes.findIndex(d=>d.id===dishId);
+  if(idx<0) return false;
+
+  const lineDish = state.hand.kitchenLine.dishes[idx];
+
+  const beforeUnlocked = !state.hand.unlocked[pid];
+  const ctx = { beforeUnlocked, firstLaydownTacoNoWet:true };
+  const vd = validateDish(lineDish.cards, ctx);
+
+  if(!vd.valid){
+    toast(pick(GAME.toasts.invalidRecipe));
+    return false;
+  }
+
+  const isStarterEligible = (!state.hand.unlocked[pid] && !state.hand.starterPassUsed[pid] && vd.recipeKey==="chips_and_dip");
+  const treatAsStarter = starterPassOverride || (isStarterEligible && !state.hand.usedStarterPassThisTurn);
+
+  if(treatAsStarter){
+    state.hand.starterPassUsed[pid] = true;
+    state.hand.usedStarterPassThisTurn = true;
+
+    state.hand.players[pid].served.push({ id:`S_${uid()}`, recipeKey:vd.recipeKey, cards: deepCopy(lineDish.cards), points:vd.points });
+    state.hand.servedPtsThisTurn += vd.points;
+
+    state.hand.kitchenLine.dishes.splice(idx,1);
+    if(!silent) toast(pick(GAME.toasts.starterPass));
+    return true;
+  }
+
+  state.hand.players[pid].served.push({ id:`S_${uid()}`, recipeKey:vd.recipeKey, cards: deepCopy(lineDish.cards), points:vd.points });
+  state.hand.servedPtsThisTurn += vd.points;
+
+  state.hand.kitchenLine.dishes.splice(idx,1);
+
+  tryUnlock(pid);
+  if(!silent) toast(`Served ${prettyRecipe(vd.recipeKey)} (+${vd.points}).`);
+  return true;
+}
+
+/* =========================
+   TRUE KITCHEN REMIX
+   ========================= */
+function canRemixNow(pid){
+  return pid==="P1" && state.hand.active==="P1" && state.hand.unlocked.P1;
+}
+
+function startRemix(){
+  if(!canRemixNow("P1")){
+    toast(pick(GAME.toasts.remixBlocked));
+    return;
+  }
+  if(state.hand.remix.active){
+    toast("Already remixing.");
+    return;
+  }
+  if(state.hand.kitchenLine.dishes.length===0){
+    toast("Kitchen Line is empty.");
+    return;
+  }
+
+  const snap = deepCopy(state.hand.kitchenLine.dishes);
+  const pool = [];
+  for(const d of state.hand.kitchenLine.dishes){
+    for(const c of d.cards) pool.push({...c});
+  }
+
+  state.hand.remix.active = true;
+  state.hand.remix.originalLineSnapshot = snap;
+  state.hand.remix.poolCards = pool;
+  state.hand.remix.dishes = [ mkDish(0, "Remix Dish") ];
+  state.hand.remix.dishIndex = 0;
+
+  // Clear line while remixing (commit/cancel controls restore)
+  state.hand.kitchenLine.dishes = [];
+  state.hand.selectedLineDishId = null;
+
+  toast("Remix started. Rebuild the line, then Commit.");
+}
+
+function cancelRemixIfActive(silent=false){
+  if(!state.hand.remix.active) return;
+  state.hand.kitchenLine.dishes = deepCopy(state.hand.remix.originalLineSnapshot || []);
+  state.hand.remix.active = false;
+  state.hand.remix.originalLineSnapshot = [];
+  state.hand.remix.poolCards = [];
+  state.hand.remix.dishes = [];
+  state.hand.remix.dishIndex = 0;
+  state.hand.selectedLineDishId = null;
+  if(!silent) toast("Remix canceled. Original line restored.");
+}
+
+function commitRemix(){
+  if(!state.hand.remix.active){
+    toast("Not in remix mode.");
+    return;
+  }
+
+  // Must use all pool cards and every dish must be valid
+  if(state.hand.remix.poolCards.length>0){
+    toast(pick(GAME.toasts.invalidEndState));
+    return;
+  }
+
+  const beforeUnlocked = false; // remix only after unlock
+  const ctx = { beforeUnlocked, firstLaydownTacoNoWet:false };
+
+  const dishes = state.hand.remix.dishes.filter(d=>d.cards.length>0);
+  if(dishes.length===0){
+    toast("You need at least one dish on the line.");
+    return;
+  }
+
+  for(const d of dishes){
+    const vd = validateDish(d, ctx);
+    if(!vd.valid){
+      if(d.cards.some(c=>isWild(c) && !c.wildAs)) toast(pick(GAME.toasts.wildNeedsPick));
+      else toast(pick(GAME.toasts.invalidRecipe));
+      return;
+    }
+  }
+
+  // Build new line dishes
+  const newLine = dishes.map(d=>{
+    const vd = validateDish(d, ctx);
+    return {
+      id:`L_${uid()}`,
+      recipeKey: vd.recipeKey,
+      cards: d.cards.map(c=>({...c})),
+      publishedBy: "P1"
+    };
+  });
+
+  state.hand.kitchenLine.dishes = newLine;
+
+  // Exit remix mode
+  state.hand.remix.active = false;
+  state.hand.remix.originalLineSnapshot = [];
+  state.hand.remix.poolCards = [];
+  state.hand.remix.dishes = [];
+  state.hand.remix.dishIndex = 0;
+
+  toast("Remix committed. New line is live.");
+}
+
+/* =========================
+   UI + Interaction
+   ========================= */
+let currentTab = "hand";
+let selectedHandCardIds = new Set();
+
+function setTheme(themeKey){
+  const t = THEME_PRESETS.find(x=>x.key===themeKey) || THEME_PRESETS[0];
+  state.settings.themeKey = t.key;
+  document.documentElement.style.setProperty("--accent", t.accent);
+  document.documentElement.style.setProperty("--accent2", hexToRgba(t.accent, .18));
+}
+
+function hexToRgba(hex, a){
+  const h = hex.replace("#","").trim();
+  const r = parseInt(h.slice(0,2),16);
+  const g = parseInt(h.slice(2,4),16);
+  const b = parseInt(h.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+function phaseFor(pid){
+  if(state.hand.unlocked[pid]) return "KITCHEN_OPEN";
+  if(state.hand.starterPassUsed[pid]) return "APPETIZERS_OUT";
+  return "NOT_SEATED_YET";
+}
+
+function updateTop(){
+  const pid = state.hand.active;
+  $("activePlayerLabel").textContent = pid;
+
+  const phaseKey = phaseFor(pid);
+  $("phaseName").textContent = GAME.phases[phaseKey].name;
+  $("phaseHelp").textContent = GAME.phases[phaseKey].help;
+
+  $("handIndex").textContent = state.match.handIndex;
+  $("handsTarget").textContent = state.settings.handsTarget;
+  $("roundsLeft").textContent = Math.max(0, state.settings.handsTarget - state.match.handIndex + 1);
+  $("drawCount").textContent = state.hand.drawPile.length;
+
+  const pids = ["P1","P2","P3","P4"].slice(0,state.settings.numPlayers);
+  $("scoreByPlayers").innerHTML = pids.map(p=>`<span class="mono">${p}: ${state.match.scores[p]}</span>`).join(" • ");
+  $("scoreNow").textContent = state.match.scores[pid];
+
+  const p = state.hand.players[pid];
+  const beforeUnlocked = !state.hand.unlocked[pid];
+  const ctx = { beforeUnlocked, firstLaydownTacoNoWet:true };
+  const pending = sum(p.prep.dishes, d => {
+    const v = validateDish(d, ctx);
+    return v.valid ? v.points : 0;
+  });
+  $("pendingPts").textContent = pending;
+  $("servedThisTurn").textContent = state.hand.servedPtsThisTurn;
+
+  $("btnDraw").disabled = (pid!=="P1") || state.hand.drawPile.length===0;
+  $("btnPublishAll").disabled = (pid!=="P1") || state.hand.remix.active;
+  $("btnServeSelected").disabled = (pid!=="P1") || !state.hand.selectedLineDishId || state.hand.remix.active;
+  $("btnEndTurn").disabled = (pid!=="P1");
+
+  if(state.hand.remix.active){
+    $("actionHint").textContent = "Remix in progress: rebuild the Kitchen Line from the pool, then Commit (no loose ingredients).";
+  }else{
+    const unlock = state.hand.unlocked[pid];
+    $("actionHint").textContent = unlock
+      ? "Kitchen Open: use Line → Start Remix to break/rebuild the public line."
+      : "Before Kitchen Open: publish and serve from your drafts. Starter Pass is allowed once per hand (Chips & Dip).";
+  }
+}
+
+function render(){
+  updateTop();
+  syncTabs();
+
+  if(currentTab==="hand") renderHand();
+  else if(currentTab==="prep") renderPrep();
+  else if(currentTab==="line") renderLine();
+  else if(currentTab==="scores") renderScores();
+  else if(currentTab==="settings") renderSettings();
+}
+
+function syncTabs(){
+  for(const b of $("tabSeg").querySelectorAll("button")){
+    b.classList.toggle("on", b.dataset.tab===currentTab);
+  }
+  for(const t of document.querySelectorAll(".tab")){
+    t.classList.toggle("on", t.dataset.tab===currentTab);
+  }
+
+  const titleMap = {
+    hand: ["Your Hand","Tap cards to move them into the current Prep dish."],
+    prep: ["Your Prep Carousel","Build multiple dishes privately, then Publish All."],
+    line: ["Kitchen Line (Public)","Start Remix to break/rebuild the line (Kitchen Open only)."],
+    scores:["Scoreboard","Served dishes score points. End-of-hand penalty is -1 per card remaining."],
+    settings:["Settings","Theme, players, hands, and game controls."]
+  };
+  $("panelTitle").textContent = titleMap[currentTab][0];
+  $("panelSub").textContent = titleMap[currentTab][1];
+}
+
+function renderHand(){
+  const pid = state.hand.active;
+  const p = state.hand.players[pid];
+  const body = $("panelBody");
+
+  body.innerHTML = `
+    <div class="btnrow" style="margin-bottom:10px">
+      <button id="handToPrep" class="primary" ${state.hand.remix.active ? "disabled":""}>Move Selected → Prep</button>
+      <button id="clearSel" class="ghost">Clear Selection</button>
+      <button id="autoPick" class="ghost">Auto-Pick Grocery Run</button>
+    </div>
+    <div class="muted">Tip: tap a card to select it. Then move it into the current dish slide.</div>
+    <div class="hr"></div>
+    <div class="tiles" id="handTiles"></div>
+  `;
+
+  const ht = $("handTiles");
+  ht.innerHTML = "";
+
+  const hand = [...p.hand].sort((a,b)=>a.name.localeCompare(b.name));
+  for(const c of hand){
+    const div = document.createElement("div");
+    div.className = "tile" + (selectedHandCardIds.has(c.id) ? " sel" : "");
+    div.innerHTML = `
+      <div class="chip ${selectedHandCardIds.has(c.id) ? "accent" : ""}"></div>
+      <div class="name">${escapeHtml(c.name)}${isWild(c) && c.wildAs ? `<div class="tag">as: ${escapeHtml(c.wildAs)}</div>` : (isWild(c) ? `<div class="tag">Tap to choose</div>` : "")}</div>
+    `;
+    div.onclick = ()=>{
+      if(pid!=="P1") return;
+      if(selectedHandCardIds.has(c.id)) selectedHandCardIds.delete(c.id);
+      else selectedHandCardIds.add(c.id);
+      render();
+    };
+    ht.appendChild(div);
+  }
+
+  $("handToPrep").onclick = ()=>{
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    const moved = moveSelectedHandToCurrentDish("P1");
+    if(moved===0) toast("Select at least one card.");
+    else render();
+  };
+  $("clearSel").onclick = ()=>{ clearSelections(); render(); };
+  $("autoPick").onclick = ()=>{
+    const p1 = state.hand.players.P1;
+    for(const c of p1.hand){
+      if(isWild(c) && !c.wildAs) c.wildAs = pick(GAME.roles.dip);
+    }
+    toast("Auto-picked Grocery Run (you can change it).");
+    render();
+  };
+}
+
+function moveSelectedHandToCurrentDish(pid){
+  const p = state.hand.players[pid];
+  const dish = p.prep.dishes[p.prep.dishIndex] || p.prep.dishes[0];
+  const selected = new Set(selectedHandCardIds);
+  if(selected.size===0) return 0;
+
+  const eff = dish.cards.map(c=>isWild(c)?(c.wildAs||"Grocery Run"):c.name);
+  const hasTort = eff.includes("Corn Tortillas") || eff.includes("Flour Tortillas");
+  const hasProt = eff.some(n => GAME.roles.protein.includes(n));
+  const looksLikeTaco = hasTort && hasProt;
+  if(looksLikeTaco && (dish.cards.length >= GAME.rules.tacoMaxCards)){
+    toast("Taco cap: that dish already has 3 cards.");
+    return 0;
+  }
+
+  const hand = p.hand;
+  const toMove = [];
+  for(const id of selected){
+    const idx = hand.findIndex(c=>c.id===id);
+    if(idx>=0) toMove.push(hand[idx]);
+  }
+
+  let allowed = toMove.length;
+  if(looksLikeTaco){
+    allowed = Math.min(allowed, GAME.rules.tacoMaxCards - dish.cards.length);
+  }
+
+  const moved = [];
+  for(let i=0;i<toMove.length && moved.length<allowed;i++){
+    const c = toMove[i];
+    const idx = hand.findIndex(x=>x.id===c.id);
+    if(idx>=0) moved.push(hand.splice(idx,1)[0]);
+  }
+  dish.cards.push(...moved);
+
+  clearSelections();
+  return moved.length;
+}
+
+function normalizePrep(pid){
+  const p = state.hand.players[pid];
+  if(p.prep.dishes.length===0){
+    p.prep.dishes.push(mkDish(0));
+    p.prep.dishIndex = 0;
+    return;
+  }
+  p.prep.dishIndex = clamp(p.prep.dishIndex, 0, p.prep.dishes.length-1);
+}
+
+function renderPrep(){
+  const pid = state.hand.active;
+  const p = state.hand.players[pid];
+  const body = $("panelBody");
+
+  normalizePrep(pid);
+
+  const dish = p.prep.dishes[p.prep.dishIndex];
+  const beforeUnlocked = !state.hand.unlocked[pid];
+  const ctx = { beforeUnlocked, firstLaydownTacoNoWet:true };
+  const vd = validateDish(dish, ctx);
+
+  let badgeClass = "badge";
+  let badgeText = "Draft";
+  if(dish.cards.length===0){ badgeClass += " warn"; badgeText="Empty"; }
+  else if(vd.valid){ badgeClass += " good"; badgeText=`Valid • ${prettyRecipe(vd.recipeKey)} (+${vd.points})`; }
+  else { badgeClass += " bad"; badgeText="Incomplete"; }
+
+  body.innerHTML = `
+    <div class="dishShell" id="dishShell">
+      <div class="dishHead">
+        <div class="lhs">
+          <div class="dishTitle">${escapeHtml(dish.label)}</div>
+          <div class="dishMeta">Slide ${p.prep.dishIndex+1} of ${p.prep.dishes.length} • Draft privately, then publish.</div>
+        </div>
+        <div class="${badgeClass}">${badgeText}</div>
+      </div>
+
+      <div class="btnrow">
+        <button id="btnNewDish" ${state.hand.remix.active ? "disabled":""}>+ New Dish</button>
+        <button id="btnClearDish" class="ghost" ${state.hand.remix.active ? "disabled":""}>Clear Dish</button>
+        <button id="btnDeleteDish" class="danger" ${state.hand.remix.active ? "disabled":""}>Delete Dish</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="tiles" id="prepTiles"></div>
+
+      <div class="hint">
+        <b>How to use:</b> go to <b>Hand</b> tab → select cards → <b>Move Selected → Prep</b>.
+        Tap a card here to send it back to your hand.
+      </div>
+
+      <div class="hr"></div>
+      <div id="dishFeedback" class="muted"></div>
+
+      <div class="carouselNav">
+        <div class="navBtns">
+          <button id="btnPrev" class="ghost">◀</button>
+          <button id="btnNext" class="ghost">▶</button>
+        </div>
+        <button id="btnPublishCurrent" class="primary" ${state.hand.remix.active ? "disabled":""}>Publish Current</button>
+      </div>
+
+      <div class="muted" style="margin-top:10px">
+        <span class="mono">Swipe</span> left/right on this panel to change slides.
+      </div>
+    </div>
+  `;
+
+  const shell = $("dishShell");
+  attachSwipe(shell, ()=>{
+    p.prep.dishIndex = clamp(p.prep.dishIndex+1, 0, p.prep.dishes.length-1);
+    render();
+  }, ()=>{
+    p.prep.dishIndex = clamp(p.prep.dishIndex-1, 0, p.prep.dishes.length-1);
+    render();
+  });
+
+  const pt = $("prepTiles");
+  pt.innerHTML = "";
+  for(const c of dish.cards){
+    const div = document.createElement("div");
+    div.className = "tile";
+    div.innerHTML = `
+      <div class="chip ${isWild(c) ? "accent" : ""}"></div>
+      <div class="name">${escapeHtml(c.name)}${isWild(c) ? `<div class="tag">${c.wildAs ? `as: ${escapeHtml(c.wildAs)}` : "Tap to choose"}</div>` : ""}</div>
+      <div class="tag">tap to remove</div>
+    `;
+    div.onclick = ()=>{
+      if(pid!=="P1") return;
+      if(isWild(c)){ openWildPicker(c, ()=>render()); return; }
+      dish.cards = dish.cards.filter(x=>x.id!==c.id);
+      state.hand.players.P1.hand.push(c);
+      render();
+    };
+    pt.appendChild(div);
+  }
+
+  const fb = $("dishFeedback");
+  if(dish.cards.length===0){
+    fb.innerHTML = "Add ingredients from your Hand to start drafting.";
+  }else if(vd.valid){
+    fb.innerHTML = `<b>Ready:</b> ${prettyRecipe(vd.recipeKey)} • ${vd.points} pts.`;
+  }else{
+    fb.innerHTML = `<b>Not ready:</b> ${vd.errors.join(" ")} ${vd.warnings?.length ? `<div style="margin-top:6px">${vd.warnings.map(w=>`• ${escapeHtml(w)}`).join("<br>")}</div>` : ""}`;
+  }
+
+  $("btnNewDish").onclick = ()=>{
+    if(pid!=="P1") return;
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    const d = mkDish(p.prep.dishes.length);
+    p.prep.dishes.push(d);
+    p.prep.dishIndex = p.prep.dishes.length-1;
+    toast("New dish added to the carousel.");
+    render();
+  };
+
+  $("btnClearDish").onclick = ()=>{
+    if(pid!=="P1") return;
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    if(dish.cards.length===0){ toast("Dish is already empty."); return; }
+    const giveBack = dish.cards.splice(0, dish.cards.length);
+    state.hand.players.P1.hand.push(...giveBack);
+    toast("Dish cleared back to your hand.");
+    render();
+  };
+
+  $("btnDeleteDish").onclick = ()=>{
+    if(pid!=="P1") return;
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    if(p.prep.dishes.length===1){ toast("You need at least one dish slide."); return; }
+    confirmModal("Delete dish?", "This removes the dish slide and returns its cards to your hand.", "Delete Dish", ()=>{
+      state.hand.players.P1.hand.push(...dish.cards);
+      p.prep.dishes.splice(p.prep.dishIndex, 1);
+      p.prep.dishes.forEach((d,i)=>d.label=`Dish ${i+1}`);
+      p.prep.dishIndex = clamp(p.prep.dishIndex, 0, p.prep.dishes.length-1);
+      toast("Dish deleted.");
+      render();
+    });
+  };
+
+  $("btnPrev").onclick = ()=>{ p.prep.dishIndex = clamp(p.prep.dishIndex-1, 0, p.prep.dishes.length-1); render(); };
+  $("btnNext").onclick = ()=>{ p.prep.dishIndex = clamp(p.prep.dishIndex+1, 0, p.prep.dishes.length-1); render(); };
+
+  $("btnPublishCurrent").onclick = ()=>{
+    if(pid!=="P1") return;
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    const ctx2 = { beforeUnlocked: !state.hand.unlocked.P1, firstLaydownTacoNoWet:true };
+    const vd2 = validateDish(dish, ctx2);
+    if(!vd2.valid){
+      if(dish.cards.some(c=>isWild(c) && !c.wildAs)) toast(pick(GAME.toasts.wildNeedsPick));
+      else toast(pick(GAME.toasts.invalidRecipe));
+      return;
+    }
+    state.hand.kitchenLine.dishes.push({
+      id:`L_${uid()}`,
+      recipeKey: vd2.recipeKey,
+      cards: dish.cards.map(c=>({...c})),
+      publishedBy:"P1"
+    });
+    dish.cards = [];
+    normalizePrep("P1");
+    toast("Published current dish to the Kitchen Line.");
+    render();
+  };
+}
+
+function renderLine(){
+  const body = $("panelBody");
+  const pid = state.hand.active;
+
+  // Remix view
+  if(state.hand.remix.active){
+    renderRemixLine(body);
+    return;
+  }
+
+  body.innerHTML = `
+    <div class="btnrow" style="margin-bottom:10px">
+      <button id="btnStartRemix" class="primary">Start Remix</button>
+      <button id="btnSelectNone" class="ghost">Clear Selection</button>
+      <button id="btnServeSel">Serve Selected</button>
+    </div>
+    <div class="muted">Tap a line dish to select it. Serving removes it from the line and scores points.</div>
+    <div class="hr"></div>
+    <div class="lineList" id="lineList"></div>
+  `;
+
+  $("btnStartRemix").disabled = !(canRemixNow("P1"));
+  $("btnStartRemix").onclick = ()=>startRemix();
+
+  $("btnSelectNone").onclick = ()=>{ state.hand.selectedLineDishId=null; render(); };
+
+  $("btnServeSel").onclick = ()=>{
+    if(pid!=="P1"){ toast("Wait for your turn."); return; }
+    if(!state.hand.selectedLineDishId){ toast("Select a dish first."); return; }
+    const did = serveLineDishById("P1", state.hand.selectedLineDishId, false, false);
+    if(did){
+      render();
+      if(state.hand.usedStarterPassThisTurn){
+        setTimeout(()=>{ endTurn(); render(); }, 350);
+      }else{
+        endHandIfNeeded();
+      }
+    }
+  };
+
+  const list = $("lineList");
+  const dishes = state.hand.kitchenLine.dishes;
+
+  if(dishes.length===0){
+    list.innerHTML = `<div class="muted">Kitchen Line is empty. Publish from Prep to start the chaos.</div>`;
+    $("btnServeSel").disabled = true;
+    return;
+  }
+
+  for(const d of dishes){
+    const sel = (state.hand.selectedLineDishId===d.id);
+    const r = GAME.recipes[d.recipeKey];
+    const div = document.createElement("div");
+    div.className = "lineDish";
+    div.style.outline = sel ? "2px solid rgba(255,255,255,.22)" : "none";
+    div.innerHTML = `
+      <div class="lineDishTop">
+        <div>
+          <div style="font-weight:1000">${prettyRecipe(d.recipeKey)} <span class="muted">(+${r.points})</span></div>
+          <div class="who">Published by <span class="mono">${d.publishedBy}</span></div>
+        </div>
+        <div class="badge ${sel ? "good" : ""}">${sel ? "Selected" : "Tap to select"}</div>
+      </div>
+      <div class="tiles">
+        ${d.cards.map(c=>{
+          const name = c.name + (isWild(c) && c.wildAs ? ` (as ${c.wildAs})` : "");
+          return `<div class="tile small"><div class="name">${escapeHtml(name)}</div></div>`;
+        }).join("")}
+      </div>
+    `;
+    div.onclick = ()=>{
+      state.hand.selectedLineDishId = (sel ? null : d.id);
+      render();
+    };
+    list.appendChild(div);
+  }
+
+  $("btnServeSel").disabled = (state.hand.active!=="P1") || !state.hand.selectedLineDishId;
+}
+
+function renderRemixLine(body){
+  const rm = state.hand.remix;
+  normalizeRemix();
+
+  const dish = rm.dishes[rm.dishIndex];
+  const ctx = { beforeUnlocked:false, firstLaydownTacoNoWet:false };
+  const vd = validateDish(dish, ctx);
+
+  let badgeClass = "badge";
+  let badgeText = "Draft";
+  if(dish.cards.length===0){ badgeClass += " warn"; badgeText="Empty"; }
+  else if(vd.valid){ badgeClass += " good"; badgeText=`Valid • ${prettyRecipe(vd.recipeKey)} (+${vd.points})`; }
+  else { badgeClass += " bad"; badgeText="Invalid"; }
+
+  body.innerHTML = `
+    <div class="btnrow" style="margin-bottom:10px">
+      <button id="btnCommitRemix" class="primary">Commit Remix</button>
+      <button id="btnCancelRemix" class="danger">Cancel Remix</button>
+      <button id="btnNewRemixDish">+ New Remix Dish</button>
+      <button id="btnClearRemixDish" class="ghost">Clear Dish</button>
+      <button id="btnDeleteRemixDish" class="danger">Delete Dish</button>
+    </div>
+
+    <div class="muted">
+      <b>Rule:</b> to commit, <b>pool must be empty</b> and every dish must be a valid menu item (no loose ingredients).
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="remixGrid">
+      <div class="pool">
+        <div class="poolHead">
+          <div>
+            <div class="t">Remix Pool</div>
+            <div class="s"><span class="mono" id="poolCount">${rm.poolCards.length}</span> cards waiting</div>
+          </div>
+          <div class="badge ${rm.poolCards.length===0 ? "good" : "warn"}">${rm.poolCards.length===0 ? "Empty ✅" : "Not empty"}</div>
+        </div>
+        <div class="tiles" id="poolTiles"></div>
+        <div class="hint">Tap a pool card to add it to the current remix dish.</div>
+      </div>
+
+      <div class="dishShell" id="remixDishShell">
+        <div class="dishHead">
+          <div class="lhs">
+            <div class="dishTitle">${escapeHtml(dish.label)}</div>
+            <div class="dishMeta">Slide ${rm.dishIndex+1} of ${rm.dishes.length}</div>
+          </div>
+          <div class="${badgeClass}">${badgeText}</div>
+        </div>
+
+        <div class="tiles" id="remixDishTiles"></div>
+
+        <div class="hint">
+          Tap a dish card to return it to the pool. Tap Grocery Run to set its substitute.
+        </div>
+
+        <div class="hr"></div>
+        <div id="remixFeedback" class="muted"></div>
+
+        <div class="carouselNav">
+          <div class="navBtns">
+            <button id="btnPrevR" class="ghost">◀</button>
+            <button id="btnNextR" class="ghost">▶</button>
+          </div>
+          <div class="badge">Remix Mode</div>
+        </div>
+
+        <div class="muted" style="margin-top:10px">
+          <span class="mono">Swipe</span> left/right on this panel to change slides.
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Swipe between remix dishes
+  const shell = $("remixDishShell");
+  attachSwipe(shell, ()=>{
+    rm.dishIndex = clamp(rm.dishIndex+1, 0, rm.dishes.length-1);
+    render();
+  }, ()=>{
+    rm.dishIndex = clamp(rm.dishIndex-1, 0, rm.dishes.length-1);
+    render();
+  });
+
+  // Render pool
+  const poolTiles = $("poolTiles");
+  poolTiles.innerHTML = "";
+  if(rm.poolCards.length===0){
+    poolTiles.innerHTML = `<div class="muted">Pool is empty. Commit when all dishes are valid.</div>`;
+  }else{
+    const sortedPool = [...rm.poolCards].sort((a,b)=>a.name.localeCompare(b.name));
+    for(const c of sortedPool){
+      const div = document.createElement("div");
+      div.className = "tile";
+      div.innerHTML = `
+        <div class="chip ${isWild(c) ? "accent" : ""}"></div>
+        <div class="name">${escapeHtml(c.name)}${isWild(c) ? `<div class="tag">${c.wildAs ? `as: ${escapeHtml(c.wildAs)}` : "Tap to choose"}</div>` : ""}</div>
+        <div class="tag">tap to add</div>
+      `;
+      div.onclick = ()=>{
+        // move from pool -> current dish
+        const idx = rm.poolCards.findIndex(x=>x.id===c.id);
+        if(idx<0) return;
+        const card = rm.poolCards.splice(idx,1)[0];
+        dish.cards.push(card);
+        render();
+      };
+      poolTiles.appendChild(div);
+    }
+  }
+
+  // Render current remix dish
+  const dishTiles = $("remixDishTiles");
+  dishTiles.innerHTML = "";
+  for(const c of dish.cards){
+    const div = document.createElement("div");
+    div.className = "tile";
+    div.innerHTML = `
+      <div class="chip ${isWild(c) ? "accent" : ""}"></div>
+      <div class="name">${escapeHtml(c.name)}${isWild(c) ? `<div class="tag">${c.wildAs ? `as: ${escapeHtml(c.wildAs)}` : "Tap to choose"}</div>` : ""}</div>
+      <div class="tag">tap to return</div>
+    `;
+    div.onclick = ()=>{
+      if(isWild(c)){ openWildPicker(c, ()=>render()); return; }
+      // dish -> pool
+      dish.cards = dish.cards.filter(x=>x.id!==c.id);
+      rm.poolCards.push(c);
+      render();
+    };
+    dishTiles.appendChild(div);
+  }
+
+  // Feedback
+  const fb = $("remixFeedback");
+  if(dish.cards.length===0){
+    fb.innerHTML = "Build a valid dish from pool cards.";
+  }else if(vd.valid){
+    fb.innerHTML = `<b>Ready:</b> ${prettyRecipe(vd.recipeKey)} • ${vd.points} pts.`;
+  }else{
+    fb.innerHTML = `<b>Not ready:</b> ${vd.errors.join(" ")} ${vd.warnings?.length ? `<div style="margin-top:6px">${vd.warnings.map(w=>`• ${escapeHtml(w)}`).join("<br>")}</div>` : ""}`;
+  }
+
+  // Controls
+  $("btnCommitRemix").onclick = ()=>{
+    // turn-end validator: also ensures pool empty + all valid
+    commitRemix();
+    persist();
+    render();
+  };
+  $("btnCancelRemix").onclick = ()=>{
+    confirmModal("Cancel remix?", "This restores the original Kitchen Line exactly as it was.", "Cancel Remix", ()=>{
+      cancelRemixIfActive();
+      persist();
+      render();
+    });
+  };
+
+  $("btnNewRemixDish").onclick = ()=>{
+    const d = mkDish(rm.dishes.length, "Remix Dish");
+    rm.dishes.push(d);
+    rm.dishIndex = rm.dishes.length-1;
+    toast("New remix dish added.");
+    persist();
+    render();
+  };
+
+  $("btnClearRemixDish").onclick = ()=>{
+    if(dish.cards.length===0){ toast("Dish is already empty."); return; }
+    rm.poolCards.push(...dish.cards);
+    dish.cards = [];
+    toast("Dish cleared back to pool.");
+    persist();
+    render();
+  };
+
+  $("btnDeleteRemixDish").onclick = ()=>{
+    if(rm.dishes.length===1){
+      toast("You need at least one remix dish.");
+      return;
+    }
+    confirmModal("Delete remix dish?", "Cards from this dish go back to the pool.", "Delete Dish", ()=>{
+      rm.poolCards.push(...dish.cards);
+      rm.dishes.splice(rm.dishIndex, 1);
+      rm.dishes.forEach((d,i)=>d.label=`Remix Dish ${i+1}`);
+      rm.dishIndex = clamp(rm.dishIndex, 0, rm.dishes.length-1);
+      toast("Remix dish deleted.");
+      persist();
+      render();
+    });
+  };
+
+  $("btnPrevR").onclick = ()=>{ rm.dishIndex = clamp(rm.dishIndex-1, 0, rm.dishes.length-1); render(); };
+  $("btnNextR").onclick = ()=>{ rm.dishIndex = clamp(rm.dishIndex+1, 0, rm.dishes.length-1); render(); };
+}
+
+function normalizeRemix(){
+  const rm = state.hand.remix;
+  if(!rm.active) return;
+  if(rm.dishes.length===0){
+    rm.dishes = [ mkDish(0, "Remix Dish") ];
+    rm.dishIndex = 0;
+  }
+  rm.dishIndex = clamp(rm.dishIndex, 0, rm.dishes.length-1);
+}
+
+function renderScores(){
+  const body = $("panelBody");
+  const pids = ["P1","P2","P3","P4"].slice(0,state.settings.numPlayers);
+
+  const blocks = pids.map(pid=>{
+    const p = state.hand.players[pid];
+    const servedPts = sum(p.served, s=>s.points);
+    const penalty = p.hand.length * GAME.rules.endHandPenaltyPerCard;
+    const net = servedPts - penalty;
+
+    const servedList = p.served.length
+      ? p.served.map(s=>`<div class="tile small"><div class="name">${prettyRecipe(s.recipeKey)} <span class="muted">(+${s.points})</span></div></div>`).join("")
+      : `<div class="muted">No served dishes yet.</div>`;
+
+    return `
+      <div class="dishShell" style="margin-bottom:12px">
+        <div class="dishHead">
+          <div class="lhs">
+            <div class="dishTitle">${pid}</div>
+            <div class="dishMeta">Hand net: <span class="mono">${net}</span> (served ${servedPts} − penalty ${penalty})</div>
+          </div>
+          <div class="badge">${state.match.scores[pid]} match</div>
+        </div>
+        <div class="tiles">${servedList}</div>
+      </div>
+    `;
+  }).join("");
+
+  body.innerHTML = `
+    <div class="btnrow" style="margin-bottom:10px">
+      <button id="btnForceEndHand" class="danger">End Hand (Admin)</button>
+      <button id="btnNewMatch" class="ghost">New Match</button>
+    </div>
+    <div class="muted">Normally the hand ends when someone empties their hand + prep. Admin controls are here for testing.</div>
+    <div class="hr"></div>
+    ${blocks}
+  `;
+
+  $("btnForceEndHand").onclick = ()=>{
+    confirmModal("End hand now?", "Scores this hand will be added (served minus penalties), then a new hand will deal.", "End Hand", ()=>{
+      cancelRemixIfActive(true);
+      for(const pid of pids){
+        const p = state.hand.players[pid];
+        const servedPts = sum(p.served, s=>s.points);
+        const penalty = p.hand.length * GAME.rules.endHandPenaltyPerCard;
+        state.match.scores[pid] += (servedPts - penalty);
+      }
+      state.match.handIndex += 1;
+      if(state.match.handIndex > state.settings.handsTarget){
+        showMatchSummary();
+      }else{
+        dealNewHand();
+        render();
+      }
+      persist();
+    });
+  };
+
+  $("btnNewMatch").onclick = ()=>{
+    confirmModal("Start a new match?", "This will reset scores and start at hand 1.", "New Match", ()=>{
+      cancelRemixIfActive(true);
+      const keep = { themeKey: state.settings.themeKey, handsTarget: state.settings.handsTarget, numPlayers: state.settings.numPlayers };
+      state = defaultState();
+      state.settings = keep;
+      setTheme(state.settings.themeKey);
+      state.settings.handsTarget = clamp(keep.handsTarget, GAME.rules.handsTargetMin, GAME.rules.handsTargetMax);
+      dealNewHand();
+      render();
+      persist();
+    });
+  };
+}
+
+function renderSettings(){
+  const body = $("panelBody");
+
+  body.innerHTML = `
+    <div class="field">
+      <div class="label">Secondary theme color</div>
+      <select id="selTheme"></select>
+    </div>
+
+    <div class="field">
+      <div class="label">Hands (1–12)</div>
+      <input id="inpHands" type="number" min="${GAME.rules.handsTargetMin}" max="${GAME.rules.handsTargetMax}" value="${state.settings.handsTarget}">
+    </div>
+
+    <div class="field">
+      <div class="label">Players (2–4)</div>
+      <select id="selPlayers">
+        <option value="2">2 players (14 cards)</option>
+        <option value="3">3 players (12 cards)</option>
+        <option value="4">4 players (10 cards)</option>
+      </select>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="btnrow">
+      <button id="btnDeal" class="primary">Deal New Hand</button>
+      <button id="btnReset" class="danger">Hard Reset</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="muted">
+      <div><b>Version</b>: <span class="mono">${APP_VERSION}</span></div>
+      <div style="margin-top:8px"><b>Remix</b>: Kitchen Open → Line → Start Remix → rebuild → Commit</div>
+      <div style="margin-top:8px"><b>Safety</b>: You can’t End Turn while remixing.</div>
+    </div>
+  `;
+
+  const selTheme = $("selTheme");
+  selTheme.innerHTML = THEME_PRESETS.map(t=>`<option value="${t.key}">${t.label}</option>`).join("");
+  selTheme.value = state.settings.themeKey;
+  selTheme.onchange = ()=>{
+    setTheme(selTheme.value);
+    persist();
+    render();
+  };
+
+  const inpHands = $("inpHands");
+  inpHands.onchange = ()=>{
+    state.settings.handsTarget = clamp(parseInt(inpHands.value||"12",10), GAME.rules.handsTargetMin, GAME.rules.handsTargetMax);
+    persist();
+    render();
+  };
+
+  const selPlayers = $("selPlayers");
+  selPlayers.value = String(state.settings.numPlayers);
+  selPlayers.onchange = ()=>{
+    state.settings.numPlayers = parseInt(selPlayers.value,10);
+    persist();
+    render();
+  };
+
+  $("btnDeal").onclick = ()=>{
+    confirmModal("Deal a new hand?", "This will reset the current hand (line, served). Match scores remain.", "Deal", ()=>{
+      dealNewHand();
+      render();
+      persist();
+    });
+  };
+
+  $("btnReset").onclick = ()=>{
+    confirmModal("Hard Reset?", "This wipes saved state and starts fresh.", "Reset", ()=>{
+      localStorage.removeItem("tacoRia_state_v1");
+      state = defaultState();
+      setTheme(state.settings.themeKey);
+      dealNewHand();
+      render();
+    });
+  };
+}
+
+/* =========================
+   Draw Modal (blank tiles)
+   ========================= */
+function openDrawModal(){
+  const pid = state.hand.active;
+  if(pid!=="P1"){ toast("Wait for your turn."); return; }
+  if(state.hand.remix.active){ toast("Finish remix first."); return; }
+  if(state.hand.drawPile.length===0){ toast("No cards left to draw."); return; }
+
+  $("modalTitle").textContent = "Draw (pick a blank tile)";
+  let chosen = -1;
+
+  $("modalBody").innerHTML = `
+    <div class="muted">Tap one blank, then hit <b>Draw</b>. (Your pick is just for the vibe — the draw is random.)</div>
+    <div class="hr"></div>
+    <div class="blankGrid" id="blankGrid">
+      <div class="blank" data-i="0">BLANK</div>
+      <div class="blank" data-i="1">BLANK</div>
+      <div class="blank" data-i="2">BLANK</div>
+    </div>
+  `;
+
+  const grid = $("blankGrid");
+  grid.onclick = (e)=>{
+    const el = e.target.closest(".blank");
+    if(!el) return;
+    chosen = parseInt(el.dataset.i,10);
+    for(const b of grid.querySelectorAll(".blank")){
+      b.classList.toggle("on", parseInt(b.dataset.i,10)===chosen);
+    }
+  };
+
+  $("modalFoot").innerHTML = `
+    <button class="ghost" id="btnCancelDraw">Cancel</button>
+    <button class="primary" id="btnConfirmDraw" disabled>Draw</button>
+  `;
+
+  const btnConfirm = $("btnConfirmDraw");
+  const t = setInterval(()=>{
+    btnConfirm.disabled = (chosen<0);
+    if(!$("modalWrap").classList.contains("on")) clearInterval(t);
+  }, 60);
+
+  $("btnCancelDraw").onclick = ()=>closeModal();
+  btnConfirm.onclick = ()=>{
+    closeModal();
+    const ok = drawOne("P1");
+    if(ok){
+      toast("Drew 1 ingredient.");
+      render();
+      persist();
+    }
+  };
+
+  $("modalWrap").classList.add("on");
+}
+
+function openWildPicker(card, onDone){
+  const pid = state.hand.active;
+  if(pid!=="P1"){ toast("Wild picking is only on your turn (MVP)."); return; }
+
+  $("modalTitle").textContent = "Grocery Run (pick a substitute)";
+  const options = [
+    ...GAME.roles.protein,
+    ...GAME.roles.tortilla_any,
+    ...GAME.roles.cheese,
+    ...GAME.roles.dip,
+    ...GAME.roles.dry_topping,
+    "Lime Juice","Tomato","Onion","Cilantro"
+  ];
+  const uniq = [...new Set(options)].sort((a,b)=>a.localeCompare(b));
+
+  $("modalBody").innerHTML = `
+    <div class="muted">Choose what <b>Grocery Run</b> stands in for (this card only).</div>
+    <div class="hr"></div>
+    <div class="field">
+      <div class="label">Substitute as</div>
+      <select id="wildSel">${uniq.map(n=>`<option value="${escapeAttr(n)}">${escapeHtml(n)}</option>`).join("")}</select>
+    </div>
+  `;
+
+  const sel = $("wildSel");
+  sel.value = card.wildAs || uniq[0];
+
+  $("modalFoot").innerHTML = `
+    <button class="ghost" id="wildCancel">Cancel</button>
+    <button class="primary" id="wildSave">Save</button>
+  `;
+  $("wildCancel").onclick = ()=>closeModal();
+  $("wildSave").onclick = ()=>{
+    card.wildAs = sel.value;
+    closeModal();
+    toast("Grocery Run set.");
+    onDone && onDone();
+  };
+
+  $("modalWrap").classList.add("on");
+}
+
+function closeModal(){
+  $("modalWrap").classList.remove("on");
+}
+
+/* =========================
+   Confirm modal (Hard Stop)
+   ========================= */
+function confirmModal(title, msg, confirmText, onConfirm){
+  $("modalTitle").textContent = title;
+  $("modalBody").innerHTML = `<div class="muted">${escapeHtml(msg)}</div>`;
+  $("modalFoot").innerHTML = `
+    <button class="ghost" id="cmCancel">Cancel</button>
+    <button class="danger" id="cmOK">${escapeHtml(confirmText)}</button>
+  `;
+  $("cmCancel").onclick = ()=>closeModal();
+  $("cmOK").onclick = ()=>{
+    closeModal();
+    onConfirm && onConfirm();
+    persist();
+  };
+  $("modalWrap").classList.add("on");
+}
+
+/* =========================
+   Toasts
+   ========================= */
+let toastTimer=null;
+function toast(msg){
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("on"), 2200);
+}
+
+/* =========================
+   Misc helpers
+   ========================= */
+function prettyRecipe(key){
+  const map = {
+    hard_shell_taco:"Hard Shell Taco",
+    soft_taco:"Soft Taco",
+    chips_and_dip:"Chips & Dip",
+    pico_de_gallo:"Pico de Gallo",
+    enchiladas:"Enchiladas"
+  };
+  return map[key] || key;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+}
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,"&quot;"); }
+
+function clearSelections(){ selectedHandCardIds.clear(); }
+
+/* Swipe helper */
+function attachSwipe(el, onLeft, onRight){
+  let sx=null, sy=null, t0=0;
+  el.addEventListener("touchstart",(e)=>{
+    const t = e.touches[0];
+    sx=t.clientX; sy=t.clientY; t0=Date.now();
+  }, {passive:true});
+  el.addEventListener("touchend",(e)=>{
+    if(sx==null) return;
+    const t = e.changedTouches[0];
+    const dx=t.clientX-sx, dy=t.clientY-sy;
+    const dt=Date.now()-t0;
+    sx=null; sy=null;
+    if(dt>600) return;
+    if(Math.abs(dx)<40) return;
+    if(Math.abs(dy) > Math.abs(dx)*0.8) return;
+    if(dx<0) onLeft && onLeft();
+    else onRight && onRight();
+  }, {passive:true});
+}
+
+/* =========================
+   Persistence (LocalStorage)
+   ========================= */
+function persist(){
+  try{
+    const payload = { state, savedAt: Date.now(), version: APP_VERSION };
+    localStorage.setItem("tacoRia_state_v1", JSON.stringify(payload));
+  }catch(e){}
+}
+function load(){
+  try{
+    const raw = localStorage.getItem("tacoRia_state_v1");
+    if(!raw) return null;
+    const payload = JSON.parse(raw);
+    if(!payload || !payload.state) return null;
+    return payload.state;
+  }catch(e){ return null; }
+}
+
+/* =========================
+   Match Summary
+   ========================= */
+function showMatchSummary(){
+  const pids = ["P1","P2","P3","P4"].slice(0,state.settings.numPlayers);
+  const sorted = [...pids].sort((a,b)=>state.match.scores[b]-state.match.scores[a]);
+  const winner = sorted[0];
+
+  $("modalTitle").textContent = "Match Complete";
+  $("modalBody").innerHTML = `
+    <div class="muted">Final scores:</div>
+    <div class="hr"></div>
+    <div class="tiles">
+      ${sorted.map(pid=>`<div class="tile badge"><div class="name">${pid}</div><div class="tag">${state.match.scores[pid]}</div></div>`).join("")}
+    </div>
+    <div class="hr"></div>
+    <div class="muted"><b>${winner}</b> wins. Want to run it back?</div>
+  `;
+  $("modalFoot").innerHTML = `
+    <button class="ghost" id="msClose">Close</button>
+    <button class="primary" id="msNew">New Match</button>
+  `;
+  $("msClose").onclick = ()=>closeModal();
+  $("msNew").onclick = ()=>{
+    closeModal();
+    cancelRemixIfActive(true);
+    const keep = { themeKey: state.settings.themeKey, handsTarget: state.settings.handsTarget, numPlayers: state.settings.numPlayers };
+    state = defaultState();
+    state.settings = keep;
+    setTheme(state.settings.themeKey);
+    state.settings.handsTarget = clamp(keep.handsTarget, GAME.rules.handsTargetMin, GAME.rules.handsTargetMax);
+    dealNewHand();
+    render();
+    persist();
+  };
+  $("modalWrap").classList.add("on");
+}
+
+/* =========================
+   Wire Buttons + Tabs
+   ========================= */
+function wire(){
+  $("btnDraw").onclick = ()=>openDrawModal();
+
+  $("btnPublishAll").onclick = ()=>{
+    if(state.hand.active!=="P1"){ toast("Wait for your turn."); return; }
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    publishAllFromPrep("P1");
+    render();
+    persist();
+  };
+
+  $("btnServeSelected").onclick = ()=>{
+    if(state.hand.active!=="P1"){ toast("Wait for your turn."); return; }
+    if(state.hand.remix.active){ toast("Finish remix first."); return; }
+    if(!state.hand.selectedLineDishId){ toast("Select a dish on the Line."); return; }
+    const ok = serveLineDishById("P1", state.hand.selectedLineDishId);
+    if(ok){
+      render();
+      persist();
+      if(state.hand.usedStarterPassThisTurn){
+        setTimeout(()=>{ endTurn(); render(); persist(); }, 350);
+      }else{
+        endHandIfNeeded();
+      }
+    }
+  };
+
+  $("btnEndTurn").onclick = ()=>{
+    if(state.hand.active!=="P1"){ toast("Wait for your turn."); return; }
+    endTurn();
+    persist();
+  };
+
+  $("modalClose").onclick = ()=>closeModal();
+  $("modalWrap").addEventListener("click",(e)=>{
+    if(e.target === $("modalWrap")) closeModal();
+  });
+
+  $("tabSeg").addEventListener("click",(e)=>{
+    const b = e.target.closest("button[data-tab]");
+    if(!b) return;
+    currentTab = b.dataset.tab;
+    render();
+  });
+
+  document.querySelector(".tabs").addEventListener("click",(e)=>{
+    const t = e.target.closest(".tab");
+    if(!t) return;
+    currentTab = t.dataset.tab;
+    render();
+  });
+}
+
+/* =========================
+   Boot
+   ========================= */
+(function boot(){
+  state = load() || defaultState();
+  state.settings.handsTarget = clamp(state.settings.handsTarget, GAME.rules.handsTargetMin, GAME.rules.handsTargetMax);
+  state.settings.numPlayers = clamp(state.settings.numPlayers, 2, 4);
+  setTheme(state.settings.themeKey || "red");
+
+  // Safety: if saved while remixing, cancel it to restore integrity
+  if(state.hand?.remix?.active){
+    cancelRemixIfActive(true);
+  }
+
+  if(!state.hand || !state.hand.players || !state.hand.players.P1 || state.hand.players.P1.hand.length===0){
+    state = defaultState();
+    setTheme(state.settings.themeKey);
+    dealNewHand();
+  } else {
+    beginTurn(state.hand.active || "P1");
+  }
+
+  wire();
+  render();
+
+  if(state.hand.active!=="P1") runAiTurns();
+})();
+</script>
+</body>
+</html>
