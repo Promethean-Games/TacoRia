@@ -15,7 +15,7 @@
       --stroke2:rgba(255,255,255,.14);
       --danger:#ff3b30;
 
-      --accent:#00e5ff; /* user-configurable secondary */
+      --accent:#00e5ff;
       --accentSoft: rgba(0,229,255,.14);
 
       --radius:20px;
@@ -41,7 +41,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Mobile guideline widths */
     .shell{
       min-height:100vh;
       display:flex;
@@ -50,12 +49,8 @@
       margin:0 auto;
       max-width: 980px;
     }
-    @media (max-width: 430px){
-      .shell{ max-width: 375px; }
-    }
-    @media (max-width: 390px){
-      .shell{ max-width: 360px; }
-    }
+    @media (max-width: 430px){ .shell{ max-width: 375px; } }
+    @media (max-width: 390px){ .shell{ max-width: 360px; } }
 
     header{
       padding: 14px 14px 10px;
@@ -135,6 +130,7 @@
     }
     button:active{ transform: translateY(1px) scale(.99); }
     button:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
     .btnTiny{ padding:8px 10px; border-radius:14px; font-size:12px; }
     .ghost{ background: rgba(0,0,0,.20); }
     .primary{
@@ -147,18 +143,36 @@
       border-color: rgba(255,59,48,.35);
     }
 
+    /* Jumbo gameplay buttons */
+    .jumbo{
+      min-height: 64px;
+      font-size: 18px;
+      border-radius: 20px;
+      width:100%;
+    }
+    @media (max-width: 430px){
+      .jumbo{ min-height: 68px; font-size: 19px; }
+    }
+
+    @keyframes pulseGlow{
+      0%   { transform: translateY(0); box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 0 18px rgba(0,0,0,.55); }
+      50%  { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 0 32px rgba(0,229,255,.35); }
+      100% { transform: translateY(0); box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 0 18px rgba(0,0,0,.55); }
+    }
+    .pulse{
+      animation: pulseGlow 1.35s ease-in-out infinite;
+    }
+    .pulseOrder{
+      animation: pulseGlow 1.15s ease-in-out infinite;
+    }
+
     /* Sticky action tray above bottom nav */
     .actionsTray{
       position: sticky;
       bottom: calc(var(--navH) + env(safe-area-inset-bottom));
       z-index: 30;
     }
-    .actionsGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .actionsGrid button{ min-height:52px; }
+    .actionsStack{ display:flex; flex-direction:column; gap:10px; }
 
     /* Tiles */
     .tiles{ display:flex; flex-wrap:wrap; gap:8px; }
@@ -187,7 +201,7 @@
     .tile.wild{ border-color: rgba(255,255,255,.28); box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset; }
     .tile.wet{ border-color: rgba(0,229,255,.25); }
 
-    /* ---------- Hand grouping ---------- */
+    /* Hand grouping */
     .handGroups{ display:flex; flex-direction:column; gap:12px; }
     .handGroup{
       border:1px solid var(--stroke);
@@ -208,7 +222,7 @@
     }
     .handGroupTitle .count{ opacity:.75; font-weight:1000; }
 
-    /* ---------- Tile category tinting (tiles + slot values) ---------- */
+    /* Category tinting */
     .tile.cat-tortilla, .slotValue.cat-tortilla{ --catTint: rgba(255,204,0,.18); border-color: rgba(255,204,0,.30); }
     .tile.cat-protein,  .slotValue.cat-protein { --catTint: rgba(255,59,48,.16);  border-color: rgba(255,59,48,.28); }
     .tile.cat-cheese,   .slotValue.cat-cheese  { --catTint: rgba(255,245,200,.14); border-color: rgba(255,245,200,.24); }
@@ -217,20 +231,13 @@
     .tile.cat-wild,     .slotValue.cat-wild    { --catTint: rgba(255,255,255,.10); border-color: rgba(255,255,255,.26); }
     .tile.cat-other,    .slotValue.cat-other   { --catTint: rgba(179,107,255,.14); border-color: rgba(179,107,255,.24); }
 
-    /* Public grouping */
-    .pubGroups{
-      display:grid;
-      grid-template-columns: 1fr 1fr; /* 50% width */
-      gap:10px;
-    }
-    @media (max-width: 420px){
-      .pubGroups{ grid-template-columns: 1fr; }
-    }
+    /* Public line */
     .pubGroup{
       border:1px solid var(--stroke);
       border-radius:18px;
       background: rgba(255,255,255,.03);
       padding:12px;
+      margin-bottom:12px;
     }
     .pubGroupTitle{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -270,50 +277,6 @@
       font-size:12px;
     }
 
-    /* Now Serving strip */
-    .serveStrip{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      padding-bottom:6px;
-      -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x mandatory;
-    }
-    .serveCard{
-      flex:0 0 auto;
-      width:min(240px,78vw);
-      scroll-snap-align:start;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      padding:12px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.45);
-      position:relative;
-      overflow:hidden;
-      cursor:pointer;
-      user-select:none;
-    }
-    .serveCard::before{
-      content:"";
-      position:absolute; inset:-40px;
-      background: radial-gradient(380px 160px at 20% 0%, rgba(255,255,255,.07), transparent 60%);
-      pointer-events:none;
-    }
-    .serveCard > *{ position:relative; z-index:1; }
-    .serveTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:1000; }
-    .serveMeta{ margin-top:6px; font-size:12px; color:var(--muted); }
-    .serveBad{
-      display:inline-flex; align-items:center; gap:8px;
-      margin-top:8px;
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.30);
-    }
-    .serveCard.sel{ outline: 2px solid rgba(0,229,255,.55); transform: translateY(-1px); }
-    .serveCard.invalid{ opacity:.72; }
-
     /* Accordion */
     details.acc{
       border:1px solid var(--stroke);
@@ -338,7 +301,6 @@
     .label{ font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:900; }
     .hint{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.35; }
 
-    /* Dark select fix (best-effort) */
     :root{ color-scheme: dark; }
     select, input[type="number"]{
       width:100%;
@@ -352,10 +314,7 @@
       -webkit-appearance:none;
       outline:none;
     }
-    select option{
-      background:#0b0b0b;
-      color: rgba(255,255,255,.92);
-    }
+    select option{ background:#0b0b0b; color: rgba(255,255,255,.92); }
     .selectWrap{ position:relative; }
     .selectWrap::after{
       content:"▾";
@@ -367,7 +326,6 @@
       font-weight:1000;
     }
 
-    /* Footer nav */
     nav.footer{
       position:fixed;
       left:0; right:0; bottom:0;
@@ -404,7 +362,6 @@
     .navBtn .ic{ font-size:16px; }
     .navBtn .tx{ font-size:12px; }
 
-    /* Toast */
     #toastWrap{
       position:fixed;
       left:0; right:0;
@@ -425,7 +382,6 @@
       pointer-events:none;
     }
 
-    /* Modal */
     #modalWrap{
       position:fixed; inset:0;
       background: rgba(0,0,0,.65);
@@ -449,14 +405,10 @@
     .modal .foot{ margin-top: 12px; display:flex; gap:10px; justify-content:flex-end; }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-    /* Page visibility */
     .page{ display:none; }
     .page.on{ display:block; }
 
-    /* Wrap safety */
-    h1,h2,h3,p,div,span{ overflow-wrap:anywhere; word-break:break-word; }
-
-    /* -------- Dish slot carousel (8 slots) -------- */
+    /* Dish slot carousel */
     .slotStrip{
       display:flex;
       gap:10px;
@@ -531,7 +483,7 @@
             <div class="pageTitle">Taco Ria</div>
             <span class="pill"><span class="mono" id="verPill">v0.9.1.2.25</span></span>
           </div>
-          <div class="muted small" id="subTitle">Rummikub-style recipe drafting • Private Prep + Public Line + Remix</div>
+          <div class="muted small" id="subTitle">Private Prep • Public Line • Remix</div>
         </div>
         <button class="ghost btnTiny" id="btnNewMatchTop">New Match</button>
       </div>
@@ -545,46 +497,26 @@
             <span class="pill" id="tilesRemainBadge">Tiles Remaining 0</span>
             <span class="pill" id="kitchenBadge">Kitchen Closed</span>
             <span class="pill" id="handBadge">Hand 1/12</span>
-            <span class="pill" id="diffBadge">Difficulty Easy</span>
-            <span class="pill" id="modeBadge">Standard</span>
+            <span class="pill" id="turnBadge">Your Turn</span>
           </div>
 
           <div style="margin-top:12px;">
             <div style="font-weight:1000; font-size:16px;" id="phaseTitle">Not Seated Yet</div>
-            <div class="muted" id="phaseDesc">Serve 10+ points in one turn to open the kitchen. No remixes yet.</div>
+            <div class="muted" id="phaseDesc">Serve 10+ points in one turn to open the kitchen.</div>
           </div>
         </div>
 
+        <!-- SIMPLE ACTIONS -->
         <div class="actionsTray">
           <div class="card">
-            <div class="muted small" style="margin-bottom:10px;" id="turnHint">Your Turn Controls</div>
-            <div class="actionsGrid">
-              <button class="primary" id="btnDraw">Draw Tile</button>
-              <button class="primary" id="btnPublishDraft">Order Up!</button>
-              <button class="ghost" id="btnServeSel">Serve Selected</button>
-              <button class="danger" id="btnEndTurn">End Turn</button>
+            <div class="actionsStack">
+              <button class="primary jumbo pulse" id="btnPrep">Prep a Dish</button>
+              <button class="primary jumbo" id="btnOrderUp">Order Up!</button>
+              <button class="danger jumbo" id="btnEndTurn">End Turn</button>
             </div>
-            <div class="muted small" style="margin-top:10px;" id="actionSubHint">
-              Before Kitchen Open: publish and serve from your drafts. Starter Pass allowed once per hand (Chips & Dip).
+            <div class="muted small" style="margin-top:10px;" id="actionHint">
+              Draw happens on the Prep screen. One draw per turn.
             </div>
-            <div class="row" style="margin-top:10px; justify-content:flex-end; display:none;" id="campaignSkipRow">
-              <button class="ghost btnTiny" id="btnSkipCPU">Skip CPU</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- NOW SERVING -->
-        <div class="card" id="nowServingWrap" style="margin-top:12px; display:none;">
-          <div class="row wrap sp" style="margin-bottom:10px;">
-            <div style="font-weight:1000;">Now Serving</div>
-            <div class="pills">
-              <span class="pill" id="serveSelPill">Selected 0 • 0 pts</span>
-              <span class="pill" id="serveNeedPill" style="display:none;">Need 10+ to open</span>
-            </div>
-          </div>
-          <div class="serveStrip" id="nowServingList"></div>
-          <div class="muted small" style="margin-top:10px;">
-            Tap dishes to select for <b>Serve Selected</b>.
           </div>
         </div>
 
@@ -602,8 +534,13 @@
       <section class="page" id="pagePrep">
         <div class="card">
           <div class="row sp" style="margin-bottom:8px;">
-            <div style="font-weight:1000;">Prep</div>
-            <span class="badge">Private Drafting</span>
+            <div style="font-weight:1000;">Prep Table</div>
+            <span class="badge" id="prepTurnBadge">Your Turn</span>
+          </div>
+
+          <div class="row wrap" style="gap:10px; justify-content:space-between; margin-bottom:12px;">
+            <button class="primary jumbo" id="btnDraw">Draw Tile</button>
+            <button class="primary jumbo" id="btnOrderUpFromPrep">Order Up!</button>
           </div>
 
           <details class="acc" open>
@@ -619,13 +556,9 @@
                   <button class="ghost btnTiny" id="btnNewDish">+ New Dish</button>
                   <button class="ghost btnTiny" id="btnClearDish">Clear Dish</button>
                 </div>
-                <div class="row wrap" style="gap:10px;">
-                  <button class="primary btnTiny" id="btnAutoPlate" style="display:none;">Auto-Plate</button>
-                  <button class="primary btnTiny" id="btnAutoRemix" style="display:none;">Auto-Remix</button>
-                </div>
               </div>
 
-              <div class="hint" id="autoHint" style="margin-top:10px;">
+              <div class="hint" id="handHint" style="margin-top:10px;">
                 Tap hand tiles to add/remove from your current dish.
               </div>
             </div>
@@ -645,7 +578,7 @@
               </div>
 
               <div class="field">
-                <div class="label">Prep Table</div>
+                <div class="label">Ingredients (auto-placed)</div>
                 <div class="slotStrip" id="dishCarousel"></div>
               </div>
 
@@ -654,19 +587,6 @@
               </div>
 
               <div class="hint" id="dishHint"></div>
-            </div>
-          </details>
-
-          <details class="acc">
-            <summary>
-              <span>Public Tiles (for Remix)</span>
-              <span class="muted2 small">Grouped</span>
-            </summary>
-            <div class="accBody">
-              <div id="publicTiles"></div>
-              <div class="hint">
-                Once Kitchen is open, you may select public tiles to remix into a new dish (no loose ingredients).
-              </div>
             </div>
           </details>
         </div>
@@ -682,22 +602,13 @@
 
           <div class="row wrap" style="gap:10px; margin-bottom:12px;">
             <span class="pill" id="scoreCurrent">Current: 0</span>
-            <span class="pill" id="scorePending">Pending: 0</span>
-            <span class="pill" id="scoreServed">Served this hand: 0</span>
+            <span class="pill muted" id="scoreServedMuted">Served this hand: 0</span>
           </div>
 
           <div id="scoreList"></div>
 
-          <details class="acc" id="campaignBoxAcc" style="margin-top:12px; display:none;">
-            <summary>
-              <span>Box Score</span>
-              <span class="muted2 small">Chapters + Total</span>
-            </summary>
-            <div class="accBody" id="campaignBoxBody"></div>
-          </details>
-
           <div class="hint" style="margin-top:10px;">
-            End-of-hand penalty is <b>-1</b> per tile remaining in your hand.
+            Player panels are collapsed by default. Expand to see served dishes and remix net.
           </div>
         </div>
       </section>
@@ -767,11 +678,6 @@
                   </div>
                 </div>
               </div>
-
-              <div class="hint">
-                Campaign auto-walks difficulty: Beginner → Easy → Medium → Difficult → Master Chef.
-                Skip button appears during CPU turns in Campaign only. Kitchen stays open after first unlock.
-              </div>
             </div>
           </details>
 
@@ -785,6 +691,7 @@
               <div class="selectWrap">
                 <select id="selAccent"></select>
               </div>
+              <div class="hint">CPU colors will auto-adjust to avoid matching you or each other.</div>
             </div>
           </details>
 
@@ -805,19 +712,6 @@
               </div>
             </div>
           </details>
-
-          <details class="acc">
-            <summary>
-              <span>Menu Reference</span>
-              <span class="muted2 small">What “valid” looks like</span>
-            </summary>
-            <div class="accBody" id="menuRef"></div>
-          </details>
-
-          <div class="hint" style="margin-top:12px;">
-            Starter Pass: before you unlock, you may serve one Chips & Dip per hand without unlocking remix.
-            <br/>First laydown: tacos must use dry toppings (no salsa/queso/guac).
-          </div>
         </div>
       </section>
     </main>
@@ -842,10 +736,15 @@
 
   <script>
     /* =========================
-       Taco Ria v0.9.1.2.25 (Atomic)
-       - Hand grouping + category tints
-       - Current Dish 8-slot carousel with auto-placement + category tints
-       - Added FR/DE language options
+       Taco Ria v0.9.1.2.25 (Atomic Patch)
+       FIXES ADDED NOW:
+       ✅ One draw per turn (hard-gated)
+       ✅ Prep-table slots auto-scroll to next empty after ingredient add
+       Also:
+       ✅ Gameplay simplified (Prep / Order Up / End Turn + Public Line)
+       ✅ Order Up enabled only when qualifying dish exists (jumbo pulse)
+       ✅ CPU colors re-picked on theme change to avoid duplicates / matching player
+       ✅ Scores: per-player accordion w/ dishes + remix net
        ========================= */
 
     const VERSION = "v0.9.1.2.25";
@@ -853,13 +752,6 @@
 
     const DIFFS = ["Beginner","Easy","Medium","Difficult","Master Chef"];
     const DIFF_DELAY_MS = { "Beginner":5000, "Easy":3500, "Medium":2200, "Difficult":1200, "Master Chef":500 };
-
-    const CPU_CHARACTERS = {
-      chefMike:  { name:"Chef Mike",  speedFixedMs:650,  jitterMs:120, sloppyRate:0.28, appetizerBias:0.10, remixBias:0.90, color:"#ff3b30" },
-      salsaSam:  { name:"Salsa Sam",  speedMult:1.00,   jitterMs:220, sloppyRate:0.10, appetizerBias:0.20, remixBias:1.00, color:"#b36bff" },
-      quesoQueen:{ name:"Queso Queen",speedMult:1.12,   jitterMs:260, sloppyRate:0.08, appetizerBias:0.78, remixBias:0.95, color:"#ffcc00" },
-      grillGuru: { name:"Grill Guru", speedMult:0.85,   jitterMs:160, sloppyRate:0.04, appetizerBias:0.15, remixBias:1.35, color:"#a3ff12" }
-    };
 
     const ACCENTS = [
       { name:"Neon Cyan", val:"#00e5ff" },
@@ -872,43 +764,20 @@
       { name:"Red", val:"#ff3b30" }
     ];
 
+    const CPU_BASE_COLORS = ["#ff3b30","#b36bff","#ffcc00","#a3ff12"];
+
     const I18N = {
-      en: {
-        gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings",
-        orderUp:"Order Up!", drawTile:"Draw Tile", serveSelected:"Serve Selected", endTurn:"End Turn",
-        yourTurn:"Your Turn Controls", notYourTurn:"Not your turn.",
-        kitchenOpen:"Kitchen Open", kitchenClosed:"Kitchen Closed",
-        tilesRemaining:"Tiles Remaining",
-      },
-      es: {
-        gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes",
-        orderUp:"¡Orden lista!", drawTile:"Robar ficha", serveSelected:"Servir seleccionadas", endTurn:"Terminar turno",
-        yourTurn:"Controles de turno", notYourTurn:"No es tu turno.",
-        kitchenOpen:"Cocina abierta", kitchenClosed:"Cocina cerrada",
-        tilesRemaining:"Fichas restantes",
-      },
-      fr: {
-        gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages",
-        orderUp:"À l’envoi !", drawTile:"Piocher une tuile", serveSelected:"Servir la sélection", endTurn:"Fin du tour",
-        yourTurn:"Commandes du tour", notYourTurn:"Ce n’est pas ton tour.",
-        kitchenOpen:"Cuisine ouverte", kitchenClosed:"Cuisine fermée",
-        tilesRemaining:"Tuiles restantes",
-      },
-      de: {
-        gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen",
-        orderUp:"Bestellung raus!", drawTile:"Plättchen ziehen", serveSelected:"Auswahl servieren", endTurn:"Zug beenden",
-        yourTurn:"Zug-Steuerung", notYourTurn:"Du bist nicht dran.",
-        kitchenOpen:"Küche offen", kitchenClosed:"Küche geschlossen",
-        tilesRemaining:"Plättchen übrig",
-      }
+      en: { gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings", orderUp:"Order Up!", drawTile:"Draw Tile", endTurn:"End Turn", prepDish:"Prep a Dish" },
+      es: { gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes", orderUp:"¡Orden lista!", drawTile:"Robar ficha", endTurn:"Terminar turno", prepDish:"Preparar plato" },
+      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher une tuile", endTurn:"Fin du tour", prepDish:"Préparer un plat" },
+      de: { gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen", orderUp:"Bestellung raus!", drawTile:"Plättchen ziehen", endTurn:"Zug beenden", prepDish:"Gericht vorbereiten" },
     };
 
-    /* ===== Menu / Rules ===== */
     const RULES = {
       remixMinPoints: 5,
-      tacoDryToppingsRequired: 3,     // base recipe: 3 dry toppings
+      tacoDryToppingsRequired: 3,
       wetLockedUntilKitchen: true,
-      starterPassDishKey: "chipsDip", // 1 per hand, doesn't unlock kitchen
+      starterPassDishKey: "chipsDip",
     };
 
     const RECIPES = [
@@ -920,51 +789,18 @@
       { key:"ench", name:"Enchiladas", pts:10, kind:"ench" },
     ];
 
-    const MENU_REFERENCE = [
-      { title:"Hard Shell Taco", pts:5, desc:"Corn Tortilla + Protein + 3 Dry Toppings. Wet toppings lock until Kitchen Open." },
-      { title:"Soft Taco", pts:5, desc:"Flour Tortilla + Protein + 3 Dry Toppings. Wet toppings lock until Kitchen Open." },
-      { title:"Chorizo Taco", pts:8, desc:"Tortilla + Chorizo + Onion + Cilantro" },
-      { title:"Chips & Dip", pts:5, desc:"Tortilla Chips + 1 Dip (+1 Salsa Roja, Salsa Verde, Guacamole, or Queso)" },
-      { title:"Pico de Gallo", pts:8, desc:"Tomato + Onion + Cilantro + Lime" },
-      { title:"Enchiladas", pts:10, desc:"Tortilla + Protein + Cheese + Sauce (Chorizo allowed if Sauce included)" },
-    ];
-
-    /* ===== Deck definition (single deck counts from user list) ===== */
     const DECK_ING_COUNTS = [
-      ["Fish",1],
-      ["Ground Beef",2],
-      ["Shredded Chicken",2],
-      ["Carne Guisada",1],
-      ["Al Pastor",1],
-      ["Carnitas",1],
-      ["Egg",2],
-      ["Chicken Fajita",2],
-      ["Chorizo",1],
-      ["Tortilla Chips",3],
-      ["Flour Tortillas",2],
-      ["Corn Tortillas",2],
-      ["Shredded yellow Cheese",2],
-      ["Shredded white cheese",2],
-      ["Rice",2],
-      ["Charro Beans",1],
-      ["Refried Beans",1],
-      ["Black Beans",1],
-      ["Cilantro",2],
-      ["Jalapenos",2],
-      ["Lettuce",1],
-      ["Lime Juice",2],
-      ["Onion",2],
-      ["Tomato",2],
-      ["Sour Cream",2],
-      ["Avocado",2],
-      ["Salsa Roja",2],
-      ["Salsa Verde",2],
-      ["Queso",2],
-      ["Guacamole",2],
-      ["Grocery Run",2], // wildcard
+      ["Fish",1],["Ground Beef",2],["Shredded Chicken",2],["Carne Guisada",1],["Al Pastor",1],["Carnitas",1],
+      ["Egg",2],["Chicken Fajita",2],["Chorizo",1],
+      ["Tortilla Chips",3],["Flour Tortillas",2],["Corn Tortillas",2],
+      ["Shredded yellow Cheese",2],["Shredded white cheese",2],
+      ["Rice",2],["Charro Beans",1],["Refried Beans",1],["Black Beans",1],
+      ["Cilantro",2],["Jalapenos",2],["Lettuce",1],["Lime Juice",2],["Onion",2],["Tomato",2],
+      ["Sour Cream",2],["Avocado",2],
+      ["Salsa Roja",2],["Salsa Verde",2],["Queso",2],["Guacamole",2],
+      ["Grocery Run",2],
     ];
 
-    /* ===== Utilities ===== */
     const $ = (id)=> document.getElementById(id);
 
     function escapeHtml(s){
@@ -984,7 +820,6 @@
     function nowId(prefix="id"){
       return prefix + "_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
     }
-
     function hexToRgba(hex, a){
       const h = (hex || "#ffffff").replace("#","").trim();
       const full = h.length===3 ? h.split("").map(c=>c+c).join("") : h.padEnd(6,"0").slice(0,6);
@@ -992,7 +827,6 @@
       const r=(n>>16)&255, g=(n>>8)&255, b=n&255;
       return `rgba(${r},${g},${b},${a})`;
     }
-
     function groupBy(arr, keyFn){
       const m = {};
       for(const it of arr){
@@ -1001,14 +835,12 @@
       }
       return m;
     }
-
     function toast(msg, ms=2200){
       const wrap = $("toastWrap");
       wrap.innerHTML = `<div class="toast">${escapeHtml(msg)}</div>`;
       clearTimeout(toast._t);
       toast._t = setTimeout(()=> wrap.innerHTML="", ms);
     }
-
     function openModal(title, html, footButtons){
       $("modalTitle").textContent = title;
       $("modalBody").innerHTML = html;
@@ -1022,43 +854,30 @@
       }
       $("modalWrap").classList.add("on");
     }
-    function closeModal(){
-      $("modalWrap").classList.remove("on");
+    function closeModal(){ $("modalWrap").classList.remove("on"); }
+    $("modalWrap").addEventListener("click",(e)=>{ if(e.target.id==="modalWrap") closeModal(); });
+
+    function t(key){
+      const lang = state.settings.lang || "en";
+      return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
     }
-    $("modalWrap").addEventListener("click",(e)=>{
-      if(e.target.id==="modalWrap") closeModal();
-    });
+
+    function recipeByKey(k){ return RECIPES.find(r=>r.key===k); }
 
     /* ===== Ingredient classification ===== */
     function isWild(name){ return name==="Grocery Run"; }
-
-    function isTortilla(name){
-      return name==="Corn Tortillas" || name==="Flour Tortillas";
-    }
+    function isTortilla(name){ return name==="Corn Tortillas" || name==="Flour Tortillas"; }
     function isProtein(name){
       return ["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"].includes(name);
     }
-    function isCheese(name){
-      return name==="Shredded yellow Cheese" || name==="Shredded white cheese";
-    }
-    function isSauce(name){
-      return name==="Salsa Roja" || name==="Salsa Verde";
-    }
-    function isWet(name){
-      return ["Salsa Roja","Salsa Verde","Queso","Guacamole"].includes(name);
-    }
-    function isDip(name){
-      return ["Salsa Roja","Salsa Verde","Guacamole","Queso"].includes(name);
-    }
+    function isCheese(name){ return name==="Shredded yellow Cheese" || name==="Shredded white cheese"; }
+    function isSauce(name){ return name==="Salsa Roja" || name==="Salsa Verde"; }
+    function isWet(name){ return ["Salsa Roja","Salsa Verde","Queso","Guacamole"].includes(name); }
+    function isDip(name){ return ["Salsa Roja","Salsa Verde","Guacamole","Queso"].includes(name); }
     function isTopping(name){
-      return isWet(name) || [
-        "Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream",
-        "Shredded yellow Cheese","Shredded white cheese","Avocado"
-      ].includes(name);
+      return isWet(name) || ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"].includes(name);
     }
-    function isDryTopping(name){
-      return isTopping(name) && !isWet(name) && !isCheese(name);
-    }
+    function isDryTopping(name){ return isTopping(name) && !isWet(name) && !isCheese(name); }
 
     function ingredientCategory(name){
       if(isWild(name)) return "wild";
@@ -1069,7 +888,6 @@
       if(isDryTopping(name)) return "drytop";
       return "other";
     }
-
     function categoryLabel(cat){
       return {
         tortilla:"Tortillas",
@@ -1081,8 +899,6 @@
         other:"Other"
       }[cat] || cat;
     }
-
-    function recipeByKey(k){ return RECIPES.find(r=>r.key===k); }
 
     /* ===== Slot layout for Current Dish ===== */
     function slotDefsForRecipe(recipeKey){
@@ -1106,7 +922,6 @@
           S("xtra","Extra", ()=> true),
         ];
       }
-
       if(r.kind==="chipsDip"){
         return [
           S("chip","Chips", (n)=> n==="Tortilla Chips"),
@@ -1119,7 +934,6 @@
           S("x6","Extra",  ()=>true),
         ];
       }
-
       if(r.kind==="pico"){
         return [
           S("tom","Tomato",   (n)=> n==="Tomato"),
@@ -1132,7 +946,6 @@
           S("x4","Extra",     ()=>true),
         ];
       }
-
       if(r.kind==="ench"){
         return [
           S("tort","Tortillas", isTortilla),
@@ -1145,7 +958,6 @@
           S("x4","Extra",       ()=>true),
         ];
       }
-
       if(r.kind==="chorizoTaco"){
         return [
           S("tort","Tortilla",  isTortilla),
@@ -1174,7 +986,6 @@
       const used = new Set();
       const slotFill = slots.map(()=> null);
 
-      // Greedy: slot priority matching
       for(let si=0; si<slots.length; si++){
         const s = slots[si];
         const found = chosen.find(t => !used.has(t.id) && (isWild(t.name) || s.accept(t.name)));
@@ -1183,15 +994,97 @@
           used.add(found.id);
         }
       }
-
-      // leftovers fill empty slots
       const leftovers = chosen.filter(t=> !used.has(t.id));
       for(let si=0; si<slots.length && leftovers.length; si++){
         if(slotFill[si]) continue;
         slotFill[si] = leftovers.shift();
       }
-
       return { slots, slotFill };
+    }
+
+    /* ===== Validation ===== */
+    function validateDish(recipeKey, tileObjs, ctx){
+      const r = recipeByKey(recipeKey);
+      const names = tileObjs.map(t=>t.name);
+
+      const wildCount = names.filter(isWild).length;
+      const nonWild = names.filter(n=>!isWild(n));
+
+      function count(fn){ return nonWild.filter(fn).length; }
+      function hasAny(fn){ return count(fn) > 0 || wildCount > 0; }
+
+      if(r.kind==="taco"){
+        const hasReqTortilla = nonWild.includes(r.tortilla) || (wildCount>0 && !nonWild.some(isTortilla));
+        if(!hasReqTortilla) return { ok:false, reason:`Use ${r.tortilla}.` };
+
+        if(!hasAny(isProtein)) return { ok:false, reason:"Needs 1 protein." };
+
+        if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
+          if(nonWild.some(isWet)) return { ok:false, reason:"Wet toppings locked until Kitchen Open." };
+        }
+
+        const dryTopCount = nonWild.filter(isDryTopping).length;
+        if(dryTopCount !== RULES.tacoDryToppingsRequired && wildCount < Math.max(0, RULES.tacoDryToppingsRequired - dryTopCount)){
+          return { ok:false, reason:`Needs ${RULES.tacoDryToppingsRequired} dry toppings.` };
+        }
+
+        if(count(isTortilla) > 1) return { ok:false, reason:"Only 1 tortilla." };
+        if(count(isProtein) > 1) return { ok:false, reason:"Only 1 protein." };
+        if(count(isCheese) > 1) return { ok:false, reason:"Only 1 cheese." };
+        if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
+
+        if(tileObjs.length < 5 || tileObjs.length > 7) return { ok:false, reason:"Use 5–7 tiles." };
+        return { ok:true };
+      }
+
+      if(r.kind==="chorizoTaco"){
+        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
+        const hasTort = count(isTortilla) >= 1 || wildCount>=1;
+        const hasChor = nonWild.includes("Chorizo") || wildCount>=1;
+        const hasOnion = nonWild.includes("Onion") || wildCount>=1;
+        const hasCil = nonWild.includes("Cilantro") || wildCount>=1;
+        if(!hasTort) return { ok:false, reason:"Needs tortilla." };
+        if(!hasChor) return { ok:false, reason:"Needs chorizo." };
+        if(!hasOnion) return { ok:false, reason:"Needs onion." };
+        if(!hasCil) return { ok:false, reason:"Needs cilantro." };
+        return { ok:true };
+      }
+
+      if(r.kind==="chipsDip"){
+        if(tileObjs.length !== 2) return { ok:false, reason:"Needs 2 tiles." };
+        const hasChips = nonWild.includes("Tortilla Chips") || wildCount>=1;
+        const hasDip = nonWild.filter(isDip).length >= 1 || wildCount>=1;
+        if(!hasChips) return { ok:false, reason:"Needs Tortilla Chips." };
+        if(!hasDip) return { ok:false, reason:"Needs a dip (salsa/queso/guac)." };
+        return { ok:true };
+      }
+
+      if(r.kind==="pico"){
+        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
+        const okTom = nonWild.includes("Tomato") || wildCount>=1;
+        const okOn  = nonWild.includes("Onion") || wildCount>=1;
+        const okCil = nonWild.includes("Cilantro") || wildCount>=1;
+        const okLim = nonWild.includes("Lime Juice") || wildCount>=1;
+        if(!okTom || !okOn || !okCil || !okLim) return { ok:false, reason:"Needs Tomato, Onion, Cilantro, Lime." };
+        return { ok:true };
+      }
+
+      if(r.kind==="ench"){
+        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
+        const wildCount = tileObjs.map(t=>t.name).filter(isWild).length;
+        const nonWild = tileObjs.map(t=>t.name).filter(n=>!isWild(n));
+        const hasTort = nonWild.filter(isTortilla).length >= 1 || wildCount>=1;
+        const hasProt = nonWild.filter(isProtein).length >= 1 || wildCount>=1;
+        const hasChee = nonWild.filter(isCheese).length >= 1 || wildCount>=1;
+        const hasSau  = nonWild.filter(isSauce).length >= 1 || wildCount>=1;
+        if(!hasTort) return { ok:false, reason:"Needs tortillas." };
+        if(!hasProt) return { ok:false, reason:"Needs protein." };
+        if(!hasChee) return { ok:false, reason:"Needs shredded cheese." };
+        if(!hasSau)  return { ok:false, reason:"Needs sauce." };
+        return { ok:true };
+      }
+
+      return { ok:false, reason:"Unknown recipe." };
     }
 
     /* ===== State ===== */
@@ -1200,52 +1093,37 @@
         settings:{
           accent:"#00e5ff",
           lang:"en",
-          mode:"standard",          // standard | campaign
+          mode:"standard",
           players:4,
-          difficulty:"Easy",        // standard only
+          difficulty:"Easy",
           handsTotal:12,
           tilesPerPlayer:16,
           decks:2,
         },
-        campaign:{
-          active:false,
-          chapterIndex:0,
-          chapterHands:12,
-          chapterScores:[], // {diff, total}
-          kitchenUnlockedEver:false,
-        },
         match: null,
         ui:{
           page:"gameplay",
-          serveSel: [],
           currentDishId: null,
-          remixSelPublic: new Set(),
-          pendingAutoRemix: null,
+          autoScrollDish: false,
         }
       };
     }
 
     function persist(){
-      const s = structuredClone(state);
-      s.ui.remixSelPublic = [...state.ui.remixSelPublic];
-      localStorage.setItem(LS_KEY, JSON.stringify(s));
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
     }
-
     function load(){
       try{
         const raw = localStorage.getItem(LS_KEY);
         if(!raw) return null;
-        const s = JSON.parse(raw);
-        s.ui.remixSelPublic = new Set(s.ui.remixSelPublic || []);
-        return s;
+        return JSON.parse(raw);
       }catch(e){
         return null;
       }
     }
-
     let state = load() || defaultState();
 
-    /* ===== Match / Hand ===== */
+    /* ===== Deck / Match ===== */
     function buildDeck(decks=2){
       const tiles = [];
       for(let d=0; d<decks; d++){
@@ -1258,28 +1136,19 @@
       return shuffle(tiles);
     }
 
-    function cpuRoster(n){
-      const chars = Object.values(CPU_CHARACTERS);
-      const ids = ["P2","P3","P4"];
-      return ids.slice(0, n-1).map((pid, i)=>({
-        id: pid,
-        charKey: Object.keys(CPU_CHARACTERS)[i % Object.keys(CPU_CHARACTERS).length],
-        name: chars[i % chars.length].name
-      }));
-    }
-
-    function mkPlayer(id, name, isHuman, charKey=null){
+    function mkPlayer(id, name, isHuman, color){
       return {
         id, name, isHuman,
-        charKey,
+        color,
         score: 0,
         servedThisHand: 0,
         hand: [],
         drafts: [],
         starterPassUsed: false,
-        didDraw: false,
-        didPublish: false,
-        didRemix: false,
+        didDrawThisTurn: false,      // ✅ per-turn draw gate
+        logThisHand: [],             // [{type:'serve'|'remix', name, points, from?}]
+        remixGainThisHand: 0,
+        remixLossThisHand: 0,
       };
     }
 
@@ -1297,13 +1166,7 @@
 
     function newDraftDish(recipeKey){
       const r = recipeByKey(recipeKey);
-      return {
-        id: nowId("d"),
-        recipeKey,
-        name: r?.name || recipeKey,
-        pts: r?.pts || 0,
-        tileIds: [],
-      };
+      return { id: nowId("d"), recipeKey, name: r?.name || recipeKey, pts: r?.pts || 0, tileIds: [] };
     }
 
     function initDraftingForP1(m){
@@ -1314,7 +1177,26 @@
       state.ui.currentDishId = d.id;
     }
 
+    function ensureUniqueCpuColors(){
+      const used = new Set([state.settings.accent.toLowerCase()]);
+      const pickPool = ACCENTS.map(a=>a.val.toLowerCase());
+      const unique = [];
+
+      for(const c of CPU_BASE_COLORS){
+        let col = c.toLowerCase();
+        if(used.has(col)){
+          col = pickPool.find(x=>!used.has(x)) || col;
+        }
+        used.add(col);
+        unique.push(col);
+      }
+      return unique;
+    }
+
     function newMatch(){
+      const cpuCols = ensureUniqueCpuColors();
+      const pCount = state.settings.players;
+
       const m = {
         id: nowId("m"),
         handIndex: 1,
@@ -1326,204 +1208,74 @@
         servedThisTurnPts: 0,
       };
 
-      const roster = cpuRoster(state.settings.players);
-      m.players["P1"] = mkPlayer("P1","You", true);
-      roster.forEach(r=>{
-        m.players[r.id] = mkPlayer(r.id, r.name, false, r.charKey);
-      });
+      m.players["P1"] = mkPlayer("P1","You", true, state.settings.accent);
+
+      if(pCount >= 2) m.players["P2"] = mkPlayer("P2","Chef Mike", false, cpuCols[0]);
+      if(pCount >= 3) m.players["P3"] = mkPlayer("P3","Salsa Sam", false, cpuCols[1]);
+      if(pCount >= 4) m.players["P4"] = mkPlayer("P4","Queso Queen", false, cpuCols[2]);
 
       dealInitial(m);
       initDraftingForP1(m);
 
-      if(state.settings.mode==="campaign"){
-        state.campaign.active = true;
-        state.campaign.chapterHands = 12;
-        state.campaign.chapterIndex = state.campaign.chapterIndex || 0;
-        state.campaign.chapterScores = state.campaign.chapterScores || [];
-      }else{
-        state.campaign.active = false;
-        state.campaign.chapterIndex = 0;
-        state.campaign.chapterScores = [];
-        state.campaign.kitchenUnlockedEver = false;
-      }
-
       state.match = m;
       state.ui.page = "gameplay";
-      state.ui.serveSel = [];
-      state.ui.remixSelPublic = new Set();
       persist();
       render();
       toast("New match started.");
     }
 
-    /* ===== Difficulty resolution ===== */
-    function effectiveDifficulty(){
-      if(state.settings.mode==="campaign"){
-        const order = ["Beginner","Easy","Medium","Difficult","Master Chef"];
-        const idx = state.campaign.chapterIndex || 0;
-        return order[Math.min(order.length-1, idx)];
-      }
-      return state.settings.difficulty || "Easy";
+    /* ===== Turn helpers ===== */
+    function beginTurn(pid){
+      const m = state.match;
+      const p = m.players[pid];
+      if(!p) return;
+      p.didDrawThisTurn = false; // ✅ reset at start of each player's turn
+      m.servedThisTurnPts = 0;
     }
 
-    function cpuTurnDelayMs(pid){
-      const diff = effectiveDifficulty();
-      const base = DIFF_DELAY_MS[diff] ?? 2200;
-      const p = state.match.players[pid];
-      const ch = CPU_CHARACTERS[p.charKey] || CPU_CHARACTERS.salsaSam;
-
-      if(ch.speedFixedMs != null){
-        return Math.max(350, Math.min(base, ch.speedFixedMs)) + randInt(ch.jitterMs||0);
-      }
-      const mult = ch.speedMult ?? 1;
-      const jit = ch.jitterMs || 0;
-      return Math.max(350, Math.floor(base * mult) + randInt(jit));
+    /* ===== Draft access ===== */
+    function p1(){ return state.match.players["P1"]; }
+    function currentDish(){
+      const pl = p1();
+      return pl.drafts.find(d=>d.id===state.ui.currentDishId) || pl.drafts[0] || null;
+    }
+    function setCurrentDish(id){
+      state.ui.currentDishId = id;
+      persist();
+      render();
     }
 
-    function cpuCanRemix(){
-      const diff = effectiveDifficulty();
-      if(diff==="Beginner" || diff==="Easy" || diff==="Medium") return false;
-      return true;
-    }
-
-    function autoPlateAllowed(){
-      const diff = effectiveDifficulty();
-      return diff==="Beginner" || diff==="Easy";
-    }
-
-    function autoRemixAllowed(){
-      return effectiveDifficulty()==="Beginner";
-    }
-
-    /* ===== Validation ===== */
-    function validateDish(recipeKey, tileObjs, ctx){
-      const r = recipeByKey(recipeKey);
-      const names = tileObjs.map(t=>t.name);
-
-      const wildCount = names.filter(isWild).length;
-      const nonWild = names.filter(n=>!isWild(n));
-
-      function count(fn){ return nonWild.filter(fn).length; }
-      function hasAny(fn){ return count(fn) > 0 || wildCount > 0; }
-
-      if(r.kind==="taco"){
-        // Base requirement: tortilla type + protein + EXACTLY 3 dry toppings
-        // Optional: + cheese, + wet (only if kitchen open)
-        const hasReqTortilla = nonWild.includes(r.tortilla) || (wildCount>0 && !nonWild.some(isTortilla));
-        if(!hasReqTortilla) return { ok:false, reason:`Use ${r.tortilla} for this taco.` };
-
-        if(!hasAny(isProtein)) return { ok:false, reason:"Tacos need 1 protein." };
-
-        // Wet gating for tacos
-        if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
-          if(nonWild.some(isWet)) return { ok:false, reason:"Wet toppings are locked until Kitchen Open." };
-        }
-
-        const dryTopCount = nonWild.filter(isDryTopping).length;
-        if(dryTopCount !== RULES.tacoDryToppingsRequired && wildCount < Math.max(0, RULES.tacoDryToppingsRequired - dryTopCount)){
-          return { ok:false, reason:`Tacos need ${RULES.tacoDryToppingsRequired} dry toppings.` };
-        }
-
-        // Allowed counts
-        const tortCount = count(isTortilla);
-        const protCount = count(isProtein);
-        const cheeCount = count(isCheese);
-        const wetCount  = nonWild.filter(isWet).length;
-
-        if(tortCount > 1) return { ok:false, reason:"Only 1 tortilla per taco." };
-        if(protCount > 1) return { ok:false, reason:"Only 1 protein per taco." };
-        if(cheeCount > 1) return { ok:false, reason:"Only 1 cheese per taco." };
-        if(wetCount > 1)  return { ok:false, reason:"Only 1 wet topping per taco." };
-
-        // Total tiles: 5 to 7 (base 5 + optional cheese + optional wet)
-        if(tileObjs.length < 5 || tileObjs.length > 7) return { ok:false, reason:"Tacos must use 5–7 tiles." };
-
-        return { ok:true };
-      }
-
-      if(r.kind==="chorizoTaco"){
-        if(tileObjs.length !== 4) return { ok:false, reason:"Chorizo Taco needs 4 tiles." };
-        const hasTort = count(isTortilla) >= 1 || wildCount>=1;
-        const hasChor = nonWild.includes("Chorizo") || wildCount>=1;
-        const hasOnion = nonWild.includes("Onion") || wildCount>=1;
-        const hasCil = nonWild.includes("Cilantro") || wildCount>=1;
-        if(!hasTort) return { ok:false, reason:"Needs a tortilla." };
-        if(!hasChor) return { ok:false, reason:"Needs chorizo." };
-        if(!hasOnion) return { ok:false, reason:"Needs onion." };
-        if(!hasCil) return { ok:false, reason:"Needs cilantro." };
-        return { ok:true };
-      }
-
-      if(r.kind==="chipsDip"){
-        if(tileObjs.length !== 2) return { ok:false, reason:"Chips & Dip needs 2 tiles." };
-        const hasChips = nonWild.includes("Tortilla Chips") || wildCount>=1;
-        const hasDip = count(isDip) >= 1 || wildCount>=1;
-        if(!hasChips) return { ok:false, reason:"Needs Tortilla Chips." };
-        if(!hasDip) return { ok:false, reason:"Needs 1 dip (salsa/queso/guac)." };
-        return { ok:true };
-      }
-
-      if(r.kind==="pico"){
-        if(tileObjs.length !== 4) return { ok:false, reason:"Pico needs 4 tiles." };
-        const okTom = nonWild.includes("Tomato") || wildCount>=1;
-        const okOn  = nonWild.includes("Onion") || wildCount>=1;
-        const okCil = nonWild.includes("Cilantro") || wildCount>=1;
-        const okLim = nonWild.includes("Lime Juice") || wildCount>=1;
-        if(!okTom || !okOn || !okCil || !okLim) return { ok:false, reason:"Needs Tomato, Onion, Cilantro, Lime." };
-        return { ok:true };
-      }
-
-      if(r.kind==="ench"){
-        if(tileObjs.length !== 4) return { ok:false, reason:"Enchiladas need 4 tiles." };
-        const hasTort = count(isTortilla) >= 1 || wildCount>=1;
-        const hasProt = count(isProtein) >= 1 || wildCount>=1;
-        const hasChee = count(isCheese) >= 1 || wildCount>=1;
-        const hasSau  = count(isSauce) >= 1 || wildCount>=1;
-        if(!hasTort) return { ok:false, reason:"Needs tortillas." };
-        if(!hasProt) return { ok:false, reason:"Needs protein." };
-        if(!hasChee) return { ok:false, reason:"Needs shredded cheese." };
-        if(!hasSau)  return { ok:false, reason:"Needs sauce." };
-        return { ok:true };
-      }
-
-      return { ok:false, reason:"Unknown recipe." };
-    }
-
-    /* ===== Publishing / Scoring ===== */
-    function publishSelectedDrafts(pid, draftIds){
+    /* ===== Qualifying drafts ===== */
+    function qualifyingDraftIds(pid){
       const m = state.match;
       const pl = m.players[pid];
-      if(!pl) return { ok:false, msg:"No player." };
+      const ctx = { kitchenOpen: m.kitchenOpen };
+      return pl.drafts
+        .filter(d=>{
+          const tiles = d.tileIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
+          return validateDish(d.recipeKey, tiles, ctx).ok;
+        })
+        .map(d=>d.id);
+    }
 
-      const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
+    /* ===== Publish (Order Up) ===== */
+    function publishDrafts(pid, draftIds){
+      const m = state.match;
+      const pl = m.players[pid];
+      const ctx = { kitchenOpen: m.kitchenOpen };
 
       const drafts = pl.drafts.filter(d=> draftIds.includes(d.id));
-      if(!drafts.length) return { ok:false, msg:"No drafts selected." };
+      if(!drafts.length) return { ok:false, msg:"No qualifying dish." };
 
       const resolved = drafts.map(d=>{
         const tiles = d.tileIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
         return { d, tiles, v: validateDish(d.recipeKey, tiles, ctx) };
       });
 
-      const invalid = resolved.find(x=>!x.v.ok);
-      if(invalid){
-        return { ok:false, msg:`${invalid.d.name}: ${invalid.v.reason}` };
-      }
+      const bad = resolved.find(x=>!x.v.ok);
+      if(bad) return { ok:false, msg:`${bad.d.name}: ${bad.v.reason}` };
 
-      let starterPassPts = 0;
       let nonStarterPts = 0;
-
-      for(const x of resolved){
-        if(!m.kitchenOpen){
-          if(x.d.recipeKey === RULES.starterPassDishKey && !pl.starterPassUsed){
-            starterPassPts += x.d.pts;
-          }else{
-            nonStarterPts += x.d.pts;
-          }
-        }else{
-          nonStarterPts += x.d.pts;
-        }
-      }
 
       for(const x of resolved){
         const pub = {
@@ -1539,32 +1291,37 @@
         };
         m.publicLine.push(pub);
 
+        // remove tiles from hand
         for(const t of x.tiles){
           const idx = pl.hand.findIndex(h=>h.id===t.id);
           if(idx>=0) pl.hand.splice(idx,1);
         }
 
+        // scoring
         pl.score += x.d.pts;
         pl.servedThisHand += x.d.pts;
-        pl.didPublish = true;
-      }
+        pl.logThisHand.push({ type:"serve", name:x.d.name, points:x.d.pts });
 
-      if(!m.kitchenOpen){
-        const used = resolved.some(x=> x.d.recipeKey===RULES.starterPassDishKey);
-        if(used && !pl.starterPassUsed){
-          pl.starterPassUsed = true;
+        // starter pass rule (chipsDip can be served pre-unlock without unlocking)
+        if(!m.kitchenOpen){
+          if(x.d.recipeKey === RULES.starterPassDishKey && !pl.starterPassUsed){
+            pl.starterPassUsed = true;
+          }else{
+            nonStarterPts += x.d.pts;
+          }
+        }else{
+          nonStarterPts += x.d.pts;
         }
       }
 
+      // kitchen unlock check
       m.servedThisTurnPts += nonStarterPts;
-      if(!m.kitchenOpen){
-        if(m.servedThisTurnPts >= 10){
-          m.kitchenOpen = true;
-          if(state.campaign.active) state.campaign.kitchenUnlockedEver = true;
-          toast("🔥 Kitchen Open!");
-        }
+      if(!m.kitchenOpen && m.servedThisTurnPts >= 10){
+        m.kitchenOpen = true;
+        toast("🔥 Kitchen Open!");
       }
 
+      // remove served drafts
       pl.drafts = pl.drafts.filter(d=> !draftIds.includes(d.id));
       if(pid==="P1" && pl.drafts.length===0){
         const nd = newDraftDish("hardTaco");
@@ -1579,69 +1336,149 @@
       return { ok:true };
     }
 
-    function endHandIfNeeded(){
+    /* ===== One draw per turn (hard gate) ===== */
+    function drawTile(pid){
       const m = state.match;
-      const someoneOut = Object.values(m.players).some(p=>p.hand.length===0);
-      if(!someoneOut) return false;
+      const pl = m.players[pid];
+      if(m.activePid !== pid) return { ok:false, msg:"Not your turn." };
 
-      for(const p of Object.values(m.players)){
-        const pen = p.hand.length;
-        p.score -= pen;
-        if(p.id==="P1") toast(`Hand over. Penalty: -${pen}`);
+      if(pl.didDrawThisTurn){
+        return { ok:false, msg:"Only one draw per turn." };
       }
 
-      startNextHand();
-      return true;
+      const t0 = m.bag.pop();
+      if(!t0) return { ok:false, msg:"No tiles left." };
+
+      pl.hand.push(t0);
+      pl.didDrawThisTurn = true;
+      return { ok:true, msg:`Drew: ${t0.name}` };
     }
 
-    function startNextHand(){
+    /* ===== End turn ===== */
+    function endTurn(pid){
       const m = state.match;
+      if(m.activePid !== pid) return;
 
-      m.handIndex += 1;
-      m.servedThisTurnPts = 0;
-      m.activePid = "P1";
-      for(const p of Object.values(m.players)){
-        p.servedThisHand = 0;
-        p.starterPassUsed = false;
-        p.didDraw = false;
-        p.didPublish = false;
-        p.didRemix = false;
-        p.drafts = [];
-      }
+      const order = Object.keys(m.players);
+      const i = order.indexOf(pid);
+      const next = order[(i+1)%order.length];
+      m.activePid = next;
+      beginTurn(next);
 
-      if(state.settings.mode==="standard"){
-        m.kitchenOpen = false;
+      persist();
+      render();
+
+      // CPU moves (simple MVP)
+      if(next !== "P1"){
+        setTimeout(()=> cpuAct(next), cpuDelayMs());
       }else{
-        m.kitchenOpen = !!state.campaign.kitchenUnlockedEver;
+        toast("Your turn.");
+      }
+    }
+
+    function cpuDelayMs(){
+      const diff = state.settings.difficulty || "Easy";
+      const base = DIFF_DELAY_MS[diff] ?? 2200;
+      return Math.max(450, base + randInt(220));
+    }
+
+    function cpuAct(pid){
+      const m = state.match;
+      const pl = m.players[pid];
+      if(!pl || pl.isHuman) return;
+
+      // Very simple: 50% chance attempt publish a valid dish, else draw once, then end.
+      const ctx = { kitchenOpen: m.kitchenOpen };
+      const tryKeys = ["ench","pico","hardTaco","softTaco","chorizoTaco","chipsDip"];
+      let made = false;
+
+      // attempt to auto-assemble from hand (minimal)
+      function pick(name){
+        const t = pl.hand.find(x=>x.name===name) || pl.hand.find(x=>x.name==="Grocery Run");
+        return t?.id || null;
+      }
+      function anyFrom(names){
+        for(const n of names){
+          const id = pl.hand.find(x=>x.name===n)?.id;
+          if(id) return id;
+        }
+        return pl.hand.find(x=>x.name==="Grocery Run")?.id || null;
       }
 
-      if(m.bag.length < 10){
-        m.bag = buildDeck(state.settings.decks);
+      const draft = newDraftDish("hardTaco");
+      for(const rk of tryKeys){
+        const r = recipeByKey(rk);
+        let ids = [];
+
+        if(r.kind==="chipsDip"){
+          const chips = pl.hand.find(x=>x.name==="Tortilla Chips")?.id || pick("Tortilla Chips");
+          const dip = anyFrom(["Salsa Roja","Salsa Verde","Guacamole","Queso"]);
+          if(chips && dip) ids = [chips,dip];
+        }else if(r.kind==="pico"){
+          const tom = pick("Tomato"), oni = pick("Onion"), cil = pick("Cilantro"), lim = pick("Lime Juice");
+          if(tom && oni && cil && lim) ids = [tom,oni,cil,lim];
+        }else if(r.kind==="ench"){
+          const tort = anyFrom(["Flour Tortillas","Corn Tortillas"]);
+          const prot = anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]);
+          const chee = anyFrom(["Shredded yellow Cheese","Shredded white cheese"]);
+          const sauc = anyFrom(["Salsa Roja","Salsa Verde"]);
+          if(tort && prot && chee && sauc) ids = [tort,prot,chee,sauc];
+        }else if(r.kind==="chorizoTaco"){
+          const tort = anyFrom(["Flour Tortillas","Corn Tortillas"]);
+          const chor = pick("Chorizo"), oni = pick("Onion"), cil = pick("Cilantro");
+          if(tort && chor && oni && cil) ids = [tort,chor,oni,cil];
+        }else if(r.kind==="taco"){
+          const tort = pick(r.tortilla);
+          const prot = anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]);
+          if(tort && prot){
+            ids.push(tort,prot);
+            // 3 dry toppings
+            const tops = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"];
+            for(const n of tops){
+              if(ids.length>=5) break;
+              const id = pl.hand.find(x=>x.name===n)?.id;
+              if(id && !ids.includes(id)) ids.push(id);
+            }
+            while(ids.length<5){
+              const w = pl.hand.find(x=>x.name==="Grocery Run")?.id;
+              if(!w) break;
+              ids.push(w);
+            }
+          }
+        }
+
+        if(ids.length){
+          const tiles = ids.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
+          const v = validateDish(rk, tiles, ctx);
+          if(v.ok){
+            draft.recipeKey = rk;
+            draft.name = r.name;
+            draft.pts = r.pts;
+            draft.tileIds = ids;
+            pl.drafts = [draft];
+            const res = publishDrafts(pid, [draft.id]);
+            if(res.ok){
+              made = true;
+              toast(`${pl.name}: ${draft.name}`, 1400);
+              break;
+            }
+          }
+        }
       }
 
-      dealInitial(m);
-      initDraftingForP1(m);
-      state.ui.serveSel = [];
-      state.ui.remixSelPublic = new Set();
-      persist();
-      render();
+      if(!made){
+        // draw once
+        drawTile(pid);
+        toast(`${pl.name} drew a tile.`, 1100);
+      }
+
+      endTurn(pid);
     }
 
-    /* ===== Drafting (P1) ===== */
-    function p1(){ return state.match.players["P1"]; }
-    function currentDish(){
-      const pl = p1();
-      return pl.drafts.find(d=>d.id===state.ui.currentDishId) || pl.drafts[0] || null;
-    }
-    function setCurrentDish(id){
-      state.ui.currentDishId = id;
-      persist();
-      render();
-    }
-
+    /* ===== Dish editing (P1) + auto-scroll ===== */
     function toggleHandTileForDish(tileId){
       const m = state.match;
-      if(m.activePid !== "P1"){ toast(t("notYourTurn")); return; }
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
       const pl = p1();
       const dish = currentDish();
       if(!dish) return;
@@ -1652,54 +1489,54 @@
       const inDish = dish.tileIds.includes(tileId);
       if(inDish){
         dish.tileIds = dish.tileIds.filter(id=>id!==tileId);
+        state.ui.autoScrollDish = true; // scroll to first empty after removal too
         persist(); render();
         return;
       }
 
+      // selection caps (keeps UX clean)
       const r = recipeByKey(dish.recipeKey);
-      const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
+      const ctx = { kitchenOpen: m.kitchenOpen };
 
-      // Taco selection caps (keeps UX clean, matches slots)
       if(r.kind==="taco"){
-        const cur = dish.tileIds.map(id => pl.hand.find(t=>t.id===id)?.name).filter(Boolean);
-        const hasTort = cur.some(isTortilla);
-        const hasProt = cur.some(isProtein);
-        const hasChee = cur.some(isCheese);
-        const hasWet  = cur.some(isWet);
-        const dryCount = cur.filter(isDryTopping).length;
+        const curNames = dish.tileIds.map(id => pl.hand.find(t=>t.id===id)?.name).filter(Boolean);
+        const hasTort = curNames.some(isTortilla);
+        const hasProt = curNames.some(isProtein);
+        const hasChee = curNames.some(isCheese);
+        const hasWet  = curNames.some(isWet);
+        const dryCount = curNames.filter(isDryTopping).length;
 
-        // Wet gating
         if(isWet(tile.name) && RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
-          toast("Wet toppings are locked until Kitchen Open.");
+          toast("Wet toppings locked until Kitchen Open.");
           return;
         }
-
-        if(isTortilla(tile.name) && hasTort){ toast("Only 1 tortilla per taco."); return; }
-        if(isProtein(tile.name) && hasProt){ toast("Only 1 protein per taco."); return; }
-        if(isCheese(tile.name) && hasChee){ toast("Only 1 cheese per taco."); return; }
-        if(isWet(tile.name) && hasWet){ toast("Only 1 wet topping per taco."); return; }
+        if(isTortilla(tile.name) && hasTort){ toast("Only 1 tortilla."); return; }
+        if(isProtein(tile.name) && hasProt){ toast("Only 1 protein."); return; }
+        if(isCheese(tile.name) && hasChee){ toast("Only 1 cheese."); return; }
+        if(isWet(tile.name) && hasWet){ toast("Only 1 wet topping."); return; }
         if(isDryTopping(tile.name) && dryCount >= RULES.tacoDryToppingsRequired){ toast(`Only ${RULES.tacoDryToppingsRequired} dry toppings.`); return; }
-
-        if(dish.tileIds.length >= 7){ toast("Tacos can use up to 7 tiles."); return; }
+        if(dish.tileIds.length >= 7){ toast("Max 7 tiles."); return; }
       }
-
-      // Strict counts for other dishes
       if(r.kind==="chipsDip" && dish.tileIds.length >= 2){ toast("Chips & Dip is 2 tiles."); return; }
       if(r.kind==="pico" && dish.tileIds.length >= 4){ toast("Pico is 4 tiles."); return; }
       if(r.kind==="ench" && dish.tileIds.length >= 4){ toast("Enchiladas are 4 tiles."); return; }
       if(r.kind==="chorizoTaco" && dish.tileIds.length >= 4){ toast("Chorizo Taco is 4 tiles."); return; }
 
       dish.tileIds.push(tileId);
-      persist(); render();
+
+      // ✅ request auto-scroll after render
+      state.ui.autoScrollDish = true;
+      persist();
+      render();
     }
 
     function clearCurrentDish(){
       const d = currentDish();
       if(!d) return;
       d.tileIds = [];
+      state.ui.autoScrollDish = true;
       persist(); render();
     }
-
     function newDish(){
       const pl = p1();
       const d = newDraftDish("hardTaco");
@@ -1707,7 +1544,6 @@
       setCurrentDish(d.id);
       toast("New dish added.");
     }
-
     function removeCurrentDish(){
       const pl = p1();
       if(pl.drafts.length <= 1){
@@ -1720,428 +1556,50 @@
       setCurrentDish(pl.drafts[0].id);
       toast("Dish removed.");
     }
-
     function updateCurrentDishRecipe(recipeKey){
       const d = currentDish();
       if(!d) return;
-      d.recipeKey = recipeKey;
       const r = recipeByKey(recipeKey);
+      d.recipeKey = recipeKey;
       d.name = r?.name || recipeKey;
       d.pts = r?.pts || 0;
       d.tileIds = [];
-      state.ui.serveSel = [];
+      state.ui.autoScrollDish = true;
       persist(); render();
     }
 
-    /* ===== Auto-Plate (Beginner/Easy only) ===== */
-    function findBestDishFromHand(hand, recipeKey, ctx){
-      const r = recipeByKey(recipeKey);
-      const byName = {};
-      for(const t of hand){
-        (byName[t.name] ||= []).push(t.id);
-      }
-      function pick(name){
-        const arr = byName[name];
-        if(arr && arr.length) return arr[0];
-        return null;
-      }
-      function anyFrom(names){
-        for(const n of names){
-          const id = pick(n);
-          if(id) return id;
-        }
-        return pick("Grocery Run");
-      }
-
-      if(r.kind==="taco"){
-        const ids = [];
-        const tort = pick(r.tortilla) || pick("Grocery Run");
-        if(!tort) return null;
-        ids.push(tort);
-
-        const prot = anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]);
-        if(!prot) return null;
-        ids.push(prot);
-
-        const TOPS_DRY = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"];
-        // For auto-plate, we satisfy required 3 dry toppings; cheese might land in dry pool but will still validate.
-        const used = new Set(ids);
-        let pickedDry = 0;
-
-        for(const n of TOPS_DRY){
-          if(pickedDry >= 3) break;
-          const arr = byName[n] || [];
-          const id = arr.find(x=>!used.has(x));
-          if(id){
-            used.add(id);
-            ids.push(id);
-            pickedDry++;
-          }
-        }
-
-        // wildcard fill if missing
-        while(pickedDry < 3){
-          const w = (byName["Grocery Run"]||[]).find(x=>!used.has(x));
-          if(!w) return null;
-          used.add(w);
-          ids.push(w);
-          pickedDry++;
-        }
-
-        // Optional cheese then optional wet if kitchen open (keep within 7)
-        if(ids.length < 7){
-          const chee = anyFrom(["Shredded yellow Cheese","Shredded white cheese"]);
-          if(chee && !used.has(chee)){ used.add(chee); ids.push(chee); }
-        }
-        if(ctx.kitchenOpen && ids.length < 7){
-          const wet = anyFrom(["Salsa Roja","Salsa Verde","Queso","Guacamole"]);
-          if(wet && !used.has(wet)){ used.add(wet); ids.push(wet); }
-        }
-
-        const tiles = ids.map(id=> hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(recipeKey, tiles, ctx);
-        if(!v.ok) return null;
-        return { tileIds: ids };
-      }
-
-      if(r.kind==="chipsDip"){
-        const chips = pick("Tortilla Chips") || pick("Grocery Run");
-        if(!chips) return null;
-        const dip = anyFrom(["Salsa Roja","Salsa Verde","Guacamole","Queso"]);
-        if(!dip) return null;
-        const ids = [chips,dip];
-        const tiles = ids.map(id=> hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(recipeKey, tiles, ctx);
-        if(!v.ok) return null;
-        return { tileIds: ids };
-      }
-
-      if(r.kind==="pico"){
-        const ids = [
-          pick("Tomato") || pick("Grocery Run"),
-          pick("Onion") || pick("Grocery Run"),
-          pick("Cilantro") || pick("Grocery Run"),
-          pick("Lime Juice") || pick("Grocery Run"),
-        ].filter(Boolean);
-        if(ids.length!==4) return null;
-        const tiles = ids.map(id=> hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(recipeKey, tiles, ctx);
-        if(!v.ok) return null;
-        return { tileIds: ids };
-      }
-
-      if(r.kind==="ench"){
-        const ids = [
-          anyFrom(["Flour Tortillas","Corn Tortillas"]),
-          anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]),
-          anyFrom(["Shredded yellow Cheese","Shredded white cheese"]),
-          anyFrom(["Salsa Roja","Salsa Verde"]),
-        ].filter(Boolean);
-        if(ids.length!==4) return null;
-        const tiles = ids.map(id=> hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(recipeKey, tiles, ctx);
-        if(!v.ok) return null;
-        return { tileIds: ids };
-      }
-
-      if(r.kind==="chorizoTaco"){
-        const ids = [
-          anyFrom(["Flour Tortillas","Corn Tortillas"]),
-          pick("Chorizo") || pick("Grocery Run"),
-          pick("Onion") || pick("Grocery Run"),
-          pick("Cilantro") || pick("Grocery Run"),
-        ].filter(Boolean);
-        if(ids.length!==4) return null;
-        const tiles = ids.map(id=> hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(recipeKey, tiles, ctx);
-        if(!v.ok) return null;
-        return { tileIds: ids };
-      }
-
-      return null;
+    /* ===== Auto-scroll to next empty slot ===== */
+    function scrollDishToNextEmpty(){
+      const strip = $("dishCarousel");
+      if(!strip) return;
+      const empty = strip.querySelector(".slotValue.slotEmpty");
+      if(!empty) return;
+      const card = empty.closest(".slotCard");
+      if(!card) return;
+      card.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
     }
 
-    function autoPlate(){
-      if(!autoPlateAllowed()) return;
-      const m = state.match;
-      if(m.activePid!=="P1"){ toast(t("notYourTurn")); return; }
-      const pl = p1();
-      const d = currentDish();
-      if(!d) return;
-
-      const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
-      const best = findBestDishFromHand(pl.hand, d.recipeKey, ctx);
-      if(!best){ toast("No auto-plate found."); return; }
-
-      d.tileIds = best.tileIds;
-      persist(); render();
-      toast("✅ Auto-plate complete.");
-    }
-
-    /* ===== Beginner Auto-Remix (preview) ===== */
-    function autoRemixPreview(){
-      if(!autoRemixAllowed()) return;
-      const m = state.match;
-      if(m.activePid!=="P1"){ toast(t("notYourTurn")); return; }
-      if(!m.kitchenOpen && !(state.campaign.active && state.campaign.kitchenUnlockedEver)){
-        toast("Kitchen must be open to remix.");
-        return;
-      }
-      const cand = m.publicLine
-        .filter(d=>d.points >= RULES.remixMinPoints)
-        .sort((a,b)=> b.points - a.points);
-
-      const target = cand.find(x=>x.owner!=="P1") || cand[0];
-      if(!target){ toast("No remix targets (5+ pts)."); return; }
-
-      state.ui.pendingAutoRemix = target.id;
-
-      openModal(
-        "Auto Remix Preview",
-        `<div class="muted">
-          <div><b>Target:</b> ${escapeHtml(target.name)} (${target.points} pts)</div>
-          <div><b>From:</b> ${escapeHtml(target.ownerName)}</div>
-          <div style="margin-top:10px"><b>Tiles:</b> ${target.tiles.map(t=>escapeHtml(t.name)).join(", ")}</div>
-          <div class="muted2" style="margin-top:8px">Submit to steal and re-plate this dish as your remix, or cancel.</div>
-        </div>`,
-        [
-          { text:"Cancel", className:"ghost", onClick: ()=>{ state.ui.pendingAutoRemix=null; closeModal(); } },
-          { text:"Submit Remix", className:"primary", onClick: commitAutoRemix }
-        ]
-      );
-    }
-
-    function commitAutoRemix(){
-      const m = state.match;
-      const pid = "P1";
-      const pl = m.players[pid];
-      const id = state.ui.pendingAutoRemix;
-      if(!id){ closeModal(); return; }
-
-      const idx = m.publicLine.findIndex(d=>d.id===id);
-      if(idx<0){ toast("Target gone."); state.ui.pendingAutoRemix=null; closeModal(); return; }
-
-      const target = m.publicLine[idx];
-      m.publicLine.splice(idx,1);
-
-      const pub = {
-        id: nowId("pub"),
-        owner: pid,
-        ownerName: pl.name,
-        recipeKey: target.recipeKey,
-        name: target.name,
-        points: target.points,
-        tiles: target.tiles.map(t=>({id: nowId("rt"), name:t.name})),
-        isRemix: true,
-        from: target.owner
-      };
-      m.publicLine.push(pub);
-
-      pl.score += pub.points;
-      pl.servedThisHand += pub.points;
-      pl.didRemix = true;
-
-      state.ui.pendingAutoRemix = null;
-      closeModal();
-      persist(); render();
-      toast("🔀 Remix plated. ✅");
-    }
-
-    /* ===== CPU ===== */
-    let cpuTimer = null;
-
-    function cpuChar(pid){
-      const p = state.match.players[pid];
-      const key = p.charKey || "salsaSam";
-      return CPU_CHARACTERS[key] || CPU_CHARACTERS.salsaSam;
-    }
-
-    function playerColor(pid){
-      if(pid==="P1") return state.settings.accent || "#00e5ff";
-      return cpuChar(pid).color || "#ffffff";
-    }
-
-    function scheduleCpuTurn(pid){
-      clearTimeout(cpuTimer);
-      const delay = cpuTurnDelayMs(pid);
-
-      const showSkip = (state.settings.mode==="campaign");
-      $("campaignSkipRow").style.display = showSkip ? "flex" : "none";
-      $("btnSkipCPU").onclick = ()=>{
-        clearTimeout(cpuTimer);
-        cpuTimer = null;
-        doCpuTurn(pid, true);
-      };
-
-      toast(`${state.match.players[pid].name} is thinking...`, Math.max(900, delay));
-      cpuTimer = setTimeout(()=>{ doCpuTurn(pid); }, delay);
-    }
-
-    function doCpuTurn(pid){
-      const m = state.match;
-      const pl = m.players[pid];
-      if(!pl || pl.isHuman) return;
-
-      const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
-      let action = "drew";
-
-      if(ctx.kitchenOpen && cpuCanRemix()){
-        const ch = cpuChar(pid);
-        const wantRemix = Math.random() < Math.min(0.95, 0.35 * ch.remixBias);
-        if(wantRemix){
-          const cand = m.publicLine
-            .filter(d=> d.points >= RULES.remixMinPoints && d.owner !== pid)
-            .sort((a,b)=> b.points - a.points);
-          const target = cand[0];
-          if(target){
-            const diff = effectiveDifficulty();
-            const masterBoost = diff==="Master Chef" ? 0.85 : 0.55;
-            if(Math.random() < masterBoost){
-              const idx = m.publicLine.findIndex(x=>x.id===target.id);
-              if(idx>=0){
-                m.publicLine.splice(idx,1);
-                const pub = {
-                  id: nowId("pub"),
-                  owner: pid,
-                  ownerName: pl.name,
-                  recipeKey: target.recipeKey,
-                  name: target.name,
-                  points: target.points,
-                  tiles: target.tiles.map(t=>({id: nowId("rt"), name:t.name})),
-                  isRemix: true,
-                  from: target.owner
-                };
-                m.publicLine.push(pub);
-                pl.score += pub.points;
-                pl.servedThisHand += pub.points;
-                pl.didRemix = true;
-                action = "remixed";
-              }
-            }
-          }
-        }
-      }
-
-      if(action !== "remixed"){
-        const ch = cpuChar(pid);
-        const prefApp = Math.random() < ch.appetizerBias;
-        const tryOrder = prefApp ? ["chipsDip","pico","ench","hardTaco","softTaco","chorizoTaco"] : ["ench","pico","hardTaco","softTaco","chorizoTaco","chipsDip"];
-
-        let plated = null;
-        for(const rk of tryOrder){
-          const best = findBestDishFromHand(pl.hand, rk, ctx);
-          if(best){ plated = { rk, tileIds: best.tileIds }; break; }
-        }
-
-        if(plated){
-          const r = recipeByKey(plated.rk);
-          const tiles = plated.tileIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
-          const v = validateDish(plated.rk, tiles, ctx);
-          if(v.ok){
-            const pub = {
-              id: nowId("pub"),
-              owner: pid,
-              ownerName: pl.name,
-              recipeKey: plated.rk,
-              name: r.name,
-              points: r.pts,
-              tiles: tiles.map(t=>({id:t.id, name:t.name})),
-              isRemix:false,
-              from:null
-            };
-            m.publicLine.push(pub);
-            for(const t of tiles){
-              const idx = pl.hand.findIndex(h=>h.id===t.id);
-              if(idx>=0) pl.hand.splice(idx,1);
-            }
-            pl.score += r.pts;
-            pl.servedThisHand += r.pts;
-            pl.didPublish = true;
-
-            m.servedThisTurnPts += r.pts;
-            if(!m.kitchenOpen && m.servedThisTurnPts >= 10){
-              m.kitchenOpen = true;
-              if(state.campaign.active) state.campaign.kitchenUnlockedEver = true;
-              toast("🔥 Kitchen Open!", 2200);
-            }
-
-            action = "plated";
-          }
-        }else{
-          const t = m.bag.pop();
-          if(t){ pl.hand.push(t); pl.didDraw = true; }
-          action = "drew";
-        }
-      }
-
-      toast("✅", 900);
-      if(action==="plated") toast(`${pl.name} plated a dish.`, 1400);
-      if(action==="remixed") toast(`${pl.name} remixed the line.`, 1400);
-      if(action==="drew") toast(`${pl.name} drew a tile.`, 1400);
-
-      endTurn(pid, true);
-    }
-
-    /* ===== Turn flow ===== */
-    function endTurn(pid){
-      const m = state.match;
-      if(m.activePid !== pid) return;
-
-      if(endHandIfNeeded()){
-        persist(); render();
-        return;
-      }
-
-      m.servedThisTurnPts = 0;
-
-      const order = Object.keys(m.players);
-      const i = order.indexOf(pid);
-      const next = order[(i+1)%order.length];
-      m.activePid = next;
-
-      if(pid==="P1"){
-        state.ui.serveSel = [];
-        state.ui.remixSelPublic = new Set();
-      }
-
-      persist();
-      render();
-
-      if(next !== "P1"){
-        scheduleCpuTurn(next);
-      }else{
-        toast("Your turn.");
-      }
-    }
-
-    /* ===== UI / Pages ===== */
-    function t(key){
-      const lang = state.settings.lang || "en";
-      return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
-    }
-
+    /* ===== Pages ===== */
     function setPage(p){
       state.ui.page = p;
       persist();
       render();
     }
-
     function setNavActive(btnId){
       ["navGame","navPrep","navScores","navSettings"].forEach(id=>{
         $(id).classList.toggle("active", id===btnId);
       });
     }
-
     $("navGame").onclick = ()=> setPage("gameplay");
     $("navPrep").onclick = ()=> setPage("prep");
     $("navScores").onclick = ()=> setPage("scores");
     $("navSettings").onclick = ()=> setPage("settings");
 
-    /* ===== Wire buttons ===== */
+    /* ===== Buttons ===== */
     $("btnNewMatchTop").onclick = ()=>{
       openModal(
         "New Match",
-        "Start a fresh match? This will overwrite the current match state.",
+        "Start a fresh match? This overwrites current match state.",
         [
           { text:"Cancel", className:"ghost", onClick: closeModal },
           { text:"Start", className:"primary", onClick: ()=>{ closeModal(); newMatch(); } }
@@ -2149,77 +1607,67 @@
       );
     };
 
-    $("btnDraw").onclick = ()=>{
+    // Gameplay: Prep a Dish => go to Prep page
+    $("btnPrep").onclick = ()=>{
       const m = state.match;
-      if(!m){ newMatch(); return; }
-      if(m.activePid !== "P1"){ toast(t("notYourTurn")); return; }
-      const pl = p1();
-      const t0 = m.bag.pop();
-      if(!t0){ toast("No tiles left."); return; }
-      pl.hand.push(t0);
-      pl.didDraw = true;
-      persist(); render();
-      toast(`Drew: ${t0.name}`);
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      setPage("prep");
     };
 
-    $("btnPublishDraft").onclick = ()=>{
+    // Gameplay: Order Up! => publish all qualifying drafts
+    $("btnOrderUp").onclick = ()=>{
       const m = state.match;
-      if(m.activePid !== "P1"){ toast(t("notYourTurn")); return; }
-      const pl = p1();
-      const ids = pl.drafts.map(d=>d.id);
-      if(!ids.length){ toast("No drafts."); return; }
-      const res = publishSelectedDrafts("P1", ids);
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      const ids = qualifyingDraftIds("P1");
+      if(!ids.length){ toast("No qualifying dish."); return; }
+      const res = publishDrafts("P1", ids);
       if(!res.ok){ toast(res.msg); return; }
       persist(); render();
       toast("Order up!");
     };
 
-    $("btnServeSel").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast(t("notYourTurn")); return; }
-      const pl = p1();
-      let sel = state.ui.serveSel || [];
-
-      if(sel.length===0){
-        const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
-        sel = pl.drafts
-          .filter(d=>{
-            const tiles = d.tileIds.map(id=>pl.hand.find(t=>t.id===id)).filter(Boolean);
-            return validateDish(d.recipeKey, tiles, ctx).ok;
-          })
-          .map(d=>d.id);
-      }
-
-      if(sel.length===0){ toast("No valid drafts selected."); return; }
-      const res = publishSelectedDrafts("P1", sel);
-      if(!res.ok){ toast(res.msg); return; }
-      state.ui.serveSel = [];
-      persist(); render();
-      toast("Served selected.");
-    };
-
     $("btnEndTurn").onclick = ()=>{
       const m = state.match;
-      if(m.activePid !== "P1"){ toast(t("notYourTurn")); return; }
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
       endTurn("P1");
     };
 
-    // Prep interactions
+    // Prep: Draw Tile (one per turn)
+    $("btnDraw").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      const res = drawTile("P1");
+      if(!res.ok){ toast(res.msg); return; }
+      persist(); render();
+      toast(res.msg);
+    };
+
+    // Prep: Order Up! (same as gameplay)
+    $("btnOrderUpFromPrep").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      const ids = qualifyingDraftIds("P1");
+      if(!ids.length){ toast("No qualifying dish."); return; }
+      const res = publishDrafts("P1", ids);
+      if(!res.ok){ toast(res.msg); return; }
+      // return to gameplay after ordering up
+      setPage("gameplay");
+      toast("Order up!");
+    };
+
     $("btnNewDish").onclick = newDish;
     $("btnClearDish").onclick = clearCurrentDish;
     $("btnRemoveDish").onclick = removeCurrentDish;
-    $("btnAutoPlate").onclick = autoPlate;
-    $("btnAutoRemix").onclick = autoRemixPreview;
     $("selRecipe").onchange = ()=> updateCurrentDishRecipe($("selRecipe").value);
 
-    // Tap hand tiles to add/remove
+    // Hand tile taps
     $("handTiles").addEventListener("click",(e)=>{
       const el = e.target.closest("[data-htile]");
       if(!el) return;
       toggleHandTileForDish(el.getAttribute("data-htile"));
     });
 
-    // Tap a filled slot to remove that ingredient from the dish
+    // Tap filled slot to remove ingredient
     $("dishCarousel").addEventListener("click",(e)=>{
       const card = e.target.closest(".slotCard");
       if(!card) return;
@@ -2227,28 +1675,18 @@
       if(!tileId) return;
 
       const m = state.match;
-      if(m.activePid !== "P1"){ toast(t("notYourTurn")); return; }
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
       const pl = p1();
       const d = currentDish();
       if(!d) return;
 
       d.tileIds = d.tileIds.filter(id => id !== tileId);
+      state.ui.autoScrollDish = true;
       persist(); render();
       toast("Removed ingredient.");
     });
 
-    $("nowServingList").addEventListener("click",(e)=>{
-      const el = e.target.closest("[data-serve]");
-      if(!el) return;
-      const id = el.getAttribute("data-serve");
-      const a = state.ui.serveSel || [];
-      const i = a.indexOf(id);
-      if(i>=0) a.splice(i,1); else a.push(id);
-      state.ui.serveSel = a;
-      persist(); render();
-    });
-
-    /* ===== Settings wiring ===== */
+    /* ===== Settings ===== */
     function fillSettings(){
       $("selDifficulty").innerHTML = DIFFS.map(d=> `<option value="${d}">${d}</option>`).join("");
       $("selDifficulty").value = state.settings.difficulty;
@@ -2266,186 +1704,65 @@
       $("selLang").value = state.settings.lang;
     }
 
-    $("selMode").onchange = ()=>{
-      state.settings.mode = $("selMode").value;
-      persist(); render();
-      toast("Mode updated.");
-    };
-    $("selPlayers").onchange = ()=>{
-      state.settings.players = parseInt($("selPlayers").value,10);
-      persist(); render();
-      toast("Players updated.");
-    };
-    $("selDifficulty").onchange = ()=>{
-      state.settings.difficulty = $("selDifficulty").value;
-      persist(); render();
-    };
-    $("inpHands").onchange = ()=>{
-      state.settings.handsTotal = Math.max(1, Math.min(12, parseInt($("inpHands").value,10) || 12));
-      persist(); render();
-    };
-    $("inpTilesPerPlayer").onchange = ()=>{
-      state.settings.tilesPerPlayer = Math.max(8, Math.min(24, parseInt($("inpTilesPerPlayer").value,10) || 16));
-      persist(); render();
-    };
-    $("selDecks").onchange = ()=>{
-      state.settings.decks = parseInt($("selDecks").value,10) || 2;
-      persist(); render();
-    };
+    $("selMode").onchange = ()=>{ state.settings.mode = $("selMode").value; persist(); render(); toast("Mode updated."); };
+    $("selPlayers").onchange = ()=>{ state.settings.players = parseInt($("selPlayers").value,10); persist(); render(); toast("Players updated."); };
+    $("selDifficulty").onchange = ()=>{ state.settings.difficulty = $("selDifficulty").value; persist(); render(); };
+    $("inpHands").onchange = ()=>{ state.settings.handsTotal = Math.max(1, Math.min(12, parseInt($("inpHands").value,10) || 12)); persist(); render(); };
+    $("inpTilesPerPlayer").onchange = ()=>{ state.settings.tilesPerPlayer = Math.max(8, Math.min(24, parseInt($("inpTilesPerPlayer").value,10) || 16)); persist(); render(); };
+    $("selDecks").onchange = ()=>{ state.settings.decks = parseInt($("selDecks").value,10) || 2; persist(); render(); };
+
     $("selAccent").onchange = ()=>{
       state.settings.accent = $("selAccent").value;
       document.documentElement.style.setProperty("--accent", state.settings.accent);
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
-      persist(); render();
-    };
-    $("selLang").onchange = ()=>{
-      state.settings.lang = $("selLang").value;
-      persist(); render();
-    };
 
-    /* ===== Render ===== */
-    function render(){
-      if(!state.match) newMatch();
-
-      document.documentElement.style.setProperty("--accent", state.settings.accent);
-      document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
-
-      $("verPill").textContent = VERSION;
-      $("btnPublishDraft").textContent = t("orderUp");
-      $("btnDraw").textContent = t("drawTile");
-      $("btnServeSel").textContent = t("serveSelected");
-      $("btnEndTurn").textContent = t("endTurn");
-      $("turnHint").textContent = t("yourTurn");
-
-      $("navGame").querySelector(".tx").textContent = t("gameplay");
-      $("navPrep").querySelector(".tx").textContent = t("prep");
-      $("navScores").querySelector(".tx").textContent = t("scores");
-      $("navSettings").querySelector(".tx").textContent = t("settings");
-
-      ["pageGameplay","pagePrep","pageScores","pageSettings"].forEach(id=> $(id).classList.remove("on"));
-      if(state.ui.page==="gameplay"){ $("pageGameplay").classList.add("on"); setNavActive("navGame"); }
-      if(state.ui.page==="prep"){ $("pagePrep").classList.add("on"); setNavActive("navPrep"); }
-      if(state.ui.page==="scores"){ $("pageScores").classList.add("on"); setNavActive("navScores"); }
-      if(state.ui.page==="settings"){ $("pageSettings").classList.add("on"); setNavActive("navSettings"); }
-
-      fillSettings();
-      renderMenuRef();
-
-      renderGameplay();
-      renderPrep();
-      renderScores();
-
-      const m = state.match;
-      if(m.activePid !== "P1"){
-        scheduleCpuTurn(m.activePid);
-      }else{
-        $("campaignSkipRow").style.display = "none";
+      // ✅ also ensure CPU colors unique vs player + each other (live)
+      if(state.match){
+        const cpuCols = ensureUniqueCpuColors();
+        if(state.match.players["P2"]) state.match.players["P2"].color = cpuCols[0];
+        if(state.match.players["P3"]) state.match.players["P3"].color = cpuCols[1];
+        if(state.match.players["P4"]) state.match.players["P4"].color = cpuCols[2];
+        state.match.players["P1"].color = state.settings.accent;
       }
-    }
 
-    function renderMenuRef(){
-      $("menuRef").innerHTML = MENU_REFERENCE.map(x=>`
-        <div class="row sp" style="margin-bottom:10px;">
-          <div style="font-weight:1000;">${escapeHtml(x.title)}</div>
-          <span class="badge">${x.pts} pts</span>
-        </div>
-        <div class="muted small" style="margin-bottom:12px;">${escapeHtml(x.desc)}</div>
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 0 0 12px;"></div>
-      `).join("");
-    }
+      persist(); render();
+    };
 
+    $("selLang").onchange = ()=>{ state.settings.lang = $("selLang").value; persist(); render(); };
+
+    /* ===== Rendering ===== */
     function phaseText(){
       const m = state.match;
-      const kitchen = m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver);
-      if(!kitchen){
-        return { title:"Not Seated Yet", desc:"Serve 10+ points in one turn to open the kitchen. No remixes yet." };
-      }
-      return { title:"Kitchen Open", desc:"Remix is enabled. Public line dishes may be rebuilt into new dishes." };
+
+      if(m.kitchenOpen) return { title:"Kitchen Open", desc:"Remix is enabled. Wet toppings allowed." };
+
+      // simple mid-phase: if any dishes exist but kitchen not open, call it Appetizers Out
+      if(m.publicLine.length > 0) return { title:"Appetizers Out", desc:"Build toward 10+ points in a single turn to open the kitchen." };
+
+      return { title:"Not Seated Yet", desc:"Serve 10+ points in one turn to open the kitchen." };
     }
 
-    function renderGameplay(){
+    function playerColor(pid){
       const m = state.match;
-      const diff = effectiveDifficulty();
-      const kitchen = m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver);
-
-      $("tilesRemainBadge").textContent = `${t("tilesRemaining")} ${m.bag.length}`;
-      $("kitchenBadge").textContent = kitchen ? t("kitchenOpen") : t("kitchenClosed");
-      $("handBadge").textContent = `Hand ${m.handIndex}/${state.settings.handsTotal}`;
-      $("diffBadge").textContent = `Difficulty ${diff}`;
-      $("modeBadge").textContent = state.settings.mode==="campaign" ? "Campaign" : "Standard";
-      $("lineSummary").textContent = `${m.publicLine.length} dish${m.publicLine.length===1?"":"es"}`;
-
-      const ph = phaseText();
-      $("phaseTitle").textContent = ph.title;
-      $("phaseDesc").textContent = ph.desc;
-
-      const myTurn = (m.activePid==="P1");
-      $("btnDraw").disabled = !myTurn;
-      $("btnPublishDraft").disabled = !myTurn;
-      $("btnServeSel").disabled = !myTurn;
-      $("btnEndTurn").disabled = !myTurn;
-
-      renderNowServing();
-      renderPublicLine();
-    }
-
-    function renderNowServing(){
-      const wrap = $("nowServingWrap");
-      const list = $("nowServingList");
-      const m = state.match;
-      const pl = p1();
-      const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
-
-      if(!pl.drafts.length){
-        wrap.style.display = "none";
-        return;
-      }
-      wrap.style.display = "block";
-
-      const annotated = pl.drafts.map(d=>{
-        const tiles = d.tileIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(d.recipeKey, tiles, ctx);
-        return { d, tiles, ok:v.ok, reason:v.reason||"" };
-      });
-
-      const selIds = state.ui.serveSel || [];
-      const sel = annotated.filter(x=> selIds.includes(x.d.id) && x.ok);
-      const selPts = sel.reduce((t,x)=> t + x.d.pts, 0);
-
-      $("serveSelPill").textContent = `Selected ${sel.length} • ${selPts} pts`;
-      $("serveNeedPill").style.display = (!ctx.kitchenOpen && selPts < 10) ? "inline-flex" : "none";
-
-      list.innerHTML = annotated.map(x=>{
-        const d = x.d;
-        const selected = selIds.includes(d.id);
-        const tilesText = x.tiles.map(t=>t.name).join(", ");
-        return `
-          <div class="serveCard ${selected?"sel":""} ${x.ok?"":"invalid"}" data-serve="${escapeHtml(d.id)}">
-            <div class="serveTop">
-              <div>${escapeHtml(d.name)}</div>
-              <div>${d.pts} pts</div>
-            </div>
-            <div class="serveMeta">${escapeHtml(tilesText || "No tiles yet")}</div>
-            <div class="serveBad">${x.ok ? "✅ Ready" : "⚠️ " + escapeHtml(x.reason)}</div>
-          </div>
-        `;
-      }).join("");
+      return m.players[pid]?.color || "#ffffff";
     }
 
     function renderPublicLine(){
       const m = state.match;
       const el = $("publicLine");
+
+      $("lineSummary").textContent = `${m.publicLine.length} dish${m.publicLine.length===1?"":"es"}`;
+
       if(!m.publicLine.length){
         el.innerHTML = `<div class="muted small">No dishes in the window yet.</div>`;
         return;
       }
 
       const groups = groupBy(m.publicLine, d=> d.name);
-
       el.innerHTML = Object.entries(groups).map(([menuItem, dishes])=>{
         const total = dishes.reduce((t,d)=>t+d.points,0);
         return `
-          <div class="pubGroup" style="margin-bottom:12px;">
+          <div class="pubGroup">
             <div class="pubGroupTitle">
               <div>${escapeHtml(menuItem)}</div>
               <span class="badge">Total <span class="mono">${total}</span></span>
@@ -2453,17 +1770,17 @@
             ${dishes.map(d=>{
               const col = playerColor(d.owner);
               const tintA = hexToRgba(col,.28);
-              const tiles = d.tiles.map(t=>{
-                const wet = isWet(t.name) ? "wet" : "";
-                const wild = isWild(t.name) ? "wild" : "";
-                const cat = ingredientCategory(t.name);
-                return `<span class="tile ${wet} ${wild} cat-${cat}" style="--tintA:${tintA};">${escapeHtml(t.name)}</span>`;
+              const tiles = d.tiles.map(ti=>{
+                const cat = ingredientCategory(ti.name);
+                const wet = isWet(ti.name) ? "wet" : "";
+                const wild = isWild(ti.name) ? "wild" : "";
+                return `<span class="tile ${wet} ${wild} cat-${cat}">${escapeHtml(ti.name)}</span>`;
               }).join("");
               return `
                 <div class="pubDishRow" style="--tintA:${tintA};">
                   <div class="pubDishMeta">
                     <div>${escapeHtml(d.ownerName)}${d.isRemix ? " • Remix" : ""}</div>
-                    <span class="badge">Pts <span class="mono">${d.points}</span></span>
+                    <span class="badge">${d.points} pts</span>
                   </div>
                   <div class="tiles" style="margin-top:8px;">${tiles}</div>
                 </div>
@@ -2478,20 +1795,25 @@
       const m = state.match;
       const pl = p1();
       const d = currentDish();
+      const myTurn = (m.activePid==="P1");
 
+      $("prepTurnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
       $("handCountHint").textContent = `${pl.hand.length} tiles`;
 
-      $("btnAutoPlate").style.display = autoPlateAllowed() ? "inline-flex" : "none";
-      $("btnAutoRemix").style.display = autoRemixAllowed() ? "inline-flex" : "none";
+      // Draw button state (✅ one draw per turn)
+      $("btnDraw").textContent = t("drawTile");
+      $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn;
+      if(pl.didDrawThisTurn) $("btnDraw").classList.remove("pulse");
+      if(!pl.didDrawThisTurn && myTurn) $("btnDraw").classList.add("pulse");
 
-      const kitchen = m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver);
-      $("btnAutoPlate").disabled = !(m.activePid==="P1");
-      $("btnAutoRemix").disabled = !(m.activePid==="P1" && kitchen);
+      // Order Up enable only when qualifying
+      const q = qualifyingDraftIds("P1");
+      const canOrder = myTurn && q.length>0;
+      $("btnOrderUpFromPrep").disabled = !canOrder;
+      $("btnOrderUpFromPrep").classList.toggle("pulseOrder", canOrder);
+      $("btnOrderUpFromPrep").textContent = t("orderUp");
 
-      $("autoHint").innerHTML = autoPlateAllowed()
-        ? "Auto-Plate is enabled for Beginner/Easy. Tap tiles or auto-fill a valid dish."
-        : "Tap hand tiles to add/remove from your current dish.";
-
+      // Recipe select + meta
       if(d){
         $("selRecipe").value = d.recipeKey;
         $("dishMeta").textContent = `${d.name} • ${d.pts} pts`;
@@ -2499,123 +1821,73 @@
         $("dishMeta").textContent = "—";
       }
 
-      // Grouped Hand
+      // grouped hand
       const grouped = groupBy(pl.hand, t => ingredientCategory(t.name));
       const order = ["tortilla","protein","cheese","wet","drytop","wild","other"];
 
       $("handTiles").innerHTML = `
         <div class="handGroups">
-          ${order
-            .filter(cat => (grouped[cat]||[]).length)
-            .map(cat=>{
-              const tiles = grouped[cat];
-              return `
-                <div class="handGroup">
-                  <div class="handGroupTitle">
-                    <span>${escapeHtml(categoryLabel(cat))}</span>
-                    <span class="count">${tiles.length}</span>
-                  </div>
-                  <div class="tiles">
-                    ${tiles.map(ti=>{
-                      const inDish = d?.tileIds.includes(ti.id);
-                      const wet = isWet(ti.name) ? "wet" : "";
-                      const wild = isWild(ti.name) ? "wild" : "";
-                      return `
-                        <span class="tile ${inDish?"sel":""} ${wet} ${wild} cat-${cat}"
-                              data-htile="${escapeHtml(ti.id)}">
-                          ${escapeHtml(ti.name)}
-                        </span>
-                      `;
-                    }).join("")}
-                  </div>
+          ${order.filter(cat => (grouped[cat]||[]).length).map(cat=>{
+            const tiles = grouped[cat];
+            return `
+              <div class="handGroup">
+                <div class="handGroupTitle">
+                  <span>${escapeHtml(categoryLabel(cat))}</span>
+                  <span class="count">${tiles.length}</span>
                 </div>
-              `;
-            }).join("")}
+                <div class="tiles">
+                  ${tiles.map(ti=>{
+                    const inDish = d?.tileIds.includes(ti.id);
+                    const wet = isWet(ti.name) ? "wet" : "";
+                    const wild = isWild(ti.name) ? "wild" : "";
+                    return `
+                      <span class="tile ${inDish?"sel":""} ${wet} ${wild} cat-${cat}" data-htile="${escapeHtml(ti.id)}">
+                        ${escapeHtml(ti.name)}
+                      </span>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            `;
+          }).join("")}
         </div>
       `;
 
-      // Current Dish: 8-slot carousel with category-tinted fills
+      // current dish carousel (8 slots)
       const car = $("dishCarousel");
       if(!d){
         car.innerHTML = `<div class="muted small">No draft selected.</div>`;
         $("dishHint").textContent = "";
       }else{
         const { slots, slotFill } = assignDishToSlots(pl, d);
-
         car.innerHTML = slots.map((s, i)=>{
           const tObj = slotFill[i];
           const filled = !!tObj;
-
           const cat = filled ? ingredientCategory(tObj.name) : "";
           const txt = filled ? escapeHtml(tObj.name) : "Empty";
-          const bg = filled
-            ? `background:
-                linear-gradient(180deg, var(--accentSoft), rgba(0,0,0,0)),
-                linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));`
-            : "";
-
           return `
             <div class="slotCard" data-slot-idx="${i}" ${filled ? `data-tile-id="${escapeHtml(tObj.id)}"` : ""}>
               <div class="slotLabel">${escapeHtml(s.label)}</div>
-
-              <div class="slotValue ${filled ? "slotFilled" : "slotEmpty"} ${filled ? `cat-${cat}` : ""}"
-                   style="${bg}">
+              <div class="slotValue ${filled ? "slotFilled" : "slotEmpty"} ${filled ? `cat-${cat}` : ""}">
                 ${txt}
               </div>
-
               ${filled ? `<div class="muted2 small" style="margin-top:8px;">${escapeHtml(categoryLabel(cat))}</div>` : ""}
             </div>
           `;
         }).join("");
 
-        const ctx = { kitchenOpen: kitchen };
+        const ctx = { kitchenOpen: m.kitchenOpen };
         const chosenTiles = d.tileIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
         const v = validateDish(d.recipeKey, chosenTiles, ctx);
-        $("dishHint").textContent = v.ok ? "✅ Ready to serve." : `⚠️ ${v.reason}`;
-      }
+        $("dishHint").textContent = v.ok ? "✅ Qualifies for Order Up!" : `⚠️ ${v.reason}`;
 
-      renderPublicTilesGrouped();
-    }
-
-    function renderPublicTilesGrouped(){
-      const m = state.match;
-      const el = $("publicTiles");
-      if(!m.publicLine.length){
-        el.innerHTML = `<div class="muted small">No public dishes yet.</div>`;
-        return;
+        // ✅ auto-scroll after render when requested
+        if(state.ui.autoScrollDish){
+          state.ui.autoScrollDish = false;
+          persist();
+          setTimeout(scrollDishToNextEmpty, 0);
+        }
       }
-      const groups = groupBy(m.publicLine, d=> d.name);
-      el.innerHTML = `<div class="pubGroups">${
-        Object.entries(groups).map(([menuItem, dishes])=>{
-          return `
-            <div class="pubGroup">
-              <div class="pubGroupTitle">
-                <div>${escapeHtml(menuItem)}</div>
-                <span class="badge">${dishes.length} dish${dishes.length===1?"":"es"}</span>
-              </div>
-              ${dishes.map(d=>{
-                const col = playerColor(d.owner);
-                const tintA = hexToRgba(col,.28);
-                const tiles = d.tiles.map(t=>{
-                  const wet = isWet(t.name) ? "wet" : "";
-                  const wild = isWild(t.name) ? "wild" : "";
-                  const cat = ingredientCategory(t.name);
-                  return `<span class="tile ${wet} ${wild} cat-${cat}" style="--tintA:${tintA};">${escapeHtml(t.name)}</span>`;
-                }).join("");
-                return `
-                  <div class="pubDishRow" style="--tintA:${tintA};">
-                    <div class="pubDishMeta">
-                      <div>${escapeHtml(d.ownerName)}${d.isRemix ? " • Remix" : ""}</div>
-                      <span class="badge">${d.points} pts</span>
-                    </div>
-                    <div class="tiles" style="margin-top:8px;">${tiles}</div>
-                  </div>
-                `;
-              }).join("")}
-            </div>
-          `;
-        }).join("")
-      }</div>`;
     }
 
     function renderScores(){
@@ -2623,64 +1895,120 @@
       const pl = p1();
 
       $("scoreModePill").textContent = state.settings.mode==="campaign" ? "Campaign" : "Standard";
-
-      const ctx = { kitchenOpen: m.kitchenOpen || (state.campaign.active && state.campaign.kitchenUnlockedEver) };
-      const pendingPts = pl.drafts.reduce((sum,d)=>{
-        const tiles = d.tileIds.map(id=>pl.hand.find(t=>t.id===id)).filter(Boolean);
-        const v = validateDish(d.recipeKey, tiles, ctx);
-        return sum + (v.ok ? d.pts : 0);
-      },0);
-
       $("scoreCurrent").textContent = `Current: ${pl.score}`;
-      $("scorePending").textContent = `Pending: ${pendingPts}`;
-      $("scoreServed").textContent = `Served this hand: ${pl.servedThisHand}`;
+      $("scoreServedMuted").textContent = `Served this hand: ${pl.servedThisHand}`;
 
       const players = Object.values(m.players);
+
       $("scoreList").innerHTML = players.map(p=>{
-        const isMe = p.id==="P1";
-        const c = playerColor(p.id);
-        const tintA = hexToRgba(c,.18);
+        const col = playerColor(p.id);
+        const tintA = hexToRgba(col,.18);
+
+        const dishLines = (p.logThisHand || []).map(ev=>{
+          const extra = ev.type==="remix" ? ` <span class="muted2 small">(from ${escapeHtml(ev.from || "—")})</span>` : "";
+          return `<div class="row sp" style="gap:12px; margin-top:8px;">
+            <div style="font-weight:900;">${escapeHtml(ev.name)}${extra}</div>
+            <span class="badge">${ev.points}</span>
+          </div>`;
+        }).join("") || `<div class="muted small">No dishes served yet this hand.</div>`;
+
+        const net = (p.remixGainThisHand || 0) - (p.remixLossThisHand || 0);
+        const netTxt = net === 0 ? "0" : (net > 0 ? `+${net}` : `${net}`);
+
         return `
-          <div class="card" style="margin-top:12px; padding:14px; --tintA:${tintA}; position:relative; overflow:hidden;">
-            <div style="position:absolute; inset:0; background: linear-gradient(135deg, ${tintA}, transparent 70%); opacity:.9; pointer-events:none;"></div>
-            <div style="position:relative; z-index:1;">
-              <div class="row sp">
-                <div style="font-weight:1000;">${escapeHtml(p.name)}${isMe ? " (You)" : ""}</div>
-                <span class="badge">${p.score} match</span>
-              </div>
-              <div class="muted small" style="margin-top:6px;">
-                Served this hand: ${p.servedThisHand}
+          <details class="acc" style="margin-top:12px; background: rgba(255,255,255,.03);">
+            <summary>
+              <span>${escapeHtml(p.name)}${p.id==="P1" ? " (You)" : ""}</span>
+              <span class="badge" style="background: rgba(0,0,0,.30);">Score ${p.score}</span>
+            </summary>
+            <div class="accBody" style="position:relative; overflow:hidden;">
+              <div style="position:absolute; inset:0; background: linear-gradient(135deg, ${tintA}, transparent 70%); opacity:.9; pointer-events:none;"></div>
+              <div style="position:relative; z-index:1;">
+                <div class="row wrap" style="gap:10px; margin-top:6px;">
+                  <span class="pill">Served: ${p.servedThisHand}</span>
+                  <span class="pill">Remix Net: ${netTxt}</span>
+                </div>
+                <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
+                ${dishLines}
               </div>
             </div>
-          </div>
+          </details>
         `;
       }).join("");
-
-      const show = (state.settings.mode==="campaign");
-      $("campaignBoxAcc").style.display = show ? "block" : "none";
-      if(show){
-        const rows = (state.campaign.chapterScores || []).map((c,i)=>`
-          <div class="row sp" style="margin-top:10px;">
-            <div style="font-weight:1000;">Chapter ${i+1} • ${escapeHtml(c.diff)}</div>
-            <span class="badge">${c.total}</span>
-          </div>
-        `).join("");
-
-        const running = players.find(p=>p.id==="P1")?.score ?? 0;
-        $("campaignBoxBody").innerHTML = `
-          ${rows || `<div class="muted small">No completed chapters yet.</div>`}
-          <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-          <div class="row sp">
-            <div style="font-weight:1000;">Running Total</div>
-            <span class="badge">${running}</span>
-          </div>
-        `;
-      }
     }
 
+    function renderGameplay(){
+      const m = state.match;
+      const myTurn = (m.activePid==="P1");
+
+      document.documentElement.style.setProperty("--accent", state.settings.accent);
+      document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
+      $("verPill").textContent = VERSION;
+
+      // Nav labels
+      $("navGame").querySelector(".tx").textContent = t("gameplay");
+      $("navPrep").querySelector(".tx").textContent = t("prep");
+      $("navScores").querySelector(".tx").textContent = t("scores");
+      $("navSettings").querySelector(".tx").textContent = t("settings");
+
+      $("btnPrep").textContent = t("prepDish");
+      $("btnEndTurn").textContent = t("endTurn");
+
+      $("tilesRemainBadge").textContent = `Tiles Remaining ${m.bag.length}`;
+      $("kitchenBadge").textContent = m.kitchenOpen ? "Kitchen Open" : "Kitchen Closed";
+      $("handBadge").textContent = `Hand ${m.handIndex}/${state.settings.handsTotal}`;
+      $("turnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
+
+      const ph = phaseText();
+      $("phaseTitle").textContent = ph.title;
+      $("phaseDesc").textContent = ph.desc;
+
+      // Order Up enable only if qualifying dish exists
+      const q = qualifyingDraftIds("P1");
+      const canOrder = myTurn && q.length>0;
+      $("btnOrderUp").textContent = t("orderUp");
+      $("btnOrderUp").disabled = !canOrder;
+      $("btnOrderUp").classList.toggle("pulseOrder", canOrder);
+
+      // Prep button only on your turn
+      $("btnPrep").disabled = !myTurn;
+      $("btnEndTurn").disabled = !myTurn;
+
+      renderPublicLine();
+    }
+
+    function render(){
+      if(!state.match) newMatch();
+
+      ["pageGameplay","pagePrep","pageScores","pageSettings"].forEach(id=> $(id).classList.remove("on"));
+      if(state.ui.page==="gameplay"){ $("pageGameplay").classList.add("on"); setNavActive("navGame"); }
+      if(state.ui.page==="prep"){ $("pagePrep").classList.add("on"); setNavActive("navPrep"); }
+      if(state.ui.page==="scores"){ $("pageScores").classList.add("on"); setNavActive("navScores"); }
+      if(state.ui.page==="settings"){ $("pageSettings").classList.add("on"); setNavActive("navSettings"); }
+
+      fillSettings();
+      renderGameplay();
+      renderPrep();
+      renderScores();
+    }
+
+    /* ===== Init ===== */
     function boot(){
       document.documentElement.style.setProperty("--accent", state.settings.accent);
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
+
+      // If a match exists, ensure player color is synced and CPUs are unique
+      if(state.match){
+        state.match.players["P1"].color = state.settings.accent;
+        const cpuCols = ensureUniqueCpuColors();
+        if(state.match.players["P2"]) state.match.players["P2"].color = cpuCols[0];
+        if(state.match.players["P3"]) state.match.players["P3"].color = cpuCols[1];
+        if(state.match.players["P4"]) state.match.players["P4"].color = cpuCols[2];
+      }
+
+      // If existing match, make sure the first turn has draw flag reset
+      if(state.match) beginTurn(state.match.activePid);
+
       render();
     }
 
