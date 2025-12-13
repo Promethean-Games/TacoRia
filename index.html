@@ -603,6 +603,125 @@
       color: var(--text);
       font-weight:900;
     }
+
+    /* ===== Tutorial Overlay ===== */
+    #tutWrap{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 95;
+      background:
+        radial-gradient(900px 420px at 20% 0%, rgba(255,255,255,.06), transparent 62%),
+        radial-gradient(780px 360px at 85% 10%, rgba(255,255,255,.05), transparent 65%),
+        linear-gradient(180deg, var(--bg), var(--bg3));
+    }
+    #tutWrap.on{ display:flex; }
+
+    .tutCard{
+      width:min(680px, 100%);
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: 0 22px 60px rgba(0,0,0,.82);
+      overflow:hidden;
+    }
+    .tutTop{
+      padding: 14px 14px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .tutTitle{
+      font-weight:1000;
+      font-size: 18px;
+      margin:0;
+      line-height:1.1;
+    }
+    .tutStage{
+      font-weight:1000;
+      font-size:12px;
+      color: rgba(243,244,246,.72);
+    }
+    .tutViewport{
+      overflow:hidden;
+      touch-action: pan-y;
+    }
+    .tutTrack{
+      display:flex;
+      width: 100%;
+      transform: translateX(0%);
+      transition: transform 320ms cubic-bezier(.2,.9,.2,1);
+      will-change: transform;
+    }
+    .tutSlide{
+      flex: 0 0 100%;
+      padding: 14px 14px 12px;
+    }
+    .tutSlide h4{
+      margin: 6px 0 8px;
+      font-size: 16px;
+      font-weight:1000;
+    }
+    .tutSlide p{
+      margin: 0 0 10px;
+      color: rgba(243,244,246,.78);
+      font-weight:900;
+      line-height:1.35;
+      font-size: 13px;
+    }
+    .tutCallout{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.28);
+      border-radius: 18px;
+      padding: 10px 12px;
+      margin-top: 10px;
+    }
+    .tutDots{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      padding: 10px 14px 14px;
+    }
+    .dot{
+      width: 8px; height: 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+    }
+    .dot.on{
+      background: rgba(0,229,255,.40);
+      border-color: rgba(0,229,255,.55);
+      box-shadow: 0 0 20px rgba(0,229,255,.22);
+    }
+    .tutFoot{
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      padding: 0 14px 14px;
+    }
+    .tutBtns{
+      display:flex;
+      gap:10px;
+      margin-left:auto;
+    }
+    .tutCheck{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:1000;
+      color: rgba(243,244,246,.78);
+      font-size: 12px;
+      user-select:none;
+    }
+    .tutCheck input{
+      width: 18px; height: 18px;
+      accent-color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -701,7 +820,6 @@
             </div>
           </details>
 
-          <!-- ✅ RESTORED: Menu Reference Guide (under Your Hand) -->
           <details class="acc" style="margin-top:10px;">
             <summary>
               <span>Menu Reference Guide</span>
@@ -832,6 +950,29 @@
               </select>
             </div>
           </details>
+
+          <!-- ✅ Tutorial controls in Settings -->
+          <details class="acc">
+            <summary>
+              <span>Help</span>
+              <span class="muted2 small">Tutorial</span>
+            </summary>
+            <div class="accBody">
+              <button class="primary" id="btnViewTutorial" style="width:100%;">View Tutorial</button>
+
+              <div class="switchRow">
+                <div>
+                  <div class="title">Show tutorial after first draw</div>
+                  <div class="sub">If off, it won’t auto-pop. You can still view it here.</div>
+                </div>
+                <input type="checkbox" id="chkTutAuto" />
+              </div>
+
+              <div class="row wrap" style="justify-content:flex-end; margin-top:10px;">
+                <button class="ghost btnTiny" id="btnResetTutorial">Reset tutorial status</button>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
     </main>
@@ -854,9 +995,45 @@
     </div>
   </div>
 
+  <!-- ✅ Tutorial Overlay -->
+  <div id="tutWrap" aria-hidden="true">
+    <div class="tutCard" role="dialog" aria-modal="true" aria-label="Tutorial">
+      <div class="tutTop">
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div class="tutTitle" id="tutTitle">Tutorial</div>
+          <div class="tutStage" id="tutStage">1 / 4</div>
+        </div>
+        <button class="ghost btnTiny" id="btnTutClose">Close</button>
+      </div>
+
+      <div class="tutViewport" id="tutViewport">
+        <div class="tutTrack" id="tutTrack">
+          <div class="tutSlide" id="slide0"></div>
+          <div class="tutSlide" id="slide1"></div>
+          <div class="tutSlide" id="slide2"></div>
+          <div class="tutSlide" id="slide3"></div>
+        </div>
+      </div>
+
+      <div class="tutDots" id="tutDots"></div>
+
+      <div class="tutFoot">
+        <label class="tutCheck" id="tutHideRow" style="visibility:hidden;">
+          <input type="checkbox" id="chkTutHide" />
+          Hide this tutorial next time
+        </label>
+
+        <div class="tutBtns">
+          <button class="ghost" id="btnTutBack">Back</button>
+          <button class="primary" id="btnTutNext">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const VERSION = "v0.9.1.4.25";
-    const LS_KEY = "taco_ria_state_v091425_breakfast_menuGuide";
+    const LS_KEY = "taco_ria_state_v091425_breakfast_tutorial";
 
     const DIFFS = ["Beginner","Easy","Medium","Difficult","Master Chef"];
     const DIFF_DELAY_MS = { "Beginner":5000, "Easy":3500, "Medium":2200, "Difficult":1200, "Master Chef":500 };
@@ -876,7 +1053,7 @@
     const I18N = {
       en: { gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings", orderUp:"Order Up!", drawTile:"Draw Tile", endTurn:"End Turn", prepDish:"Prep a Dish", cancel:"Cancel", close:"Close" },
       es: { gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes", orderUp:"¡Orden lista!", drawTile:"Robar ficha", endTurn:"Terminar turno", prepDish:"Preparar plato", cancel:"Cancelar", close:"Cerrar" },
-      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher une tuile", endTurn:"Fin du tour", prepDish:"Préparer un plat", cancel:"Annuler", close:"Fermer" },
+      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher une tuile", endTurn:"Fin du tour", prepDish:"Préparer un plat", cancel:"Annuler", close:"Schließen" },
       de: { gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen", orderUp:"Bestellung raus!", drawTile:"Plättchen ziehen", endTurn:"Zug beenden", prepDish:"Gericht vorbereiten", cancel:"Abbrechen", close:"Schließen" },
     };
 
@@ -886,7 +1063,6 @@
       starterPassDishKey: "chipsDip",
     };
 
-    // ✅ Added Breakfast Taco
     const RECIPES = [
       { key:"hardTaco", name:"Hard Shell Taco", pts:5, kind:"taco", tortilla:"Corn Tortillas" },
       { key:"softTaco", name:"Soft Taco", pts:5, kind:"taco", tortilla:"Flour Tortillas" },
@@ -1016,7 +1192,6 @@
       const r = recipeByKey(recipeKey);
       const S = (label, accept)=>({ label, accept });
 
-      // default 8
       if(!r) return Array.from({length:8}).map((_,i)=>S(`Slot ${i+1}`, ()=>true));
 
       if(r.kind==="breakfast"){
@@ -1118,45 +1293,37 @@
       function count(fn){ return nonWild.filter(fn).length; }
       function hasAny(fn){ return count(fn) > 0 || wildCount > 0; }
 
-      // ✅ Breakfast Taco
       if(r.kind==="breakfast"){
-        // Required: tortilla (either) + egg
         const hasTort = nonWild.some(isTortilla) || (wildCount>0 && !nonWild.some(isTortilla));
         const hasEgg  = nonWild.includes("Egg") || (wildCount>0 && !nonWild.includes("Egg"));
         if(!hasTort) return { ok:false, reason:"Needs a tortilla." };
         if(!hasEgg)  return { ok:false, reason:"Needs egg." };
 
-        // Kitchen lock for wet toppings (still applies)
         if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
           if(nonWild.some(isWet)) return { ok:false, reason:"Wet toppings locked until Kitchen Open." };
         }
 
-        // Restrict core counts
         if(count(isTortilla) > 1) return { ok:false, reason:"Only 1 tortilla." };
         if(countName("Egg") > 1) return { ok:false, reason:"Only 1 egg." };
 
-        // Wet toppings: allow multiple *types*, but single each (no doubles)
         const wets = nonWild.filter(isWet);
         const wetSet = new Set(wets);
         for(const w of wetSet){
           if(countName(w) > 1) return { ok:false, reason:`Only 1 ${w}.` };
         }
 
-        // Dry ingredients may be doubled (max 2 of the same dry topping)
         const drys = nonWild.filter(isDryTopping);
         const drySet = new Set(drys);
         for(const dnm of drySet){
           if(countName(dnm) > 2) return { ok:false, reason:`Max double ${dnm}.` };
         }
 
-        // Keep it tidy: 2–7 tiles total
         if(tileObjs.length < 2) return { ok:false, reason:"Needs at least tortilla + egg." };
         if(tileObjs.length > 7) return { ok:false, reason:"Max 7 tiles." };
 
         return { ok:true };
       }
 
-      // Regular tacos
       if(r.kind==="taco"){
         const hasReqTortilla = nonWild.includes(r.tortilla) || (wildCount>0 && !nonWild.some(isTortilla));
         if(!hasReqTortilla) return { ok:false, reason:`Use ${r.tortilla}.` };
@@ -1229,7 +1396,6 @@
     }
 
     function detectDishKeyFromSelection(tileObjs, ctx){
-      // Choose first matching recipe in a sensible priority order
       const order = ["breakfastTaco","pico","chipsDip","ench","chorizoTaco","hardTaco","softTaco"];
       for(const k of order){
         const v = validateDish(k, tileObjs, ctx);
@@ -1258,6 +1424,9 @@
           page:"gameplay",
           selectedIds: [],
           lastAutoPlateSig: "",
+          tutorialSeen: false,
+          tutorialAuto: true,
+          pendingTutorialAfterDraw: false
         }
       };
     }
@@ -1388,7 +1557,7 @@
 
       const tiles = (pid==="P1")
         ? selectionTileObjs(pl)
-        : []; // CPU uses its own calls elsewhere
+        : [];
 
       if(!tiles.length) return { ok:false, msg:"No ingredients loaded." };
 
@@ -1413,7 +1582,6 @@
       };
       m.publicLine.push(pub);
 
-      // remove from hand
       for(const t of tiles){
         const idx = pl.hand.findIndex(h=>h.id===t.id);
         if(idx>=0) pl.hand.splice(idx,1);
@@ -1423,7 +1591,6 @@
       pl.servedThisHand += r.pts;
       pl.logThisHand.push({ type:"serve", name:r.name, points:r.pts });
 
-      // kitchen open logic (starter pass rule kept simple)
       let nonStarterPts = 0;
       if(!m.kitchenOpen){
         if(key === RULES.starterPassDishKey && !pl.starterPassUsed){
@@ -1498,18 +1665,14 @@
       if(!m.kitchenOpen) return false;
       if(m.publicLine.length === 0) return false;
 
-      // cost: must spend Grocery Run
       const wild = pl.hand.find(t=>t.name==="Grocery Run");
       if(!wild) return false;
 
-      // pick a random public dish to remix
       const target = m.publicLine[randInt(m.publicLine.length)];
       if(!target) return false;
 
-      // spend wild
       pl.hand = pl.hand.filter(t=>t.id!==wild.id);
 
-      // award fixed points: keep original target points (no steals from others)
       pl.score += target.points;
       pl.servedThisHand += target.points;
       pl.logThisHand.push({ type:"remix", name:`Remix: ${target.name}`, points:target.points, from: target.ownerName });
@@ -1536,13 +1699,11 @@
       const pl = m.players[pid];
       if(!pl || pl.isHuman) return;
 
-      // Remix first (if enabled)
       if(cpuTryRemix(pid)){
         endTurn(pid);
         return;
       }
 
-      // otherwise: try to serve any valid dish from its hand (simple)
       const ctx = { kitchenOpen: m.kitchenOpen };
       const tryKeys = ["breakfastTaco","ench","pico","hardTaco","softTaco","chorizoTaco","chipsDip"];
 
@@ -1607,7 +1768,6 @@
           const tiles = ids.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
           const v = validateDish(rk, tiles, ctx);
           if(v.ok){
-            // serve
             const pub = {
               id: nowId("pub"),
               owner: pid,
@@ -1642,7 +1802,6 @@
       }
 
       if(!served){
-        // draw once
         if(!pl.didDrawThisTurn && m.bag.length){
           const res = drawTile(pid);
           if(res.ok) toast(`${pl.name} drew a tile.`, 1100);
@@ -1687,16 +1846,13 @@
       const key = detectDishKeyFromSelection(tiles, ctx);
       if(!key) return;
 
-      // signature to prevent repeat autoplate spam
       const sig = key + "|" + tiles.map(t=>t.id).sort().join(",");
       if(sig === state.ui.lastAutoPlateSig) return;
 
       state.ui.lastAutoPlateSig = sig;
       persist();
 
-      // subtle delay
       setTimeout(()=>{
-        // still on same selection?
         const pl2 = p1();
         const tiles2 = selectionTileObjs(pl2);
         const key2 = detectDishKeyFromSelection(tiles2, { kitchenOpen: state.match.kitchenOpen });
@@ -1712,7 +1868,202 @@
       }, 520);
     }
 
-    /* ===== Draw Modal (tile backs ONLY show game name) ===== */
+    /* ===== Tutorial (swipe pages) ===== */
+    const TUT_TOTAL = 4;
+    let tutIndex = 0;
+
+    function tutSlidesHtml(){
+      const app = escapeHtml(getAppName());
+      return [
+        `
+          <h4>What’s next?</h4>
+          <p>You just drew an ingredient. Your next move is to build an <b>entrée</b> or <b>appetizer</b> using the ingredients in front of you.</p>
+          <div class="tutCallout">
+            <p style="margin:0;">
+              Go to <b>Prep</b> → tap tiles in <b>Your Hand</b> to load the <b>Prep Window</b>.
+              When a menu dish is detected, <b>Order Up!</b> becomes available.
+            </p>
+          </div>
+          <p style="margin-top:10px;">Tip: the Prep Window auto-organizes your selection so it’s easy to see what you’re missing.</p>
+        `,
+        `
+          <h4>Opening the Kitchen</h4>
+          <p>The Kitchen starts closed. To open it, you must serve <b>10+ points in a single turn</b>.</p>
+          <div class="tutCallout">
+            <p style="margin:0;">
+              While the Kitchen is closed, <b>wet ingredients</b> (like salsa, queso, guac) are locked.
+              Once it’s open, wet ingredients are allowed.
+            </p>
+          </div>
+          <p style="margin-top:10px;">Watch the badge on Gameplay: <b>Kitchen Closed</b> → <b>Kitchen Open</b>.</p>
+        `,
+        `
+          <h4>Remixing</h4>
+          <p>After the Kitchen opens, Remixing can come into play. It’s a power move that lets a player leverage the existing Public Line.</p>
+          <div class="tutCallout">
+            <p style="margin:0;">
+              In harder setups, CPUs can <b>Remix</b> using a <b>Grocery Run</b> tile—creating a Remix dish in the window.
+              (You’ll see it labeled “Remix”.)
+            </p>
+          </div>
+          <p style="margin-top:10px;">Think of it as “re-using the line” to surge points when timing is right.</p>
+        `,
+        `
+          <h4>Bonuses & future spice</h4>
+          <p>Some builds will earn extra love—depending on your mode, house rules, or future updates.</p>
+          <div class="tutCallout">
+            <p style="margin:0;">
+              Examples: <b>extra toppings</b>, <b>double lettuce</b>, clean “perfect builds,” seasonal specials, and more.
+            </p>
+          </div>
+          <p style="margin-top:10px;">If you want, you can hide this tutorial after today and revisit it anytime in <b>Settings → Help</b>.</p>
+        `
+      ];
+    }
+
+    function openTutorial(startAt=0){
+      tutIndex = Math.max(0, Math.min(TUT_TOTAL-1, startAt));
+      $("tutWrap").classList.add("on");
+      $("tutWrap").setAttribute("aria-hidden","false");
+
+      // inject slide content once per open
+      const htmls = tutSlidesHtml();
+      for(let i=0;i<TUT_TOTAL;i++){
+        $("slide"+i).innerHTML = htmls[i];
+      }
+
+      // sync checkbox to current setting (auto show)
+      $("chkTutHide").checked = !state.ui.tutorialAuto;
+
+      renderTutorial();
+      attachTutorialGestures();
+    }
+
+    function closeTutorial(){
+      $("tutWrap").classList.remove("on");
+      $("tutWrap").setAttribute("aria-hidden","true");
+      detachTutorialGestures();
+      // clearing pending, in case this was auto-launched
+      state.ui.pendingTutorialAfterDraw = false;
+      persist();
+    }
+
+    function renderTutorial(){
+      $("tutTitle").textContent = "Tutorial";
+      $("tutStage").textContent = `${tutIndex+1} / ${TUT_TOTAL}`;
+      $("tutTrack").style.transform = `translateX(-${tutIndex*100}%)`;
+
+      // dots
+      $("tutDots").innerHTML = Array.from({length:TUT_TOTAL}).map((_,i)=>`
+        <div class="dot ${i===tutIndex ? "on" : ""}"></div>
+      `).join("");
+
+      $("btnTutBack").disabled = (tutIndex===0);
+      $("btnTutNext").textContent = (tutIndex===TUT_TOTAL-1) ? "Done" : "Next";
+
+      // show hide option only on last page
+      $("tutHideRow").style.visibility = (tutIndex===TUT_TOTAL-1) ? "visible" : "hidden";
+    }
+
+    function nextTutorial(){
+      if(tutIndex < TUT_TOTAL-1){
+        tutIndex++;
+        renderTutorial();
+        return;
+      }
+
+      // Done (last page)
+      state.ui.tutorialSeen = true;
+
+      // If checked: hide next time (turn off auto pop)
+      state.ui.tutorialAuto = !$("chkTutHide").checked ? true : false;
+
+      persist();
+      closeTutorial();
+      toast("Tutorial saved.");
+    }
+
+    function backTutorial(){
+      if(tutIndex>0){
+        tutIndex--;
+        renderTutorial();
+      }
+    }
+
+    $("btnTutClose").onclick = ()=>{
+      // Close keeps preference as-is, but marks as seen so it doesn’t feel naggy
+      state.ui.tutorialSeen = true;
+      persist();
+      closeTutorial();
+    };
+    $("btnTutNext").onclick = nextTutorial;
+    $("btnTutBack").onclick = backTutorial;
+
+    // swipe gestures
+    let tutGesturesAttached = false;
+    let tutStartX = 0;
+    let tutStartY = 0;
+    let tutDown = false;
+
+    function onTutDown(e){
+      const pt = (e.touches && e.touches[0]) ? e.touches[0] : e;
+      tutDown = true;
+      tutStartX = pt.clientX;
+      tutStartY = pt.clientY;
+    }
+    function onTutUp(e){
+      if(!tutDown) return;
+      tutDown = false;
+      const pt = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : e;
+      const dx = pt.clientX - tutStartX;
+      const dy = pt.clientY - tutStartY;
+
+      // ignore mostly-vertical gestures
+      if(Math.abs(dy) > Math.abs(dx)) return;
+
+      if(dx <= -50) nextTutorial();
+      else if(dx >= 50) backTutorial();
+    }
+
+    function attachTutorialGestures(){
+      if(tutGesturesAttached) return;
+      tutGesturesAttached = true;
+      const vp = $("tutViewport");
+      vp.addEventListener("touchstart", onTutDown, {passive:true});
+      vp.addEventListener("touchend", onTutUp, {passive:true});
+      // mouse
+      vp.addEventListener("mousedown", onTutDown);
+      window.addEventListener("mouseup", onTutUp);
+    }
+    function detachTutorialGestures(){
+      if(!tutGesturesAttached) return;
+      tutGesturesAttached = false;
+      const vp = $("tutViewport");
+      vp.removeEventListener("touchstart", onTutDown);
+      vp.removeEventListener("touchend", onTutUp);
+      vp.removeEventListener("mousedown", onTutDown);
+      window.removeEventListener("mouseup", onTutUp);
+    }
+
+    function maybeLaunchTutorialAfterFirstDraw(){
+      // show only if:
+      // - tutorialAuto is on
+      // - tutorial not already seen
+      // - we explicitly queued it (after first draw reveal)
+      if(!state.ui.tutorialAuto) return;
+      if(state.ui.tutorialSeen) return;
+      if(!state.ui.pendingTutorialAfterDraw) return;
+
+      // reset queue + open
+      state.ui.pendingTutorialAfterDraw = false;
+      state.ui.tutorialSeen = true; // marks it as "already surfaced"
+      persist();
+
+      // small delay so it feels intentional after the draw modal closes
+      setTimeout(()=> openTutorial(0), 260);
+    }
+
+    /* ===== Draw Tile Modal Grid ===== */
     let modalMode = null;
     function bestFitCols(n){
       if(n >= 25) return 5;
@@ -1793,7 +2144,12 @@
           return;
         }
 
-        // reveal ingredient on the tile (modal stays open for animation)
+        // queue tutorial ONLY on first-ever draw (and only if auto is on)
+        if(!state.ui.tutorialSeen && state.ui.tutorialAuto){
+          state.ui.pendingTutorialAfterDraw = true;
+          persist();
+        }
+
         const front = pick.querySelector("[data-front-text]");
         if(front) front.textContent = res.tile.name;
         pick.classList.add("reveal");
@@ -1801,10 +2157,10 @@
         persist();
         render();
 
-        // close after flip completes (keeps it smooth + legible)
         setTimeout(()=>{
           closeModal();
           toast(`Drew: ${res.tile.name}`);
+          maybeLaunchTutorialAfterFirstDraw(); // ✅ tutorial pops AFTER draw modal closes
         }, 1050);
       };
     }
@@ -1892,6 +2248,9 @@
 
       $("chkAutoPlate").checked = !!state.settings.autoPlate;
       $("chkAutoRemix").checked = !!state.settings.autoRemix;
+
+      // tutorial settings
+      $("chkTutAuto").checked = !!state.ui.tutorialAuto;
     }
 
     $("selMode").onchange = ()=>{ state.settings.mode = $("selMode").value; persist(); render(); };
@@ -1923,6 +2282,22 @@
       }
 
       persist(); render();
+    };
+
+    // tutorial setting controls
+    $("btnViewTutorial").onclick = ()=> openTutorial(0);
+    $("chkTutAuto").onchange = ()=>{
+      state.ui.tutorialAuto = $("chkTutAuto").checked;
+      persist();
+      toast(state.ui.tutorialAuto ? "Tutorial will auto-show after first draw." : "Tutorial auto-show disabled.");
+      render();
+    };
+    $("btnResetTutorial").onclick = ()=>{
+      state.ui.tutorialSeen = false;
+      state.ui.pendingTutorialAfterDraw = false;
+      persist();
+      toast("Tutorial reset.");
+      render();
     };
 
     function phaseText(){
@@ -1987,13 +2362,11 @@
       $("prepTurnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
       $("handCountHint").textContent = `${pl.hand.length} tiles`;
 
-      // Draw button state
       $("btnDraw").textContent = t("drawTile");
       $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn || m.bag.length===0;
       if(!pl.didDrawThisTurn && myTurn && m.bag.length>0) $("btnDraw").classList.add("pulse");
       else $("btnDraw").classList.remove("pulse");
 
-      // Dish detection
       const ctx = { kitchenOpen: m.kitchenOpen };
       const tiles = selectionTileObjs(pl);
       const key = detectDishKeyFromSelection(tiles, ctx);
@@ -2003,13 +2376,11 @@
       $("btnOrderUpFromPrep").classList.toggle("pulseOrder", canOrder);
       $("btnOrderUpFromPrep").textContent = t("orderUp");
 
-      // hint + header
       if(!tiles.length){
         $("prepLoadedHint").textContent = "Empty";
         $("prepHint").textContent = "Load ingredients to detect a dish.";
       } else if(!key){
         $("prepLoadedHint").textContent = `${tiles.length}/8 loaded`;
-        const msg = validateDish("breakfastTaco", tiles, ctx).ok ? "" : "";
         $("prepHint").textContent = "No dish detected yet.";
       } else {
         const r = recipeByKey(key);
@@ -2018,9 +2389,8 @@
         $("prepHint").textContent = v.ok ? "✅ Ready for Order Up!" : `⚠️ ${v.reason}`;
       }
 
-      // Prep carousel auto-placed to detected recipe (or fallback)
       const car = $("prepCarousel");
-      const useKey = key || "breakfastTaco"; // keeps slots stable & readable
+      const useKey = key || "breakfastTaco";
       const { slots, slotFill } = assignToSlots(pl.hand, state.ui.selectedIds, useKey);
 
       car.innerHTML = slots.map((s, i)=>{
@@ -2038,7 +2408,6 @@
         `;
       }).join("");
 
-      // Hand tiles grouped
       const grouped = groupBy(pl.hand, t => ingredientCategory(t.name));
       const order = ["tortilla","protein","cheese","wet","drytop","wild","other"];
 
@@ -2070,7 +2439,6 @@
         </div>
       `;
 
-      // Menu guide
       $("menuGuide").innerHTML = `
         <div class="hint" style="margin-top:6px;">
           Simple rule-of-thumb. If the Prep Window matches a dish, <b>Order Up!</b> lights up.
@@ -2175,7 +2543,6 @@
       $("phaseTitle").textContent = ph.title;
       $("phaseDesc").textContent = ph.desc;
 
-      // Order Up enabled only when a dish is detected in prep selection
       const pl = p1();
       const ctx = { kitchenOpen: m.kitchenOpen };
       const tiles = selectionTileObjs(pl);
@@ -2216,10 +2583,13 @@
 
     /* ===== Boot ===== */
     function boot(){
-      // initial difficulty defaults only if not set
       if(typeof state.settings.autoPlate !== "boolean" || typeof state.settings.autoRemix !== "boolean"){
         applyDifficultyDefaults();
       }
+      if(typeof state.ui.tutorialAuto !== "boolean") state.ui.tutorialAuto = true;
+      if(typeof state.ui.tutorialSeen !== "boolean") state.ui.tutorialSeen = false;
+      if(typeof state.ui.pendingTutorialAfterDraw !== "boolean") state.ui.pendingTutorialAfterDraw = false;
+
       document.documentElement.style.setProperty("--accent", state.settings.accent);
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
 
