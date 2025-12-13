@@ -170,17 +170,16 @@
     }
     .actionsStack{ display:flex; flex-direction:column; gap:10px; }
 
-    /* Tiles */
-    .tiles{ display:flex; flex-wrap:wrap; gap:8px; }
+    /* Tiles (slightly less cramped) */
+    .tiles{ display:flex; flex-wrap:wrap; gap:10px; }
     .tile{
       max-width:100%;
       overflow-wrap:anywhere;
-      border-radius: 999px;
-      padding: 10px 12px;
+      border-radius: 16px;
+      padding: 12px 14px;
       border: 1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      font-weight: 900;
-      font-size: 13px;
+      font-weight: 1000;
+      font-size: 14px;
       cursor:pointer;
       user-select:none;
       --catTint: rgba(255,255,255,.06);
@@ -397,16 +396,19 @@
       padding: 14px;
     }
     .modal h3{ margin: 4px 0 8px; font-size: 18px; }
-    .modal .body{ color: var(--muted); font-weight: 900; line-height: 1.35; }
-    .modal .foot{ margin-top: 12px; display:flex; gap:10px; justify-content:flex-end; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-    /* Make modal content scroll-safe on short screens (helps draw grid) */
-    #modalBody{
-      max-height: min(70vh, 560px);
+    /* ✅ Fix layout blowouts: make modal body scrollable */
+    .modal .body{
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.35;
+      max-height: min(68vh, 520px);
       overflow:auto;
       padding-right: 2px;
     }
+
+    .modal .foot{ margin-top: 12px; display:flex; gap:10px; justify-content:flex-end; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
     .page{ display:none; }
     .page.on{ display:block; }
@@ -487,77 +489,91 @@
     }
     .drawGrid{
       display:grid;
-      gap:8px;
+      gap:12px;
       margin-top: 10px;
+      padding: 2px;
     }
     .drawGrid.busy{ pointer-events:none; opacity:.92; }
 
-    /* Tile backs: clean, minimal, ONLY app name */
+    /* ✅ Subtle, slow shimmer */
+    @keyframes tileShimmer{
+      0%   { transform: translateX(-60%); opacity: .00; }
+      20%  { opacity: .10; }
+      50%  { opacity: .16; }
+      80%  { opacity: .10; }
+      100% { transform: translateX(60%); opacity: .00; }
+    }
+
     .tileBack{
       position:relative;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.16);
       background:
-        radial-gradient(340px 140px at 25% 0%, rgba(255,255,255,.08), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+        radial-gradient(340px 140px at 25% 0%, rgba(255,255,255,.06), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
       box-shadow: 0 12px 28px rgba(0,0,0,.50);
       overflow:hidden;
       cursor:pointer;
       user-select:none;
-
-      /* less “crowded” feel */
-      aspect-ratio: 1 / 1;
       min-height: 86px;
-
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      padding: 10px 8px;
+      padding: 10px 10px;
     }
-    @media (max-width: 430px){
-      .tileBack{ min-height: 88px; }
-    }
-    @media (max-width: 390px){
-      .tileBack{ min-height: 92px; }
-    }
-
     .tileBack:active{ transform: translateY(1px) scale(.99); }
+
+    /* shimmer layer */
     .tileBack::before{
       content:"";
-      position:absolute; inset:-40px;
+      position:absolute;
+      inset:-60%;
       background:
-        radial-gradient(520px 240px at 10% 0%, rgba(0,229,255,.16), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,255,255,.06), transparent 65%);
-      opacity:.65;
+        linear-gradient(120deg,
+          transparent 0%,
+          rgba(255,255,255,.10) 40%,
+          rgba(0,229,255,.10) 50%,
+          rgba(255,255,255,.10) 60%,
+          transparent 100%);
+      transform: translateX(-60%);
+      animation: tileShimmer 7.5s ease-in-out infinite;
       pointer-events:none;
     }
+
+    /* soft dark overlay to keep shimmer subtle */
     .tileBack::after{
       content:"";
       position:absolute; inset:0;
-      background:
-        linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
-      opacity:.55;
+      background: linear-gradient(135deg, rgba(0,0,0,.28), rgba(0,0,0,.58));
+      opacity:.65;
       pointer-events:none;
     }
+
+    .tileBackInner{ position:relative; z-index:1; width:100%; }
     .tileBackBrand{
-      position:relative;
-      z-index:1;
       font-weight:1000;
       letter-spacing:.2px;
-      color: rgba(243,244,246,.80);
+      color: rgba(243,244,246,.78);
       font-size: 13px;
-      line-height:1.15;
+      line-height:1.12;
       padding: 0 6px;
-      max-width: 100%;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
     }
+
     .tileBackSel{
       outline: 2px solid rgba(0,229,255,.55);
       box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 30px rgba(0,229,255,.30);
     }
+
+    /* Motion safety */
+    @media (prefers-reduced-motion: reduce){
+      .tileBack::before{ animation:none; }
+      .pulse, .pulseOrder{ animation:none; }
+      button:active{ transform:none; }
+      .tile.sel{ transform:none; }
+    }
+
+    :root{ color-scheme: dark; }
   </style>
 </head>
 <body>
@@ -567,7 +583,7 @@
         <div>
           <div class="row" style="gap:10px;">
             <div class="pageTitle" id="appNameH">Taco Ria</div>
-            <span class="pill"><span class="mono" id="verPill">v0.9.1.2.26</span></span>
+            <span class="pill"><span class="mono" id="verPill">v0.9.1.2.25</span></span>
           </div>
           <div class="muted small" id="subTitle">Private Prep • Public Line • Remix</div>
         </div>
@@ -704,7 +720,7 @@
         <div class="card">
           <div class="row sp" style="margin-bottom:10px;">
             <div style="font-weight:1000;">Settings</div>
-            <span class="badge">v<span class="mono">0.9.1.2.26</span></span>
+            <span class="badge">v<span class="mono">0.9.1.2.25</span></span>
           </div>
           <div class="muted small">Primary theme stays black. Choose a high-contrast accent.</div>
 
@@ -822,17 +838,16 @@
 
   <script>
     /* =========================
-       Taco Ria v0.9.1.2.26 (Atomic Patch)
+       Taco Ria v0.9.1.2.25 (Atomic Patch)
        ✅ Draw Tile opens a modal grid of face-down branded tiles
-       ✅ Tile backs are CLEAN: ONLY game name (no version/number/extra text)
-       ✅ Grid uses 4 columns on small screens to reduce crowding
-       ✅ Player selects any tile; assigned tile is RANDOM regardless of choice
-       ✅ Grid shows up to 25 if >=25 remaining; else best-fit grid w/ exact count
-       ✅ Declares when no tiles remain
+       ✅ Tile backs show ONLY the game name (no version, no numbering, no extra text)
+       ✅ Copy line: “Pick a tile, any tile...”
+       ✅ Subtle, slow shimmer on tile backs
+       ✅ Modal body scroll fix for mobile
        ✅ Still enforces: one draw per turn
        ========================= */
 
-    const VERSION = "v0.9.1.2.26";
+    const VERSION = "v0.9.1.2.25";
     const LS_KEY = "taco_ria_state_v091225";
 
     const DIFFS = ["Beginner","Easy","Medium","Difficult","Master Chef"];
@@ -1663,10 +1678,9 @@
     let modalMode = null;
 
     function bestFitCols(n){
-      const isSmall = window.innerWidth <= 430;
-      const maxCols = isSmall ? 4 : 5;
+      // cap max columns a bit on narrow screens so tiles don't feel cramped
+      const maxCols = (window.innerWidth && window.innerWidth < 390) ? 4 : 5;
       if(n >= 25) return maxCols;
-
       const c = Math.ceil(Math.sqrt(n));
       return Math.max(1, Math.min(maxCols, c));
     }
@@ -1698,14 +1712,16 @@
           <span class="pill">Tiles Remaining <span class="mono">${total}</span></span>
           ${total > 25 ? `<span class="pill muted">Showing <span class="mono">25</span></span>` : ``}
         </div>
-        <div class="muted small">Pick any tile. (The draw is random, regardless of choice.)</div>
+        <div class="muted small">Pick a tile, any tile...</div>
       `;
 
       const grid = `
         <div class="drawGrid" id="drawGrid" style="grid-template-columns: repeat(${cols}, 1fr);">
           ${Array.from({length: shown}).map((_,i)=>`
             <div class="tileBack" data-draw-pick="${i}">
-              <div class="tileBackBrand">${appName}</div>
+              <div class="tileBackInner">
+                <div class="tileBackBrand">${appName}</div>
+              </div>
             </div>
           `).join("")}
         </div>
@@ -1720,7 +1736,6 @@
       );
 
       modalMode = "draw";
-
       $("modalBody").onclick = (e)=>{
         if(modalMode !== "draw") return;
         const pick = e.target.closest("[data-draw-pick]");
