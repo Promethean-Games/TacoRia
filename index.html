@@ -388,6 +388,8 @@
       z-index: 90;
     }
     #modalWrap.on{ display:flex; }
+
+    /* FIX: modal scroll + height containment (draw grid rendering) */
     .modal{
       width: min(560px, 100%);
       border-radius: 22px;
@@ -395,10 +397,24 @@
       background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       box-shadow: 0 22px 60px rgba(0,0,0,.70);
       padding: 14px;
+      max-height: 86vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
     }
-    .modal h3{ margin: 4px 0 8px; font-size: 18px; }
-    .modal .body{ color: var(--muted); font-weight: 900; line-height: 1.35; }
-    .modal .foot{ margin-top: 12px; display:flex; gap:10px; justify-content:flex-end; }
+    .modal h3{ margin: 4px 0 8px; font-size: 18px; flex:0 0 auto; }
+    .modal .body{
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.35;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 2px;
+      flex:1 1 auto;
+      min-height: 0;
+    }
+    .modal .foot{ margin-top: 12px; display:flex; gap:10px; justify-content:flex-end; flex:0 0 auto; }
+
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
     .page{ display:none; }
@@ -481,10 +497,11 @@
     .drawGrid{
       display:grid;
       gap:10px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
-    .drawGrid.busy{ pointer-events:none; opacity:.92; }
+    .drawGrid.busy{ pointer-events:none; opacity:.95; }
 
+    /* Tile back + reveal animation */
     .tileBack{
       position:relative;
       border-radius:18px;
@@ -502,6 +519,8 @@
       justify-content:center;
       text-align:center;
       padding: 10px 8px;
+      transform: translateZ(0);
+      --catTint: rgba(255,255,255,.06);
     }
     .tileBack:active{ transform: translateY(1px) scale(.99); }
     .tileBack::before{
@@ -553,6 +572,42 @@
       outline: 2px solid rgba(0,229,255,.55);
       box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 30px rgba(0,229,255,.30);
     }
+    @keyframes tileSpinReveal{
+      0%   { transform: rotateY(0deg) scale(1); }
+      45%  { transform: rotateY(180deg) scale(1.03); }
+      100% { transform: rotateY(360deg) scale(1); }
+    }
+    .tileBack.spin{ animation: tileSpinReveal .78s ease-in-out forwards; }
+
+    .tileFrontName{
+      font-weight:1000;
+      font-size: 12px;
+      color: rgba(255,255,255,.95);
+      line-height:1.05;
+      text-shadow: 0 8px 18px rgba(0,0,0,.45);
+    }
+    .tileFrontCat{
+      margin-top:6px;
+      font-weight:1000;
+      font-size: 10px;
+      color: rgba(243,244,246,.62);
+      letter-spacing:.18px;
+    }
+    .tileBack.revealed{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)),
+        linear-gradient(135deg, var(--catTint), rgba(0,0,0,.55));
+      border-color: rgba(255,255,255,.22);
+    }
+
+    /* Apply category tints to tileBack too */
+    .tileBack.cat-tortilla{ --catTint: rgba(255,204,0,.18); border-color: rgba(255,204,0,.30); }
+    .tileBack.cat-protein { --catTint: rgba(255,59,48,.16);  border-color: rgba(255,59,48,.28); }
+    .tileBack.cat-cheese  { --catTint: rgba(255,245,200,.14); border-color: rgba(255,245,200,.24); }
+    .tileBack.cat-wet     { --catTint: rgba(255,43,214,.14); border-color: rgba(255,43,214,.24); }
+    .tileBack.cat-drytop  { --catTint: rgba(163,255,18,.12); border-color: rgba(163,255,18,.22); }
+    .tileBack.cat-wild    { --catTint: rgba(255,255,255,.10); border-color: rgba(255,255,255,.26); }
+    .tileBack.cat-other   { --catTint: rgba(179,107,255,.14); border-color: rgba(179,107,255,.24); }
   </style>
 </head>
 <body>
@@ -619,7 +674,7 @@
             <span class="badge" id="prepTurnBadge">Your Turn</span>
           </div>
 
-          <div class="row wrap" style="gap:10px; justify-content:space-between; margin-bottom:12px;">
+          <div class="actionsStack" style="margin-bottom:12px;">
             <button class="primary jumbo" id="btnDraw">Draw Tile</button>
             <button class="primary jumbo" id="btnOrderUpFromPrep">Order Up!</button>
           </div>
@@ -818,11 +873,17 @@
   <script>
     /* =========================
        Taco Ria v0.9.1.2.25 (Atomic Patch)
-       ✅ Draw Tile opens a modal grid of face-down branded tiles
+       ✅ Draw Tile opens a modal grid of face-down branded tiles + spin/reveal animation
        ✅ Player selects any tile; assigned tile is RANDOM regardless of choice
        ✅ Grid shows up to 5x5 (25) if >=25 remaining; else best-fit grid w/ exact count + numbering
        ✅ Declares when no tiles remain
        ✅ Still enforces: one draw per turn
+       ✅ Scoring refresh: base recipe points + 1 per extra ingredient tile
+          - Taco: base = tortilla + protein + 3 dry toppings (extras allowed up to 2 tiles)
+          - Enchiladas: base 4 tiles + up to 3 extra toppings
+          - Pico: no extras (still fixed 4)
+          - Breakfast Taco added (base tortilla+egg, extras allowed; bans sour cream/charro/black beans)
+       ✅ Lauren’s Lunch: toast on any double lettuce publish (incl. remixes), +5 only on ORIGINAL play
        ========================= */
 
     const VERSION = "v0.9.1.2.25";
@@ -858,9 +919,15 @@
       starterPassDishKey: "chipsDip",
     };
 
+    const ACH = {
+      laurensLunchBonus: 5,
+      laurensLunchMs: 5000,
+    };
+
     const RECIPES = [
       { key:"hardTaco", name:"Hard Shell Taco", pts:5, kind:"taco", tortilla:"Corn Tortillas" },
       { key:"softTaco", name:"Soft Taco", pts:5, kind:"taco", tortilla:"Flour Tortillas" },
+      { key:"breakfastTaco", name:"Breakfast Taco", pts:5, kind:"breakfastTaco" }, /* NEW */
       { key:"chorizoTaco", name:"Chorizo Taco", pts:8, kind:"chorizoTaco" },
       { key:"chipsDip", name:"Chips & Dip", pts:5, kind:"chipsDip" },
       { key:"pico", name:"Pico de Gallo", pts:8, kind:"pico" },
@@ -933,7 +1000,7 @@
       }
       $("modalWrap").classList.add("on");
     }
-    function closeModal(){ $("modalWrap").classList.remove("on"); modalMode = null; }
+    function closeModal(){ $("modalWrap").classList.remove("on"); modalMode = null; $("modalBody").onclick = null; }
     $("modalWrap").addEventListener("click",(e)=>{ if(e.target.id==="modalWrap") closeModal(); });
 
     function t(key){
@@ -942,7 +1009,6 @@
     }
 
     function getAppName(){
-      // branding follows the displayed app name (or document title as fallback)
       return ($("appNameH")?.textContent || document.title || "App").trim();
     }
 
@@ -984,6 +1050,32 @@
       }[cat] || cat;
     }
 
+    /* ===== Lauren's Lunch ===== */
+    function hasDoubleLettuce(tileObjs){
+      return (tileObjs || []).filter(t=>t?.name==="Lettuce").length >= 2;
+    }
+
+    /* ===== Points: base + 1 per extra ingredient tile ===== */
+    function requiredCountForRecipe(recipeKey){
+      const r = recipeByKey(recipeKey);
+      if(!r) return 0;
+      if(r.kind==="taco") return 5;             // tortilla + protein + 3 dry toppings
+      if(r.kind==="breakfastTaco") return 2;    // tortilla + egg
+      if(r.kind==="ench") return 4;             // tortillas + protein + sauce + cheese
+      if(r.kind==="chipsDip") return 2;
+      if(r.kind==="pico") return 4;
+      if(r.kind==="chorizoTaco") return 4;
+      return 0;
+    }
+    function computeDishPoints(recipeKey, tileObjs, isRemix=false){
+      const r = recipeByKey(recipeKey);
+      const base = r?.pts || 0;
+      const req = requiredCountForRecipe(recipeKey);
+      const extraCount = Math.max(0, (tileObjs?.length || 0) - req);
+      const laurenBonus = (!isRemix && hasDoubleLettuce(tileObjs)) ? ACH.laurensLunchBonus : 0;
+      return base + extraCount + laurenBonus;
+    }
+
     /* ===== Slot layout for Current Dish ===== */
     function slotDefsForRecipe(recipeKey){
       const r = recipeByKey(recipeKey);
@@ -1003,9 +1095,23 @@
           S("top1","Dry Top 1", isDryTopping),
           S("top2","Dry Top 2", isDryTopping),
           S("top3","Dry Top 3", isDryTopping),
-          S("xtra","Extra", ()=> true),
+          S("xtra","Extra", (n)=> isTopping(n) || isWild(n)),
         ];
       }
+
+      if(r.kind==="breakfastTaco"){
+        return [
+          S("tort","Tortilla", isTortilla),
+          S("egg","Egg", (n)=> n==="Egg"),
+          S("chee","Cheese (opt)", isCheese),
+          S("wet","Wet (opt)", (n)=> isWet(n)),
+          S("top1","Topping 1", (n)=> isTopping(n) || isWild(n)),
+          S("top2","Topping 2", (n)=> isTopping(n) || isWild(n)),
+          S("top3","Topping 3", (n)=> isTopping(n) || isWild(n)),
+          S("top4","Topping 4", (n)=> isTopping(n) || isWild(n)),
+        ];
+      }
+
       if(r.kind==="chipsDip"){
         return [
           S("chip","Chips", (n)=> n==="Tortilla Chips"),
@@ -1036,10 +1142,10 @@
           S("prot","Protein",   isProtein),
           S("sauc","Sauce",     isSauce),
           S("chee","Cheese",    isCheese),
-          S("x1","Extra",       ()=>true),
-          S("x2","Extra",       ()=>true),
-          S("x3","Extra",       ()=>true),
-          S("x4","Extra",       ()=>true),
+          S("top1","Topping 1 (opt)", (n)=> isTopping(n) || isWild(n)),
+          S("top2","Topping 2 (opt)", (n)=> isTopping(n) || isWild(n)),
+          S("top3","Topping 3 (opt)", (n)=> isTopping(n) || isWild(n)),
+          S("xtra","Extra", (n)=> isTopping(n) || isWild(n)),
         ];
       }
       if(r.kind==="chorizoTaco"){
@@ -1089,15 +1195,23 @@
     /* ===== Validation ===== */
     function validateDish(recipeKey, tileObjs, ctx){
       const r = recipeByKey(recipeKey);
-      const names = tileObjs.map(t=>t.name);
+      if(!r) return { ok:false, reason:"Unknown recipe." };
 
+      const names = tileObjs.map(t=>t.name);
       const wildCount = names.filter(isWild).length;
       const nonWild = names.filter(n=>!isWild(n));
 
       function count(fn){ return nonWild.filter(fn).length; }
       function hasAny(fn){ return count(fn) > 0 || wildCount > 0; }
 
+      /* Taco (improved): allow extra toppings; extra tiles score +1 each */
       if(r.kind==="taco"){
+        if(tileObjs.length < 5 || tileObjs.length > 7) return { ok:false, reason:"Use 5–7 tiles." };
+
+        // keep nonWild to tortilla/protein/toppings only (prevents weird rice/beans in tacos)
+        const bad = nonWild.find(n => !(isTortilla(n) || isProtein(n) || isTopping(n)));
+        if(bad) return { ok:false, reason:`Not allowed on tacos: ${bad}.` };
+
         const hasReqTortilla = nonWild.includes(r.tortilla) || (wildCount>0 && !nonWild.some(isTortilla));
         if(!hasReqTortilla) return { ok:false, reason:`Use ${r.tortilla}.` };
 
@@ -1108,7 +1222,7 @@
         }
 
         const dryTopCount = nonWild.filter(isDryTopping).length;
-        if(dryTopCount !== RULES.tacoDryToppingsRequired && wildCount < Math.max(0, RULES.tacoDryToppingsRequired - dryTopCount)){
+        if(dryTopCount < RULES.tacoDryToppingsRequired && wildCount < Math.max(0, RULES.tacoDryToppingsRequired - dryTopCount)){
           return { ok:false, reason:`Needs ${RULES.tacoDryToppingsRequired} dry toppings.` };
         }
 
@@ -1117,7 +1231,34 @@
         if(count(isCheese) > 1) return { ok:false, reason:"Only 1 cheese." };
         if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
 
-        if(tileObjs.length < 5 || tileObjs.length > 7) return { ok:false, reason:"Use 5–7 tiles." };
+        return { ok:true };
+      }
+
+      /* Breakfast Taco (NEW): base tortilla+egg; extras allowed; bans sour cream/charro/black beans */
+      if(r.kind==="breakfastTaco"){
+        if(tileObjs.length < 2 || tileObjs.length > 7) return { ok:false, reason:"Use 2–7 tiles." };
+
+        const banned = ["Sour Cream","Charro Beans","Black Beans"];
+        const badBan = nonWild.find(n => banned.includes(n));
+        if(badBan) return { ok:false, reason:`Not allowed on breakfast tacos: ${badBan}.` };
+
+        const bad = nonWild.find(n => !(isTortilla(n) || n==="Egg" || isTopping(n)));
+        if(bad) return { ok:false, reason:`Not allowed on breakfast tacos: ${bad}.` };
+
+        const hasTort = nonWild.some(isTortilla) || (wildCount>0 && !nonWild.some(isTortilla));
+        if(!hasTort) return { ok:false, reason:"Needs a tortilla." };
+
+        const hasEgg = nonWild.includes("Egg") || (wildCount>0 && !nonWild.includes("Egg"));
+        if(!hasEgg) return { ok:false, reason:"Needs egg." };
+
+        if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
+          if(nonWild.some(isWet)) return { ok:false, reason:"Wet toppings locked until Kitchen Open." };
+        }
+
+        if(count(isTortilla) > 1) return { ok:false, reason:"Only 1 tortilla." };
+        if(nonWild.filter(n=>n==="Egg").length > 1) return { ok:false, reason:"Only 1 egg." };
+        if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
+
         return { ok:true };
       }
 
@@ -1153,10 +1294,14 @@
         return { ok:true };
       }
 
+      /* Enchiladas: base 4 tiles + up to 3 extra TOPPINGS (max 7 total) */
       if(r.kind==="ench"){
-        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
-        const wildCount = tileObjs.map(t=>t.name).filter(isWild).length;
-        const nonWild = tileObjs.map(t=>t.name).filter(n=>!isWild(n));
+        if(tileObjs.length < 4 || tileObjs.length > 7) return { ok:false, reason:"Use 4–7 tiles." };
+
+        if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
+          if(nonWild.some(isWet)) return { ok:false, reason:"Wet toppings locked until Kitchen Open." };
+        }
+
         const hasTort = nonWild.filter(isTortilla).length >= 1 || wildCount>=1;
         const hasProt = nonWild.filter(isProtein).length >= 1 || wildCount>=1;
         const hasChee = nonWild.filter(isCheese).length >= 1 || wildCount>=1;
@@ -1165,6 +1310,24 @@
         if(!hasProt) return { ok:false, reason:"Needs protein." };
         if(!hasChee) return { ok:false, reason:"Needs shredded cheese." };
         if(!hasSau)  return { ok:false, reason:"Needs sauce." };
+
+        if(count(isTortilla) > 1) return { ok:false, reason:"Only 1 tortilla tile." };
+        if(count(isProtein) > 1) return { ok:false, reason:"Only 1 protein tile." };
+        if(count(isCheese) > 1) return { ok:false, reason:"Only 1 cheese tile." };
+        if(count(isSauce) > 1) return { ok:false, reason:"Only 1 sauce tile." };
+
+        // extras must be toppings (or wild)
+        const reqUsed = 4;
+        const extras = Math.max(0, tileObjs.length - reqUsed);
+        if(extras > 3) return { ok:false, reason:"Max 3 toppings on enchiladas." };
+
+        const badExtra = nonWild.find(n=>{
+          // if it's not one of the 4 base requirements, it must be a topping
+          const isBase = isTortilla(n) || isProtein(n) || isCheese(n) || isSauce(n);
+          return !isBase && !isTopping(n);
+        });
+        if(badExtra) return { ok:false, reason:`Not allowed as enchilada topping: ${badExtra}.` };
+
         return { ok:true };
       }
 
@@ -1193,17 +1356,13 @@
       };
     }
 
-    function persist(){
-      localStorage.setItem(LS_KEY, JSON.stringify(state));
-    }
+    function persist(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
     function load(){
       try{
         const raw = localStorage.getItem(LS_KEY);
         if(!raw) return null;
         return JSON.parse(raw);
-      }catch(e){
-        return null;
-      }
+      }catch(e){ return null; }
     }
     let state = load() || defaultState();
 
@@ -1229,8 +1388,8 @@
         hand: [],
         drafts: [],
         starterPassUsed: false,
-        didDrawThisTurn: false,      // per-turn draw gate
-        logThisHand: [],             // [{type:'serve'|'remix', name, points, from?}]
+        didDrawThisTurn: false,
+        logThisHand: [],
         remixGainThisHand: 0,
         remixLossThisHand: 0,
       };
@@ -1293,7 +1452,6 @@
       };
 
       m.players["P1"] = mkPlayer("P1","You", true, state.settings.accent);
-
       if(pCount >= 2) m.players["P2"] = mkPlayer("P2","Chef Mike", false, cpuCols[0]);
       if(pCount >= 3) m.players["P3"] = mkPlayer("P3","Salsa Sam", false, cpuCols[1]);
       if(pCount >= 4) m.players["P4"] = mkPlayer("P4","Queso Queen", false, cpuCols[2]);
@@ -1362,13 +1520,17 @@
       let nonStarterPts = 0;
 
       for(const x of resolved){
+        const lunchHit = hasDoubleLettuce(x.tiles);
+        if(lunchHit) toast("Lauren’s Lunch", ACH.laurensLunchMs);
+
+        const pts = computeDishPoints(x.d.recipeKey, x.tiles, false); // original play
         const pub = {
           id: nowId("pub"),
           owner: pid,
           ownerName: pl.name,
           recipeKey: x.d.recipeKey,
           name: x.d.name,
-          points: x.d.pts,
+          points: pts,
           tiles: x.tiles.map(t=>({id:t.id, name:t.name})),
           isRemix: false,
           from: null
@@ -1380,18 +1542,18 @@
           if(idx>=0) pl.hand.splice(idx,1);
         }
 
-        pl.score += x.d.pts;
-        pl.servedThisHand += x.d.pts;
-        pl.logThisHand.push({ type:"serve", name:x.d.name, points:x.d.pts });
+        pl.score += pts;
+        pl.servedThisHand += pts;
+        pl.logThisHand.push({ type:"serve", name:x.d.name, points: pts });
 
         if(!m.kitchenOpen){
           if(x.d.recipeKey === RULES.starterPassDishKey && !pl.starterPassUsed){
             pl.starterPassUsed = true;
           }else{
-            nonStarterPts += x.d.pts;
+            nonStarterPts += pts;
           }
         }else{
-          nonStarterPts += x.d.pts;
+          nonStarterPts += pts;
         }
       }
 
@@ -1428,13 +1590,12 @@
         return { ok:false, msg:"No tiles left." };
       }
 
-      // RANDOM selection from remaining bag, regardless of which tile-back user tapped.
       const idx = randInt(m.bag.length);
       const t0 = m.bag.splice(idx, 1)[0];
 
       pl.hand.push(t0);
       pl.didDrawThisTurn = true;
-      return { ok:true, msg:`Drew: ${t0.name}` };
+      return { ok:true, msg:`Drew: ${t0.name}`, tile: t0 };
     }
 
     /* ===== End turn ===== */
@@ -1469,9 +1630,8 @@
       const pl = m.players[pid];
       if(!pl || pl.isHuman) return;
 
-      // simple: attempt dish else draw once
       const ctx = { kitchenOpen: m.kitchenOpen };
-      const tryKeys = ["ench","pico","hardTaco","softTaco","chorizoTaco","chipsDip"];
+      const tryKeys = ["ench","pico","breakfastTaco","hardTaco","softTaco","chorizoTaco","chipsDip"];
       let made = false;
 
       function pick(name){
@@ -1487,6 +1647,7 @@
       }
 
       const draft = newDraftDish("hardTaco");
+
       for(const rk of tryKeys){
         const r = recipeByKey(rk);
         let ids = [];
@@ -1503,7 +1664,28 @@
           const prot = anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]);
           const chee = anyFrom(["Shredded yellow Cheese","Shredded white cheese"]);
           const sauc = anyFrom(["Salsa Roja","Salsa Verde"]);
-          if(tort && prot && chee && sauc) ids = [tort,prot,chee,sauc];
+          if(tort && prot && chee && sauc){
+            ids = [tort,prot,chee,sauc];
+            // optional toppings up to +2 for CPU
+            const tops = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Avocado"];
+            for(const n of tops){
+              if(ids.length>=6) break;
+              const id = pl.hand.find(x=>x.name===n)?.id;
+              if(id) ids.push(id);
+            }
+          }
+        }else if(r.kind==="breakfastTaco"){
+          const tort = anyFrom(["Flour Tortillas","Corn Tortillas"]);
+          const egg  = pick("Egg");
+          if(tort && egg){
+            ids = [tort, egg];
+            const tops = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Avocado","Shredded yellow Cheese","Shredded white cheese"];
+            for(const n of tops){
+              if(ids.length>=5) break;
+              const id = pl.hand.find(x=>x.name===n)?.id;
+              if(id) ids.push(id);
+            }
+          }
         }else if(r.kind==="chorizoTaco"){
           const tort = anyFrom(["Flour Tortillas","Corn Tortillas"]);
           const chor = pick("Chorizo"), oni = pick("Onion"), cil = pick("Cilantro");
@@ -1513,17 +1695,15 @@
           const prot = anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]);
           if(tort && prot){
             ids.push(tort,prot);
-            const tops = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"];
+            const tops = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Avocado","Shredded yellow Cheese","Shredded white cheese"];
             for(const n of tops){
               if(ids.length>=5) break;
               const id = pl.hand.find(x=>x.name===n)?.id;
-              if(id && !ids.includes(id)) ids.push(id);
+              if(id) ids.push(id);
             }
-            while(ids.length<5){
-              const w = pl.hand.find(x=>x.name==="Grocery Run")?.id;
-              if(!w) break;
-              ids.push(w);
-            }
+            // optional extra topping (scores +1)
+            const extra = pl.hand.find(x=>x.name==="Lettuce")?.id;
+            if(extra && ids.length<7) ids.push(extra);
           }
         }
 
@@ -1554,7 +1734,7 @@
       endTurn(pid);
     }
 
-    /* ===== Dish editing (P1) + auto-scroll ===== */
+    /* ===== Dish editing (P1) ===== */
     function toggleHandTileForDish(tileId){
       const m = state.match;
       if(m.activePid !== "P1"){ toast("Not your turn."); return; }
@@ -1576,29 +1756,97 @@
       const r = recipeByKey(dish.recipeKey);
       const ctx = { kitchenOpen: m.kitchenOpen };
 
+      if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen && isWet(tile.name)){
+        toast("Wet toppings locked until Kitchen Open.");
+        return;
+      }
+
+      // max tiles per dish (by kind)
+      const curCount = dish.tileIds.length;
+      const maxByKind = (r.kind==="ench" || r.kind==="taco" || r.kind==="breakfastTaco") ? 7 :
+                        (r.kind==="pico" || r.kind==="chorizoTaco") ? 4 :
+                        (r.kind==="chipsDip") ? 2 : 7;
+      if(curCount >= maxByKind){
+        toast(`Max ${maxByKind} tiles.`);
+        return;
+      }
+
       if(r.kind==="taco"){
         const curNames = dish.tileIds.map(id => pl.hand.find(t=>t.id===id)?.name).filter(Boolean);
+
+        // prevent weird non-topping add-ons
+        if(!(isTortilla(tile.name) || isProtein(tile.name) || isTopping(tile.name) || isWild(tile.name))){
+          toast("Not allowed on tacos.");
+          return;
+        }
+
         const hasTort = curNames.some(isTortilla);
         const hasProt = curNames.some(isProtein);
         const hasChee = curNames.some(isCheese);
         const hasWet  = curNames.some(isWet);
-        const dryCount = curNames.filter(isDryTopping).length;
 
-        if(isWet(tile.name) && RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
-          toast("Wet toppings locked until Kitchen Open.");
-          return;
-        }
         if(isTortilla(tile.name) && hasTort){ toast("Only 1 tortilla."); return; }
         if(isProtein(tile.name) && hasProt){ toast("Only 1 protein."); return; }
         if(isCheese(tile.name) && hasChee){ toast("Only 1 cheese."); return; }
         if(isWet(tile.name) && hasWet){ toast("Only 1 wet topping."); return; }
-        if(isDryTopping(tile.name) && dryCount >= RULES.tacoDryToppingsRequired){ toast(`Only ${RULES.tacoDryToppingsRequired} dry toppings.`); return; }
-        if(dish.tileIds.length >= 7){ toast("Max 7 tiles."); return; }
       }
+
+      if(r.kind==="breakfastTaco"){
+        const banned = ["Sour Cream","Charro Beans","Black Beans"];
+        if(banned.includes(tile.name)){
+          toast(`Not allowed on breakfast tacos: ${tile.name}.`);
+          return;
+        }
+
+        if(!(isTortilla(tile.name) || tile.name==="Egg" || isTopping(tile.name) || isWild(tile.name))){
+          toast("Not allowed on breakfast tacos.");
+          return;
+        }
+
+        const curNames = dish.tileIds.map(id => pl.hand.find(t=>t.id===id)?.name).filter(Boolean);
+        const hasTort = curNames.some(isTortilla);
+        const eggCount = curNames.filter(n=>n==="Egg").length;
+        const wetCount = curNames.filter(isWet).length;
+
+        if(isTortilla(tile.name) && hasTort){ toast("Only 1 tortilla."); return; }
+        if(tile.name==="Egg" && eggCount>=1){ toast("Only 1 egg."); return; }
+        if(isWet(tile.name) && wetCount>=1){ toast("Only 1 wet topping."); return; }
+      }
+
       if(r.kind==="chipsDip" && dish.tileIds.length >= 2){ toast("Chips & Dip is 2 tiles."); return; }
       if(r.kind==="pico" && dish.tileIds.length >= 4){ toast("Pico is 4 tiles."); return; }
-      if(r.kind==="ench" && dish.tileIds.length >= 4){ toast("Enchiladas are 4 tiles."); return; }
       if(r.kind==="chorizoTaco" && dish.tileIds.length >= 4){ toast("Chorizo Taco is 4 tiles."); return; }
+
+      if(r.kind==="ench"){
+        // allow up to 7; keep base constraints tight
+        const curNames = dish.tileIds.map(id => pl.hand.find(t=>t.id===id)?.name).filter(Boolean);
+        const counts = {
+          tort: curNames.filter(isTortilla).length,
+          prot: curNames.filter(isProtein).length,
+          chee: curNames.filter(isCheese).length,
+          sauc: curNames.filter(isSauce).length,
+        };
+
+        if(isTortilla(tile.name) && counts.tort>=1){ toast("Only 1 tortilla tile."); return; }
+        if(isProtein(tile.name) && counts.prot>=1){ toast("Only 1 protein tile."); return; }
+        if(isCheese(tile.name) && counts.chee>=1){ toast("Only 1 cheese tile."); return; }
+        if(isSauce(tile.name) && counts.sauc>=1){ toast("Only 1 sauce tile."); return; }
+
+        // once base is met, extras must be toppings (keeps it clean)
+        const baseMet = (counts.tort>=1 && counts.prot>=1 && counts.chee>=1 && counts.sauc>=1);
+        if(baseMet){
+          const isBase = isTortilla(tile.name) || isProtein(tile.name) || isCheese(tile.name) || isSauce(tile.name);
+          if(!isBase && !(isTopping(tile.name) || isWild(tile.name))){
+            toast("Only toppings allowed as enchilada extras.");
+            return;
+          }
+          const extrasNow = Math.max(0, (dish.tileIds.length + 1) - 4);
+          if(extrasNow > 3){
+            toast("Max 3 toppings on enchiladas.");
+            return;
+          }
+        }
+      }
 
       dish.tileIds.push(tileId);
       state.ui.autoScrollDish = true;
@@ -1660,9 +1908,22 @@
 
     function bestFitCols(n){
       if(n >= 25) return 5;
-      // best-fit: near-square grid, capped at 5 cols, at least 2 cols when possible
       const c = Math.ceil(Math.sqrt(n));
       return Math.max(1, Math.min(5, c));
+    }
+
+    function revealPickedTile(el, tileObj){
+      if(!el || !tileObj) return;
+      const cat = ingredientCategory(tileObj.name);
+      el.classList.add("spin","revealed",`cat-${cat}`);
+      // swap content near the midpoint of the spin
+      setTimeout(()=>{
+        el.querySelector(".tileBackInner").innerHTML = `
+          <div class="tileFrontName">${escapeHtml(tileObj.name)}</div>
+          <div class="tileFrontCat">${escapeHtml(categoryLabel(cat))}</div>
+        `;
+        el.querySelector(".tileBackMark")?.remove?.();
+      }, 340);
     }
 
     function openDrawModal(){
@@ -1699,7 +1960,7 @@
         <div class="drawGrid" id="drawGrid" style="grid-template-columns: repeat(${cols}, 1fr);">
           ${Array.from({length: shown}).map((_,i)=>`
             <div class="tileBack" data-draw-pick="${i}">
-              <div class="tileBackNum">${i+1}/${shown}</div>
+              <div class="tileBackNum">${i+1}/${total}</div>
               <div class="tileBackInner">
                 <div class="tileBackBrand">${appName}</div>
                 <div class="tileBackMark">TILE BACK • ${escapeHtml(VERSION)}</div>
@@ -1712,26 +1973,22 @@
       openModal(
         t("drawTile"),
         meta + grid,
-        [
-          { text: t("cancel"), className:"ghost", onClick: closeModal }
-        ]
+        [{ text: t("cancel"), className:"ghost", onClick: closeModal }]
       );
 
       modalMode = "draw";
-      // One-off click handler scoped to this modal render
+
       $("modalBody").onclick = (e)=>{
         if(modalMode !== "draw") return;
         const pick = e.target.closest("[data-draw-pick]");
         if(!pick) return;
 
-        // visual selection + lock grid
         const gridEl = $("drawGrid");
         if(gridEl) gridEl.classList.add("busy");
         pick.classList.add("tileBackSel");
 
         modalMode = "draw_busy";
 
-        // perform actual draw (random tile from bag)
         const res = drawTile("P1");
         if(!res.ok){
           toast(res.msg);
@@ -1740,10 +1997,17 @@
           return;
         }
 
+        // reveal animation inside modal
+        revealPickedTile(pick, res.tile);
+
         persist();
         render();
-        closeModal();
-        toast(res.msg);
+
+        // keep modal up long enough to watch the flip
+        setTimeout(()=>{
+          closeModal();
+          toast(res.msg);
+        }, 920);
       };
     }
 
@@ -1798,7 +2062,6 @@
       endTurn("P1");
     };
 
-    // ✅ Draw Tile now opens modal grid
     $("btnDraw").onclick = openDrawModal;
 
     $("btnOrderUpFromPrep").onclick = ()=>{
@@ -1950,13 +2213,11 @@
       $("prepTurnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
       $("handCountHint").textContent = `${pl.hand.length} tiles`;
 
-      // Draw button state (one draw per turn)
       $("btnDraw").textContent = t("drawTile");
       $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn || m.bag.length===0;
       if(!pl.didDrawThisTurn && myTurn && m.bag.length>0) $("btnDraw").classList.add("pulse");
       else $("btnDraw").classList.remove("pulse");
 
-      // Order Up enable only when qualifying
       const q = qualifyingDraftIds("P1");
       const canOrder = myTurn && q.length>0;
       $("btnOrderUpFromPrep").disabled = !canOrder;
@@ -1965,7 +2226,12 @@
 
       if(d){
         $("selRecipe").value = d.recipeKey;
-        $("dishMeta").textContent = `${d.name} • ${d.pts} pts`;
+
+        const ctx = { kitchenOpen: m.kitchenOpen };
+        const chosenTiles = d.tileIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
+        const v = validateDish(d.recipeKey, chosenTiles, ctx);
+        const previewPts = computeDishPoints(d.recipeKey, chosenTiles, false);
+        $("dishMeta").textContent = `${d.name} • ${previewPts} pts`;
       }else{
         $("dishMeta").textContent = "—";
       }
