@@ -159,12 +159,8 @@
       50%  { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 0 32px rgba(0,229,255,.35); }
       100% { transform: translateY(0); box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 0 18px rgba(0,0,0,.55); }
     }
-    .pulse{
-      animation: pulseGlow 1.35s ease-in-out infinite;
-    }
-    .pulseOrder{
-      animation: pulseGlow 1.15s ease-in-out infinite;
-    }
+    .pulse{ animation: pulseGlow 1.35s ease-in-out infinite; }
+    .pulseOrder{ animation: pulseGlow 1.15s ease-in-out infinite; }
 
     /* Sticky action tray above bottom nav */
     .actionsTray{
@@ -472,6 +468,91 @@
         linear-gradient(180deg, var(--accentSoft), rgba(0,0,0,0)),
         linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));
     }
+
+    /* ===== Draw Tile Modal Grid ===== */
+    .drawMeta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom: 10px;
+    }
+    .drawGrid{
+      display:grid;
+      gap:10px;
+      margin-top: 8px;
+    }
+    .drawGrid.busy{ pointer-events:none; opacity:.92; }
+
+    .tileBack{
+      position:relative;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(340px 140px at 25% 0%, rgba(255,255,255,.08), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: 0 12px 28px rgba(0,0,0,.50);
+      overflow:hidden;
+      cursor:pointer;
+      user-select:none;
+      min-height: 78px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding: 10px 8px;
+    }
+    .tileBack:active{ transform: translateY(1px) scale(.99); }
+    .tileBack::before{
+      content:"";
+      position:absolute; inset:-40px;
+      background:
+        radial-gradient(520px 240px at 10% 0%, rgba(0,229,255,.16), transparent 60%),
+        radial-gradient(520px 240px at 90% 10%, rgba(255,255,255,.06), transparent 65%);
+      opacity:.65;
+      pointer-events:none;
+    }
+    .tileBack::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
+      opacity:.55;
+      pointer-events:none;
+    }
+    .tileBackInner{ position:relative; z-index:1; width:100%; }
+    .tileBackBrand{
+      font-weight:1000;
+      letter-spacing:.2px;
+      color: rgba(243,244,246,.70);
+      font-size: 12px;
+      line-height:1.1;
+    }
+    .tileBackMark{
+      margin-top:6px;
+      font-weight:1000;
+      font-size: 10px;
+      color: rgba(243,244,246,.42);
+      letter-spacing:.18px;
+    }
+    .tileBackNum{
+      position:absolute;
+      top:10px;
+      left:10px;
+      z-index:2;
+      font-weight:1000;
+      font-size:12px;
+      color: rgba(243,244,246,.42);
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+    .tileBackSel{
+      outline: 2px solid rgba(0,229,255,.55);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 30px rgba(0,229,255,.30);
+    }
   </style>
 </head>
 <body>
@@ -480,7 +561,7 @@
       <div class="row sp">
         <div>
           <div class="row" style="gap:10px;">
-            <div class="pageTitle">Taco Ria</div>
+            <div class="pageTitle" id="appNameH">Taco Ria</div>
             <span class="pill"><span class="mono" id="verPill">v0.9.1.2.25</span></span>
           </div>
           <div class="muted small" id="subTitle">Private Prep • Public Line • Remix</div>
@@ -737,14 +818,11 @@
   <script>
     /* =========================
        Taco Ria v0.9.1.2.25 (Atomic Patch)
-       FIXES ADDED NOW:
-       ✅ One draw per turn (hard-gated)
-       ✅ Prep-table slots auto-scroll to next empty after ingredient add
-       Also:
-       ✅ Gameplay simplified (Prep / Order Up / End Turn + Public Line)
-       ✅ Order Up enabled only when qualifying dish exists (jumbo pulse)
-       ✅ CPU colors re-picked on theme change to avoid duplicates / matching player
-       ✅ Scores: per-player accordion w/ dishes + remix net
+       ✅ Draw Tile opens a modal grid of face-down branded tiles
+       ✅ Player selects any tile; assigned tile is RANDOM regardless of choice
+       ✅ Grid shows up to 5x5 (25) if >=25 remaining; else best-fit grid w/ exact count + numbering
+       ✅ Declares when no tiles remain
+       ✅ Still enforces: one draw per turn
        ========================= */
 
     const VERSION = "v0.9.1.2.25";
@@ -767,10 +845,10 @@
     const CPU_BASE_COLORS = ["#ff3b30","#b36bff","#ffcc00","#a3ff12"];
 
     const I18N = {
-      en: { gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings", orderUp:"Order Up!", drawTile:"Draw Tile", endTurn:"End Turn", prepDish:"Prep a Dish" },
-      es: { gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes", orderUp:"¡Orden lista!", drawTile:"Robar ficha", endTurn:"Terminar turno", prepDish:"Preparar plato" },
-      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher une tuile", endTurn:"Fin du tour", prepDish:"Préparer un plat" },
-      de: { gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen", orderUp:"Bestellung raus!", drawTile:"Plättchen ziehen", endTurn:"Zug beenden", prepDish:"Gericht vorbereiten" },
+      en: { gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings", orderUp:"Order Up!", drawTile:"Draw Tile", endTurn:"End Turn", prepDish:"Prep a Dish", cancel:"Cancel", close:"Close" },
+      es: { gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes", orderUp:"¡Orden lista!", drawTile:"Robar ficha", endTurn:"Terminar turno", prepDish:"Preparar plato", cancel:"Cancelar", close:"Cerrar" },
+      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher une tuile", endTurn:"Fin du tour", prepDish:"Préparer un plat", cancel:"Annuler", close:"Fermer" },
+      de: { gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen", orderUp:"Bestellung raus!", drawTile:"Plättchen ziehen", endTurn:"Zug beenden", prepDish:"Gericht vorbereiten", cancel:"Abbrechen", close:"Schließen" },
     };
 
     const RULES = {
@@ -806,7 +884,8 @@
     function escapeHtml(s){
       return (s ?? "").toString()
         .replaceAll("&","&amp;").replaceAll("<","&lt;")
-        .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
     function randInt(n){ return Math.floor(Math.random()*n); }
@@ -854,12 +933,17 @@
       }
       $("modalWrap").classList.add("on");
     }
-    function closeModal(){ $("modalWrap").classList.remove("on"); }
+    function closeModal(){ $("modalWrap").classList.remove("on"); modalMode = null; }
     $("modalWrap").addEventListener("click",(e)=>{ if(e.target.id==="modalWrap") closeModal(); });
 
     function t(key){
       const lang = state.settings.lang || "en";
       return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+    }
+
+    function getAppName(){
+      // branding follows the displayed app name (or document title as fallback)
+      return ($("appNameH")?.textContent || document.title || "App").trim();
     }
 
     function recipeByKey(k){ return RECIPES.find(r=>r.key===k); }
@@ -1145,7 +1229,7 @@
         hand: [],
         drafts: [],
         starterPassUsed: false,
-        didDrawThisTurn: false,      // ✅ per-turn draw gate
+        didDrawThisTurn: false,      // per-turn draw gate
         logThisHand: [],             // [{type:'serve'|'remix', name, points, from?}]
         remixGainThisHand: 0,
         remixLossThisHand: 0,
@@ -1229,7 +1313,7 @@
       const m = state.match;
       const p = m.players[pid];
       if(!p) return;
-      p.didDrawThisTurn = false; // ✅ reset at start of each player's turn
+      p.didDrawThisTurn = false;
       m.servedThisTurnPts = 0;
     }
 
@@ -1291,18 +1375,15 @@
         };
         m.publicLine.push(pub);
 
-        // remove tiles from hand
         for(const t of x.tiles){
           const idx = pl.hand.findIndex(h=>h.id===t.id);
           if(idx>=0) pl.hand.splice(idx,1);
         }
 
-        // scoring
         pl.score += x.d.pts;
         pl.servedThisHand += x.d.pts;
         pl.logThisHand.push({ type:"serve", name:x.d.name, points:x.d.pts });
 
-        // starter pass rule (chipsDip can be served pre-unlock without unlocking)
         if(!m.kitchenOpen){
           if(x.d.recipeKey === RULES.starterPassDishKey && !pl.starterPassUsed){
             pl.starterPassUsed = true;
@@ -1314,14 +1395,12 @@
         }
       }
 
-      // kitchen unlock check
       m.servedThisTurnPts += nonStarterPts;
       if(!m.kitchenOpen && m.servedThisTurnPts >= 10){
         m.kitchenOpen = true;
         toast("🔥 Kitchen Open!");
       }
 
-      // remove served drafts
       pl.drafts = pl.drafts.filter(d=> !draftIds.includes(d.id));
       if(pid==="P1" && pl.drafts.length===0){
         const nd = newDraftDish("hardTaco");
@@ -1345,9 +1424,13 @@
       if(pl.didDrawThisTurn){
         return { ok:false, msg:"Only one draw per turn." };
       }
+      if(m.bag.length === 0){
+        return { ok:false, msg:"No tiles left." };
+      }
 
-      const t0 = m.bag.pop();
-      if(!t0) return { ok:false, msg:"No tiles left." };
+      // RANDOM selection from remaining bag, regardless of which tile-back user tapped.
+      const idx = randInt(m.bag.length);
+      const t0 = m.bag.splice(idx, 1)[0];
 
       pl.hand.push(t0);
       pl.didDrawThisTurn = true;
@@ -1368,7 +1451,6 @@
       persist();
       render();
 
-      // CPU moves (simple MVP)
       if(next !== "P1"){
         setTimeout(()=> cpuAct(next), cpuDelayMs());
       }else{
@@ -1387,12 +1469,11 @@
       const pl = m.players[pid];
       if(!pl || pl.isHuman) return;
 
-      // Very simple: 50% chance attempt publish a valid dish, else draw once, then end.
+      // simple: attempt dish else draw once
       const ctx = { kitchenOpen: m.kitchenOpen };
       const tryKeys = ["ench","pico","hardTaco","softTaco","chorizoTaco","chipsDip"];
       let made = false;
 
-      // attempt to auto-assemble from hand (minimal)
       function pick(name){
         const t = pl.hand.find(x=>x.name===name) || pl.hand.find(x=>x.name==="Grocery Run");
         return t?.id || null;
@@ -1432,7 +1513,6 @@
           const prot = anyFrom(["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Chorizo"]);
           if(tort && prot){
             ids.push(tort,prot);
-            // 3 dry toppings
             const tops = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"];
             for(const n of tops){
               if(ids.length>=5) break;
@@ -1467,7 +1547,6 @@
       }
 
       if(!made){
-        // draw once
         drawTile(pid);
         toast(`${pl.name} drew a tile.`, 1100);
       }
@@ -1489,12 +1568,11 @@
       const inDish = dish.tileIds.includes(tileId);
       if(inDish){
         dish.tileIds = dish.tileIds.filter(id=>id!==tileId);
-        state.ui.autoScrollDish = true; // scroll to first empty after removal too
+        state.ui.autoScrollDish = true;
         persist(); render();
         return;
       }
 
-      // selection caps (keeps UX clean)
       const r = recipeByKey(dish.recipeKey);
       const ctx = { kitchenOpen: m.kitchenOpen };
 
@@ -1523,8 +1601,6 @@
       if(r.kind==="chorizoTaco" && dish.tileIds.length >= 4){ toast("Chorizo Taco is 4 tiles."); return; }
 
       dish.tileIds.push(tileId);
-
-      // ✅ request auto-scroll after render
       state.ui.autoScrollDish = true;
       persist();
       render();
@@ -1579,6 +1655,98 @@
       card.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
     }
 
+    /* ===== Draw Modal (Tile-back Grid) ===== */
+    let modalMode = null;
+
+    function bestFitCols(n){
+      if(n >= 25) return 5;
+      // best-fit: near-square grid, capped at 5 cols, at least 2 cols when possible
+      const c = Math.ceil(Math.sqrt(n));
+      return Math.max(1, Math.min(5, c));
+    }
+
+    function openDrawModal(){
+      const m = state.match;
+      const pl = p1();
+      const myTurn = (m.activePid === "P1");
+
+      if(!myTurn){ toast("Not your turn."); return; }
+      if(pl.didDrawThisTurn){ toast("Only one draw per turn."); return; }
+
+      const total = m.bag.length;
+      if(total === 0){
+        openModal(
+          t("drawTile"),
+          `<div class="muted">No more tiles to choose from.</div>`,
+          [{ text: t("close"), className:"primary", onClick: closeModal }]
+        );
+        return;
+      }
+
+      const shown = Math.min(25, total);
+      const cols = bestFitCols(shown);
+      const appName = escapeHtml(getAppName());
+
+      const meta = `
+        <div class="drawMeta">
+          <span class="pill">Tiles Remaining <span class="mono">${total}</span></span>
+          ${total > 25 ? `<span class="pill muted">Showing <span class="mono">25</span></span>` : ``}
+        </div>
+        <div class="muted small">Pick any tile. (The draw is random, regardless of choice.)</div>
+      `;
+
+      const grid = `
+        <div class="drawGrid" id="drawGrid" style="grid-template-columns: repeat(${cols}, 1fr);">
+          ${Array.from({length: shown}).map((_,i)=>`
+            <div class="tileBack" data-draw-pick="${i}">
+              <div class="tileBackNum">${i+1}/${shown}</div>
+              <div class="tileBackInner">
+                <div class="tileBackBrand">${appName}</div>
+                <div class="tileBackMark">TILE BACK • ${escapeHtml(VERSION)}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      openModal(
+        t("drawTile"),
+        meta + grid,
+        [
+          { text: t("cancel"), className:"ghost", onClick: closeModal }
+        ]
+      );
+
+      modalMode = "draw";
+      // One-off click handler scoped to this modal render
+      $("modalBody").onclick = (e)=>{
+        if(modalMode !== "draw") return;
+        const pick = e.target.closest("[data-draw-pick]");
+        if(!pick) return;
+
+        // visual selection + lock grid
+        const gridEl = $("drawGrid");
+        if(gridEl) gridEl.classList.add("busy");
+        pick.classList.add("tileBackSel");
+
+        modalMode = "draw_busy";
+
+        // perform actual draw (random tile from bag)
+        const res = drawTile("P1");
+        if(!res.ok){
+          toast(res.msg);
+          closeModal();
+          persist(); render();
+          return;
+        }
+
+        persist();
+        render();
+        closeModal();
+        toast(res.msg);
+      };
+    }
+
     /* ===== Pages ===== */
     function setPage(p){
       state.ui.page = p;
@@ -1607,14 +1775,12 @@
       );
     };
 
-    // Gameplay: Prep a Dish => go to Prep page
     $("btnPrep").onclick = ()=>{
       const m = state.match;
       if(m.activePid !== "P1"){ toast("Not your turn."); return; }
       setPage("prep");
     };
 
-    // Gameplay: Order Up! => publish all qualifying drafts
     $("btnOrderUp").onclick = ()=>{
       const m = state.match;
       if(m.activePid !== "P1"){ toast("Not your turn."); return; }
@@ -1632,17 +1798,9 @@
       endTurn("P1");
     };
 
-    // Prep: Draw Tile (one per turn)
-    $("btnDraw").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      const res = drawTile("P1");
-      if(!res.ok){ toast(res.msg); return; }
-      persist(); render();
-      toast(res.msg);
-    };
+    // ✅ Draw Tile now opens modal grid
+    $("btnDraw").onclick = openDrawModal;
 
-    // Prep: Order Up! (same as gameplay)
     $("btnOrderUpFromPrep").onclick = ()=>{
       const m = state.match;
       if(m.activePid !== "P1"){ toast("Not your turn."); return; }
@@ -1650,7 +1808,6 @@
       if(!ids.length){ toast("No qualifying dish."); return; }
       const res = publishDrafts("P1", ids);
       if(!res.ok){ toast(res.msg); return; }
-      // return to gameplay after ordering up
       setPage("gameplay");
       toast("Order up!");
     };
@@ -1660,14 +1817,12 @@
     $("btnRemoveDish").onclick = removeCurrentDish;
     $("selRecipe").onchange = ()=> updateCurrentDishRecipe($("selRecipe").value);
 
-    // Hand tile taps
     $("handTiles").addEventListener("click",(e)=>{
       const el = e.target.closest("[data-htile]");
       if(!el) return;
       toggleHandTileForDish(el.getAttribute("data-htile"));
     });
 
-    // Tap filled slot to remove ingredient
     $("dishCarousel").addEventListener("click",(e)=>{
       const card = e.target.closest(".slotCard");
       if(!card) return;
@@ -1716,7 +1871,6 @@
       document.documentElement.style.setProperty("--accent", state.settings.accent);
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
 
-      // ✅ also ensure CPU colors unique vs player + each other (live)
       if(state.match){
         const cpuCols = ensureUniqueCpuColors();
         if(state.match.players["P2"]) state.match.players["P2"].color = cpuCols[0];
@@ -1733,12 +1887,8 @@
     /* ===== Rendering ===== */
     function phaseText(){
       const m = state.match;
-
       if(m.kitchenOpen) return { title:"Kitchen Open", desc:"Remix is enabled. Wet toppings allowed." };
-
-      // simple mid-phase: if any dishes exist but kitchen not open, call it Appetizers Out
       if(m.publicLine.length > 0) return { title:"Appetizers Out", desc:"Build toward 10+ points in a single turn to open the kitchen." };
-
       return { title:"Not Seated Yet", desc:"Serve 10+ points in one turn to open the kitchen." };
     }
 
@@ -1800,11 +1950,11 @@
       $("prepTurnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
       $("handCountHint").textContent = `${pl.hand.length} tiles`;
 
-      // Draw button state (✅ one draw per turn)
+      // Draw button state (one draw per turn)
       $("btnDraw").textContent = t("drawTile");
-      $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn;
-      if(pl.didDrawThisTurn) $("btnDraw").classList.remove("pulse");
-      if(!pl.didDrawThisTurn && myTurn) $("btnDraw").classList.add("pulse");
+      $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn || m.bag.length===0;
+      if(!pl.didDrawThisTurn && myTurn && m.bag.length>0) $("btnDraw").classList.add("pulse");
+      else $("btnDraw").classList.remove("pulse");
 
       // Order Up enable only when qualifying
       const q = qualifyingDraftIds("P1");
@@ -1813,7 +1963,6 @@
       $("btnOrderUpFromPrep").classList.toggle("pulseOrder", canOrder);
       $("btnOrderUpFromPrep").textContent = t("orderUp");
 
-      // Recipe select + meta
       if(d){
         $("selRecipe").value = d.recipeKey;
         $("dishMeta").textContent = `${d.name} • ${d.pts} pts`;
@@ -1821,7 +1970,6 @@
         $("dishMeta").textContent = "—";
       }
 
-      // grouped hand
       const grouped = groupBy(pl.hand, t => ingredientCategory(t.name));
       const order = ["tortilla","protein","cheese","wet","drytop","wild","other"];
 
@@ -1853,7 +2001,6 @@
         </div>
       `;
 
-      // current dish carousel (8 slots)
       const car = $("dishCarousel");
       if(!d){
         car.innerHTML = `<div class="muted small">No draft selected.</div>`;
@@ -1881,7 +2028,6 @@
         const v = validateDish(d.recipeKey, chosenTiles, ctx);
         $("dishHint").textContent = v.ok ? "✅ Qualifies for Order Up!" : `⚠️ ${v.reason}`;
 
-        // ✅ auto-scroll after render when requested
         if(state.ui.autoScrollDish){
           state.ui.autoScrollDish = false;
           persist();
@@ -1945,7 +2091,6 @@
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
       $("verPill").textContent = VERSION;
 
-      // Nav labels
       $("navGame").querySelector(".tx").textContent = t("gameplay");
       $("navPrep").querySelector(".tx").textContent = t("prep");
       $("navScores").querySelector(".tx").textContent = t("scores");
@@ -1963,14 +2108,12 @@
       $("phaseTitle").textContent = ph.title;
       $("phaseDesc").textContent = ph.desc;
 
-      // Order Up enable only if qualifying dish exists
       const q = qualifyingDraftIds("P1");
       const canOrder = myTurn && q.length>0;
       $("btnOrderUp").textContent = t("orderUp");
       $("btnOrderUp").disabled = !canOrder;
       $("btnOrderUp").classList.toggle("pulseOrder", canOrder);
 
-      // Prep button only on your turn
       $("btnPrep").disabled = !myTurn;
       $("btnEndTurn").disabled = !myTurn;
 
@@ -1997,7 +2140,6 @@
       document.documentElement.style.setProperty("--accent", state.settings.accent);
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
 
-      // If a match exists, ensure player color is synced and CPUs are unique
       if(state.match){
         state.match.players["P1"].color = state.settings.accent;
         const cpuCols = ensureUniqueCpuColors();
@@ -2006,9 +2148,7 @@
         if(state.match.players["P4"]) state.match.players["P4"].color = cpuCols[2];
       }
 
-      // If existing match, make sure the first turn has draw flag reset
       if(state.match) beginTurn(state.match.activePid);
-
       render();
     }
 
