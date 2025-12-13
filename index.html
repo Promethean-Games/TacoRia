@@ -4,20 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Taco Ria</title>
+
   <style>
     :root{
       --bg:#050608;
       --bg2:#0a0c10;
-      --panel:#0b0d12;
+      --panel:#0c0f14;
+      --panel2:#0b0d11;
       --text:#f3f4f6;
       --muted:rgba(243,244,246,.70);
-      --muted2:rgba(243,244,246,.55);
+      --muted2:rgba(243,244,246,.52);
+
       --stroke:rgba(255,255,255,.10);
       --stroke2:rgba(255,255,255,.14);
-      --danger:#ff3b30;
 
       --accent:#00e5ff;
       --accentSoft: rgba(0,229,255,.14);
+
+      --danger:#ff3b30;
 
       --radius:20px;
       --pad:16px;
@@ -25,6 +29,7 @@
       --shadow: 0 18px 45px rgba(0,0,0,.55);
 
       --navH:56px;
+      color-scheme: dark;
     }
 
     *{ box-sizing:border-box; }
@@ -50,8 +55,7 @@
       margin:0 auto;
       max-width: 980px;
     }
-    @media (max-width: 430px){ .shell{ max-width: 375px; } }
-    @media (max-width: 390px){ .shell{ max-width: 360px; } }
+    @media (max-width: 430px){ .shell{ max-width: 390px; } }
 
     header{
       padding: 14px 14px 10px;
@@ -157,11 +161,11 @@
 
     @keyframes pulseGlow{
       0%   { transform: translateY(0); box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 0 18px rgba(0,0,0,.55); }
-      50%  { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 0 32px rgba(0,229,255,.35); }
+      50%  { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 0 32px rgba(0,229,255,.28); }
       100% { transform: translateY(0); box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 0 18px rgba(0,0,0,.55); }
     }
-    .pulse{ animation: pulseGlow 1.45s ease-in-out infinite; }
-    .pulseOrder{ animation: pulseGlow 1.15s ease-in-out infinite; }
+    .pulse{ animation: pulseGlow 1.55s ease-in-out infinite; }
+    .pulseOrder{ animation: pulseGlow 1.25s ease-in-out infinite; }
 
     /* Sticky action tray above bottom nav */
     .actionsTray{
@@ -171,7 +175,7 @@
     }
     .actionsStack{ display:flex; flex-direction:column; gap:10px; }
 
-    /* Tiles */
+    /* Hand pills */
     .tiles{ display:flex; flex-wrap:wrap; gap:8px; }
     .tile{
       max-width:100%;
@@ -184,8 +188,7 @@
       cursor:pointer;
       user-select:none;
       --catTint: rgba(255,255,255,.06);
-      background:
-        linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));
+      background: linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));
     }
     .tile.sel{
       outline: 2px solid rgba(0,229,255,.55);
@@ -195,9 +198,7 @@
         linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));
     }
     .tile.wild{ border-color: rgba(255,255,255,.28); box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset; }
-    .tile.wet{ border-color: rgba(0,229,255,.25); }
 
-    /* Hand grouping */
     .handGroups{ display:flex; flex-direction:column; gap:12px; }
     .handGroup{
       border:1px solid var(--stroke);
@@ -219,13 +220,13 @@
     .handGroupTitle .count{ opacity:.75; font-weight:1000; }
 
     /* Category tinting */
-    .tile.cat-tortilla, .slotValue.cat-tortilla{ --catTint: rgba(255,204,0,.18); border-color: rgba(255,204,0,.30); }
-    .tile.cat-protein,  .slotValue.cat-protein { --catTint: rgba(255,59,48,.16);  border-color: rgba(255,59,48,.28); }
-    .tile.cat-cheese,   .slotValue.cat-cheese  { --catTint: rgba(255,245,200,.14); border-color: rgba(255,245,200,.24); }
-    .tile.cat-wet,      .slotValue.cat-wet     { --catTint: rgba(255,43,214,.14); border-color: rgba(255,43,214,.24); }
-    .tile.cat-drytop,   .slotValue.cat-drytop  { --catTint: rgba(163,255,18,.12); border-color: rgba(163,255,18,.22); }
-    .tile.cat-wild,     .slotValue.cat-wild    { --catTint: rgba(255,255,255,.10); border-color: rgba(255,255,255,.26); }
-    .tile.cat-other,    .slotValue.cat-other   { --catTint: rgba(179,107,255,.14); border-color: rgba(179,107,255,.24); }
+    .tile.cat-tortilla{ --catTint: rgba(255,204,0,.18); border-color: rgba(255,204,0,.30); }
+    .tile.cat-protein { --catTint: rgba(255,59,48,.16);  border-color: rgba(255,59,48,.28); }
+    .tile.cat-cheese  { --catTint: rgba(255,245,200,.14); border-color: rgba(255,245,200,.24); }
+    .tile.cat-wet     { --catTint: rgba(0,229,255,.14); border-color: rgba(0,229,255,.24); }
+    .tile.cat-drytop  { --catTint: rgba(163,255,18,.12); border-color: rgba(163,255,18,.22); }
+    .tile.cat-wild    { --catTint: rgba(255,255,255,.10); border-color: rgba(255,255,255,.26); }
+    .tile.cat-other   { --catTint: rgba(179,107,255,.14); border-color: rgba(179,107,255,.24); }
 
     /* Public line */
     .pubGroup{
@@ -297,7 +298,6 @@
     .label{ font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:900; }
     .hint{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.35; }
 
-    :root{ color-scheme: dark; }
     select, input[type="number"]{
       width:100%;
       padding:12px 40px 12px 14px;
@@ -378,10 +378,10 @@
       pointer-events:none;
     }
 
-    /* ===== Modal ===== */
+    /* Modal */
     #modalWrap{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.70);
+      background: var(--bg); /* ✅ no transparency for tile picker or tutorial */
       display:none;
       align-items:center;
       justify-content:center;
@@ -389,61 +389,82 @@
       z-index: 90;
     }
     #modalWrap.on{ display:flex; }
-
     .modal{
-      width: min(620px, 100%);
+      width: min(560px, 100%);
       border-radius: 22px;
       border:1px solid rgba(255,255,255,.14);
-      background: var(--panel); /* solid, no glass */
-      box-shadow: 0 22px 60px rgba(0,0,0,.75);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      box-shadow: 0 22px 60px rgba(0,0,0,.70);
       padding: 14px;
     }
     .modal h3{ margin: 4px 0 8px; font-size: 18px; }
     .modal .body{ color: var(--muted); font-weight: 900; line-height: 1.35; }
     .modal .foot{ margin-top: 12px; display:flex; gap:10px; justify-content:flex-end; }
+
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
     .page{ display:none; }
     .page.on{ display:block; }
 
-    /* ===== Prep Table: 10 neutral placeholders ===== */
-    .prepTableGrid{
-      display:grid;
-      grid-template-columns: repeat(5, minmax(0,1fr));
+    /* ===== Prep Table: 10 neutral placeholders (blank slate) ===== */
+    .prepRow{
+      border:1px solid var(--stroke);
+      border-radius: 18px;
+      background: rgba(0,0,0,.26);
+      padding: 12px;
+      overflow:hidden;
+    }
+    .prepTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:10px;
-      margin-top: 8px;
+      margin-bottom:10px;
+      font-weight:1000;
     }
-    @media (max-width: 520px){
-      .prepTableGrid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .prepSlots{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:10px;
     }
-    .slotValue{
-      --catTint: rgba(255,255,255,.06);
+    @media (max-width: 430px){
+      .prepSlots{ grid-template-columns: repeat(2, 1fr); }
+    }
+    .slot{
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,.20);
+      background: rgba(255,255,255,.03);
+      padding: 10px;
+      min-height: 58px;
       display:flex;
       align-items:center;
       justify-content:center;
-      min-height:48px;
-      width:100%;
-      border-radius:14px;
-      border:1px dashed rgba(255,255,255,.18);
-      padding:10px 10px;
-      font-weight:1000;
       text-align:center;
+      user-select:none;
+    }
+    .slot.filled{
+      border-style: solid;
+      border-color: rgba(255,255,255,.18);
+      background:
+        linear-gradient(180deg, var(--accentSoft), rgba(0,0,0,0)),
+        rgba(0,0,0,.30);
+    }
+    .slot .sName{
+      font-weight: 1000;
+      font-size: 13px;
+      color: rgba(243,244,246,.94);
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
-      background: rgba(255,255,255,.02);
-      color: rgba(243,244,246,.45);
-      user-select:none;
+      max-width:100%;
     }
-    .slotFilled{
-      border-style:solid;
-      color: rgba(243,244,246,.92);
-      background:
-        linear-gradient(180deg, var(--accentSoft), rgba(0,0,0,0)),
-        linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));
+    .slot .sHint{
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(243,244,246,.42);
     }
 
-    /* ===== Draw Tile Modal Grid ===== */
+    /* ===== Draw Modal Grid + Tile Flip ===== */
     .drawMeta{
       display:flex;
       flex-wrap:wrap;
@@ -454,45 +475,71 @@
     }
     .drawGrid{
       display:grid;
-      gap:12px;
+      gap:10px;
       margin-top: 10px;
     }
-    .drawGrid.busy{ pointer-events:none; opacity:.95; }
+    .drawGrid.busy{ pointer-events:none; opacity:.98; }
 
-    @keyframes shimmerSweep{
-      0% { transform: translateX(-60%) rotate(8deg); opacity:.0; }
-      35%{ opacity:.10; }
-      60%{ opacity:.14; }
-      100%{ transform: translateX(60%) rotate(8deg); opacity:.0; }
+    @keyframes slowShimmer{
+      0%   { transform: translateX(-12%); opacity:.22; }
+      50%  { transform: translateX(12%);  opacity:.32; }
+      100% { transform: translateX(-12%); opacity:.22; }
+    }
+    @keyframes slowBreath{
+      0%   { box-shadow: 0 10px 26px rgba(0,0,0,.55); transform: translateY(0); }
+      50%  { box-shadow: 0 14px 32px rgba(0,0,0,.66); transform: translateY(-1px); }
+      100% { box-shadow: 0 10px 26px rgba(0,0,0,.55); transform: translateY(0); }
     }
 
-    .tileBack{
+    .tileCard{
+      perspective: 900px;
+      min-height: 82px;
+    }
+    .tileFlip{
       position:relative;
+      width:100%;
+      height:100%;
+      transform-style:preserve-3d;
+      transition: transform 650ms cubic-bezier(.2,.9,.2,1);
+      border-radius:18px;
+    }
+    .tileFace{
+      position:absolute;
+      inset:0;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.16);
-      background:
-        radial-gradient(320px 140px at 20% 0%, rgba(255,255,255,.06), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.12));
-      box-shadow: 0 12px 28px rgba(0,0,0,.55);
       overflow:hidden;
-      cursor:pointer;
-      user-select:none;
-      min-height: 82px;
+      backface-visibility:hidden;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      padding: 10px 10px;
-      transform-style: preserve-3d;
-      transition: transform .65s cubic-bezier(.2,.85,.2,1);
+      padding: 10px 8px;
+      user-select:none;
     }
-    .tileBack:active{ transform: translateY(1px) scale(.99); }
+
+    .tileBack{
+      background:
+        radial-gradient(340px 140px at 25% 0%, rgba(255,255,255,.08), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      animation: slowBreath 4.6s ease-in-out infinite;
+      cursor:pointer;
+    }
+    .tileBack::before{
+      content:"";
+      position:absolute; inset:-40px;
+      background:
+        radial-gradient(520px 240px at 10% 0%, rgba(0,229,255,.16), transparent 60%),
+        radial-gradient(520px 240px at 90% 10%, rgba(255,255,255,.06), transparent 65%);
+      opacity:.55;
+      pointer-events:none;
+      animation: slowShimmer 7.8s ease-in-out infinite;
+    }
     .tileBack::after{
       content:"";
-      position:absolute; inset:-30px;
-      background: linear-gradient(110deg, transparent 38%, rgba(255,255,255,.22) 50%, transparent 62%);
-      opacity:.10;
-      animation: shimmerSweep 5.4s ease-in-out infinite;
+      position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
+      opacity:.55;
       pointer-events:none;
     }
     .tileBackInner{
@@ -500,103 +547,83 @@
       z-index:1;
       width:100%;
       font-weight:1000;
-      letter-spacing:.25px;
-      color: rgba(243,244,246,.80);
+      letter-spacing:.2px;
+      color: rgba(243,244,246,.78);
       font-size: 13px;
       line-height:1.1;
-      backface-visibility:hidden;
+      padding: 0 6px;
     }
-
-    /* Flip reveal */
-    .tileBack.flipping{ transform: rotateY(180deg); }
-    .tileFace{
+    .tileBackNum{
       position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 10px 10px;
-      border-radius:18px;
-      backface-visibility:hidden;
-      transform: rotateY(180deg);
+      top:10px;
+      left:10px;
+      z-index:2;
       font-weight:1000;
-      color: rgba(243,244,246,.92);
-      text-align:center;
+      font-size:12px;
+      color: rgba(243,244,246,.38);
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 4px 8px;
     }
-    .tileFace .name{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:44px;
-      width:100%;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      padding: 10px 10px;
+    .tilePickOutline{
+      outline: 2px solid rgba(0,229,255,.55);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 30px rgba(0,229,255,.24);
+    }
+
+    .tileFront{
+      transform: rotateY(180deg);
       background:
-        linear-gradient(135deg, var(--catTint), rgba(0,0,0,.45));
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+        radial-gradient(420px 160px at 15% 0%, rgba(255,255,255,.08), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
+      border-color: rgba(255,255,255,.18);
     }
+    .tileFront .frontName{
+      font-weight:1000;
+      font-size: 14px;
+      color: rgba(243,244,246,.95);
+    }
+    .tileFlip.reveal{ transform: rotateY(180deg); }
 
-    /* ===== Tutorial Overlay ===== */
-    #tutWrap{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.78);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      z-index: 95;
-    }
-    #tutWrap.on{ display:flex; }
-
-    .tutCard{
-      width:min(640px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.14);
-      background: var(--panel);
-      box-shadow: 0 22px 60px rgba(0,0,0,.78);
+    /* Tutorial pager */
+    .tutWrap{
+      position:relative;
       overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
     }
-    .tutTop{
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+    .tutStrip{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      width:100%;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
     }
-    .tutTop .title{ font-weight:1000; font-size:16px; }
-    .tutPager{ font-weight:900; color: var(--muted); font-size:12px; }
-    .tutBody{
-      padding:14px;
+    .tutPage{
+      flex: 0 0 100%;
+      scroll-snap-align:start;
+      padding: 14px;
+      min-height: 220px;
     }
-    .tutSwipe{
-      display:flex;
-      overflow:hidden;
-      touch-action: pan-y;
+    .tutTitle{ font-weight:1000; font-size:16px; margin-bottom:6px; }
+    .tutText{ color: var(--muted); font-weight:900; line-height:1.35; }
+    .tutDots{
+      display:flex; gap:8px; justify-content:center;
+      margin-top:10px;
+      opacity:.85;
     }
-    .tutSlide{
-      flex:0 0 100%;
-      padding: 0;
-      min-height: 210px;
+    .dot{
+      width:8px; height:8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.05);
     }
-    .tutSlide h4{ margin: 2px 0 8px; font-size: 18px; }
-    .tutSlide p{ margin: 0 0 10px; color: var(--muted); font-weight:900; line-height:1.45; }
-    .tutFoot{
-      padding: 12px 14px 14px;
-      border-top:1px solid rgba(255,255,255,.08);
-      display:flex;
-      gap:10px;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .tutFoot .left{ display:flex; gap:10px; flex-wrap:wrap; }
-    .tutFoot .right{ display:flex; gap:10px; flex-wrap:wrap; }
+    .dot.on{ background: rgba(0,229,255,.45); border-color: rgba(0,229,255,.55); }
 
   </style>
 </head>
+
 <body>
   <div class="shell">
     <header>
@@ -616,21 +643,29 @@
       <!-- GAMEPLAY -->
       <section class="page on" id="pageGameplay">
         <div class="card heroPhase" style="margin-bottom:12px;">
-          <div style="font-weight:1000; font-size:16px;" id="phaseTitle">Not Seated Yet</div>
-          <div class="muted" id="phaseDesc">Serve 10+ points in one turn to open the kitchen.</div>
-          <div class="muted small" id="turnLine" style="margin-top:10px;">Your turn.</div>
+          <div class="pills" style="margin-top:2px;">
+            <span class="pill" id="tilesRemainBadge">Tiles Remaining 0</span>
+            <span class="pill" id="kitchenBadge">Kitchen Closed</span>
+            <span class="pill" id="handBadge">Hand 1/12</span>
+            <span class="pill" id="turnBadge">Your Turn</span>
+          </div>
+
+          <div style="margin-top:12px;">
+            <div style="font-weight:1000; font-size:16px;" id="phaseTitle">Not Seated Yet</div>
+            <div class="muted" id="phaseDesc">Serve 10+ points in one turn to open the kitchen.</div>
+          </div>
         </div>
 
         <!-- SIMPLE ACTIONS -->
         <div class="actionsTray">
           <div class="card">
             <div class="actionsStack">
-              <button class="primary jumbo pulse" id="btnPrep">Prep a Dish</button>
+              <button class="primary jumbo" id="btnPrep">Prep a Dish</button>
               <button class="primary jumbo" id="btnOrderUp">Order Up!</button>
               <button class="danger jumbo" id="btnEndTurn">End Turn</button>
             </div>
             <div class="muted small" style="margin-top:10px;" id="actionHint">
-              One draw per turn. Build in Prep, then publish to the Window.
+              Prep your ingredients, then Order Up. One draw per turn.
             </div>
           </div>
         </div>
@@ -653,24 +688,27 @@
             <span class="badge" id="prepTurnBadge">Your Turn</span>
           </div>
 
-          <div class="muted small" id="prepLoadedHint" style="margin-bottom:10px;">
-            Select ingredients from your hand to load a dish.
+          <div class="prepRow" style="margin-bottom:12px;">
+            <div class="prepTop">
+              <div>Prep Window</div>
+              <div class="muted2 small" id="prepLoadedHint">0/10 loaded</div>
+            </div>
+            <div class="prepSlots" id="prepSlots"></div>
+            <div class="muted small" style="margin-top:10px;" id="prepStatus">No dish detected yet.</div>
           </div>
 
-          <!-- 10 neutral placeholders -->
-          <div class="prepTableGrid" id="prepSlots"></div>
-
-          <!-- Primary actions -->
-          <div class="actionsStack" style="margin-top:12px;">
+          <div class="row wrap" style="gap:10px; justify-content:space-between; margin-bottom:12px;">
             <button class="primary jumbo" id="btnDraw">Draw Tile</button>
-
-            <button class="ghost jumbo" id="btnAutoPlate" style="display:none;">Auto-Plate</button>
-            <button class="ghost jumbo" id="btnAutoRemix" style="display:none;">Auto-Remix</button>
-
             <button class="primary jumbo" id="btnOrderUpFromPrep">Order Up!</button>
           </div>
 
-          <details class="acc" open style="margin-top:12px;">
+          <div class="row wrap" style="gap:10px; justify-content:space-between; margin-bottom:12px;">
+            <button class="ghost btnTiny" id="btnAutoPlate">Auto-Plate</button>
+            <button class="ghost btnTiny" id="btnAutoRemix">Auto-Remix</button>
+            <button class="ghost btnTiny" id="btnClearPrep">Clear Prep</button>
+          </div>
+
+          <details class="acc" open>
             <summary>
               <span>Your Hand</span>
               <span class="muted2 small" id="handCountHint">0 tiles</span>
@@ -678,20 +716,18 @@
             <div class="accBody">
               <div id="handTiles"></div>
               <div class="hint" id="handHint" style="margin-top:10px;">
-                Tap tiles to add/remove them from the Prep Table.
+                Tap hand tiles to add/remove them from your Prep Window.
               </div>
             </div>
           </details>
 
-          <!-- Menu reference guide panel (restored) -->
-          <details class="acc" style="margin-top:10px;">
+          <details class="acc">
             <summary>
               <span>Menu Guide</span>
               <span class="muted2 small">Reference</span>
             </summary>
-            <div class="accBody" id="menuGuide"></div>
+            <div class="accBody" id="menuGuideBody"></div>
           </details>
-
         </div>
       </section>
 
@@ -711,7 +747,7 @@
           <div id="scoreList"></div>
 
           <div class="hint" style="margin-top:10px;">
-            Player panels are collapsed by default. Expand to see served dishes and remix net.
+            Player panels are collapsed by default. Expand to see dishes served and remix net.
           </div>
         </div>
       </section>
@@ -813,14 +849,19 @@
                   <option value="de">Deutsch</option>
                 </select>
               </div>
-
-              <div class="field" style="margin-top:12px;">
-                <button class="ghost jumbo" id="btnViewTutorial">View Tutorial</button>
-                <div class="hint">You can hide the tutorial when it appears after your first draw.</div>
-              </div>
             </div>
           </details>
 
+          <details class="acc">
+            <summary>
+              <span>Tutorial</span>
+              <span class="muted2 small">View / Hide</span>
+            </summary>
+            <div class="accBody">
+              <button class="primary" id="btnViewTutorial">View Tutorial</button>
+              <div class="hint">Tutorial appears after your first draw unless you hide it.</div>
+            </div>
+          </details>
         </div>
       </section>
     </main>
@@ -835,7 +876,6 @@
 
   <div id="toastWrap"></div>
 
-  <!-- Modal -->
   <div id="modalWrap">
     <div class="modal">
       <h3 id="modalTitle">Modal</h3>
@@ -844,102 +884,28 @@
     </div>
   </div>
 
-  <!-- Tutorial Overlay -->
-  <div id="tutWrap">
-    <div class="tutCard">
-      <div class="tutTop">
-        <div class="title" id="tutTopTitle">Tutorial</div>
-        <div class="tutPager" id="tutPager">1/5</div>
-      </div>
-      <div class="tutBody">
-        <div class="tutSwipe" id="tutSwipe"></div>
-      </div>
-      <div class="tutFoot">
-        <div class="left">
-          <button class="ghost" id="tutPrev">Back</button>
-          <button class="ghost" id="tutNext">Next</button>
-        </div>
-        <div class="right">
-          <button class="ghost" id="tutHide">Hide Tutorial</button>
-          <button class="primary" id="tutDone">Done</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    /* =========================
-       Taco Ria v0.9.1.2.25 (Atomic Update)
-       ✅ Minimal Gameplay UI (Prep / Order Up / End Turn + Public Line)
-       ✅ Prep Table uses 10 neutral placeholders (blank slate)
-       ✅ Automated verification (no Current Dish panel)
-       ✅ Draw Tile modal: solid theme bg, tile backs show ONLY game name, slow shimmer
-       ✅ Draw reveal animation (flip) BEFORE closing modal
-       ✅ Tutorial appears after first tile draw (hide + revisit via Settings)
-       ✅ Autoplate (Beginner/Easy) + Auto-Remix (Beginner only)
-       ✅ Difficulty: loose (Beginner/Easy/Medium), strict (Difficult/Master Chef)
-       ✅ Remix: add-from-hand only; points never taken away; +1 per tile added (remix)
-       ✅ Bonuses only apply to original serves (double lettuce toast + points); remix shows toast only
-       ✅ Grill proteins (Fish/Chicken Fajita/Beef Fajita): treated as 2 pts via +1 bonus on original serves
-       ✅ CPU remix in Difficult & Master Chef
-       ✅ CPU Wild-Savor ON in Difficult/Master (uses wild only if improvement >= +4 vs best non-wild)
-       ========================= */
+    /* =====================================================
+      Taco Ria v0.9.1.2.25 (Atomic Update)
+      ✅ Fixes selectedTilesFor().map crash (all arrays default safely)
+      ✅ Restores core rendering (Menu Guide, Hand, Prep)
+      ✅ Prep table is 10 neutral placeholders (blank slate)
+      ✅ Automated dish detection enables Order Up only when valid
+      ✅ One draw per turn (hard gate)
+      ✅ Draw modal: solid background, subtle shimmer, tile backs show ONLY game name
+      ✅ Tile flip reveal animation BEFORE modal closes
+      ✅ Tutorial after first draw (swipe pages) + revisit in Settings
+      ✅ Auto-Plate (Beginner/Easy) chooses highest scoring dish, preserves Grocery Run
+      ✅ Auto-Remix (Beginner only) proposes best remix (>= +1), accept/cancel, shows per-player delta
+      ✅ Loose validation on Beginner/Easy/Medium; strict on Difficult/Master Chef
+      ✅ Breakfast Tacos added (3 pts): tortilla + egg required; wet single; dry can be doubled; no sour cream/charro/black beans
+      ✅ Lauren’s Lunch toast: double lettuce on original play = +5 pts; on remix = toast only
+      ✅ CPU colors remain unique under theme changes
+      ✅ Avoids dev diagnostics / noisy text
+    ====================================================== */
 
     const VERSION = "v0.9.1.2.25";
-    const LS_KEY = "taco_ria_state_v091225";
-
-    const DIFFS = ["Beginner","Easy","Medium","Difficult","Master Chef"];
-    const DIFF_DELAY_MS = { "Beginner":5000, "Easy":3500, "Medium":2200, "Difficult":1200, "Master Chef":500 };
-
-    const ACCENTS = [
-      { name:"Neon Cyan", val:"#00e5ff" },
-      { name:"Signal Yellow", val:"#ffcc00" },
-      { name:"Lime", val:"#a3ff12" },
-      { name:"Hot Pink", val:"#ff2bd6" },
-      { name:"Orange", val:"#ff8a00" },
-      { name:"Ice", val:"#b3f6ff" },
-      { name:"Violet", val:"#b36bff" },
-      { name:"Red", val:"#ff3b30" }
-    ];
-
-    const CPU_BASE_COLORS = ["#ff3b30","#b36bff","#ffcc00","#a3ff12"];
-
-    const I18N = {
-      en: { gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings", orderUp:"Order Up!", drawTile:"Draw Tile", endTurn:"End Turn", prepDish:"Prep a Dish", cancel:"Cancel", close:"Close" },
-      es: { gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes", orderUp:"¡Orden lista!", drawTile:"Robar ficha", endTurn:"Terminar turno", prepDish:"Preparar plato", cancel:"Cancelar", close:"Cerrar" },
-      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher une tuile", endTurn:"Fin du tour", prepDish:"Préparer un plat", cancel:"Annuler", close:"Fermer" },
-      de: { gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen", orderUp:"Bestellung raus!", drawTile:"Plättchen ziehen", endTurn:"Zug beenden", prepDish:"Gericht vorbereiten", cancel:"Abbrechen", close:"Schließen" },
-    };
-
-    const RULES = {
-      remixMinPoints: 1,
-      tacoDryToppingsRequired: 3,
-      wetLockedUntilKitchen: true,
-      starterPassDishKey: "chipsDip",
-      kitchenOpenThresholdPts: 10
-    };
-
-    const RECIPES = [
-      { key:"hardTaco", name:"Hard Shell Taco", pts:5, kind:"taco", tortilla:"Corn Tortillas" },
-      { key:"softTaco", name:"Soft Taco", pts:5, kind:"taco", tortilla:"Flour Tortillas" },
-      { key:"breakfastTaco", name:"Breakfast Taco", pts:3, kind:"breakfastTaco" },
-      { key:"chorizoTaco", name:"Chorizo Taco", pts:8, kind:"chorizoTaco" },
-      { key:"chipsDip", name:"Chips & Dip", pts:5, kind:"chipsDip" },
-      { key:"pico", name:"Pico de Gallo", pts:8, kind:"pico" },
-      { key:"ench", name:"Enchiladas", pts:10, kind:"ench" },
-    ];
-
-    const DECK_ING_COUNTS = [
-      ["Fish",1],["Ground Beef",2],["Shredded Chicken",2],["Carne Guisada",1],["Al Pastor",1],["Carnitas",1],
-      ["Egg",2],["Chicken Fajita",2],["Beef Fajita",2],["Chorizo",1],
-      ["Tortilla Chips",3],["Flour Tortillas",2],["Corn Tortillas",2],
-      ["Shredded yellow Cheese",2],["Shredded white cheese",2],
-      ["Rice",2],["Charro Beans",1],["Refried Beans",1],["Black Beans",1],
-      ["Cilantro",2],["Jalapenos",2],["Lettuce",1],["Lime Juice",2],["Onion",2],["Tomato",2],
-      ["Sour Cream",2],["Avocado",2],
-      ["Salsa Roja",2],["Salsa Verde",2],["Queso",2],["Guacamole",2],
-      ["Grocery Run",2],
-    ];
+    const LS_KEY  = "taco_ria_state_v091225_atomic";
 
     const $ = (id)=> document.getElementById(id);
 
@@ -970,12 +936,13 @@
     }
     function groupBy(arr, keyFn){
       const m = {};
-      for(const it of arr){
+      for(const it of (arr||[])){
         const k = keyFn(it);
         (m[k] ||= []).push(it);
       }
       return m;
     }
+
     function toast(msg, ms=2200){
       const wrap = $("toastWrap");
       wrap.innerHTML = `<div class="toast">${escapeHtml(msg)}</div>`;
@@ -983,12 +950,14 @@
       toast._t = setTimeout(()=> wrap.innerHTML="", ms);
     }
 
+    /* ===== Modal ===== */
     let modalMode = null;
+
     function openModal(title, html, footButtons){
       $("modalTitle").textContent = title;
       $("modalBody").innerHTML = html;
       $("modalFoot").innerHTML = "";
-      for(const b of footButtons){
+      for(const b of (footButtons||[])){
         const btn = document.createElement("button");
         btn.className = b.className || "ghost";
         btn.textContent = b.text;
@@ -999,34 +968,107 @@
     }
     function closeModal(){
       $("modalWrap").classList.remove("on");
-      modalMode = null;
       $("modalBody").onclick = null;
+      modalMode = null;
     }
-    $("modalWrap").addEventListener("click",(e)=>{ if(e.target.id==="modalWrap") closeModal(); });
 
+    /* ===== Text / i18n (minimal, per your preference) ===== */
+    const I18N = {
+      en: { gameplay:"Gameplay", prep:"Prep", scores:"Scores", settings:"Settings", orderUp:"Order Up!", drawTile:"Draw Tile", endTurn:"End Turn", prepDish:"Prep a Dish", cancel:"Cancel", close:"Close", start:"Start", hide:"Hide" },
+      es: { gameplay:"Juego", prep:"Preparación", scores:"Puntos", settings:"Ajustes", orderUp:"¡Orden lista!", drawTile:"Robar ficha", endTurn:"Terminar turno", prepDish:"Preparar plato", cancel:"Cancelar", close:"Cerrar", start:"Iniciar", hide:"Ocultar" },
+      fr: { gameplay:"Jeu", prep:"Prépa", scores:"Scores", settings:"Réglages", orderUp:"À l’envoi !", drawTile:"Piocher", endTurn:"Fin du tour", prepDish:"Préparer", cancel:"Annuler", close:"Fermer", start:"Démarrer", hide:"Masquer" },
+      de: { gameplay:"Spiel", prep:"Vorbereiten", scores:"Punkte", settings:"Einstellungen", orderUp:"Bestellung raus!", drawTile:"Ziehen", endTurn:"Zug beenden", prepDish:"Vorbereiten", cancel:"Abbrechen", close:"Schließen", start:"Start", hide:"Ausblenden" },
+    };
     function t(key){
-      const lang = state.settings.lang || "en";
+      const lang = state?.settings?.lang || "en";
       return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
     }
+
     function getAppName(){
       return ($("appNameH")?.textContent || document.title || "App").trim();
     }
-    function recipeByKey(k){ return RECIPES.find(r=>r.key===k); }
+
+    /* ===== Difficulty ===== */
+    const DIFFS = ["Beginner","Easy","Medium","Difficult","Master Chef"];
+    const DIFF_DELAY_MS = { "Beginner":5000, "Easy":3500, "Medium":2200, "Difficult":1200, "Master Chef":700 };
+
+    function isLoose(diff){
+      return ["Beginner","Easy","Medium"].includes(diff||"Easy");
+    }
+    function isStrict(diff){
+      return ["Difficult","Master Chef"].includes(diff||"Easy");
+    }
+
+    /* ===== Accent colors ===== */
+    const ACCENTS = [
+      { name:"Neon Cyan", val:"#00e5ff" },
+      { name:"Signal Yellow", val:"#ffcc00" },
+      { name:"Lime", val:"#a3ff12" },
+      { name:"Hot Pink", val:"#ff2bd6" },
+      { name:"Orange", val:"#ff8a00" },
+      { name:"Ice", val:"#b3f6ff" },
+      { name:"Violet", val:"#b36bff" },
+      { name:"Red", val:"#ff3b30" }
+    ];
+    const CPU_BASE_COLORS = ["#ff3b30","#b36bff","#ffcc00","#a3ff12"];
+
+    function ensureUniqueCpuColors(){
+      const used = new Set([(state?.settings?.accent||"#00e5ff").toLowerCase()]);
+      const pickPool = ACCENTS.map(a=>a.val.toLowerCase());
+      const unique = [];
+      for(const c of CPU_BASE_COLORS){
+        let col = c.toLowerCase();
+        if(used.has(col)){
+          col = pickPool.find(x=>!used.has(x)) || col;
+        }
+        used.add(col);
+        unique.push(col);
+      }
+      return unique;
+    }
+
+    /* ===== Deck ===== */
+    // NOTE: this keeps your ingredient set, plus grill proteins named explicitly (2pt philosophy lives in scoring)
+    const DECK_ING_COUNTS = [
+      ["Fish",1],["Ground Beef",2],["Shredded Chicken",2],["Carne Guisada",1],["Al Pastor",1],["Carnitas",1],
+      ["Egg",2],["Chicken Fajita",2],["Beef Fajita",2],["Chorizo",1],
+      ["Tortilla Chips",3],["Flour Tortillas",2],["Corn Tortillas",2],
+      ["Shredded yellow Cheese",2],["Shredded white cheese",2],
+      ["Rice",2],["Charro Beans",1],["Refried Beans",1],["Black Beans",1],
+      ["Cilantro",2],["Jalapenos",2],["Lettuce",2],["Lime Juice",2],["Onion",2],["Tomato",2],
+      ["Sour Cream",2],["Avocado",2],
+      ["Salsa Roja",2],["Salsa Verde",2],["Queso",2],["Guacamole",2],
+      ["Grocery Run",2],
+    ];
+
+    function buildDeck(decks=2){
+      const tiles = [];
+      for(let d=0; d<decks; d++){
+        for(const [name,count] of DECK_ING_COUNTS){
+          for(let i=0;i<count;i++){
+            tiles.push({ id: nowId("t"), name });
+          }
+        }
+      }
+      return shuffle(tiles);
+    }
 
     /* ===== Ingredient classification ===== */
     function isWild(name){ return name==="Grocery Run"; }
     function isTortilla(name){ return name==="Corn Tortillas" || name==="Flour Tortillas"; }
+    function isEgg(name){ return name==="Egg"; }
     function isProtein(name){
-      return ["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Beef Fajita","Chorizo"].includes(name);
+      return ["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Chicken Fajita","Beef Fajita","Chorizo","Egg"].includes(name);
     }
     function isCheese(name){ return name==="Shredded yellow Cheese" || name==="Shredded white cheese"; }
     function isSauce(name){ return name==="Salsa Roja" || name==="Salsa Verde"; }
     function isWet(name){ return ["Salsa Roja","Salsa Verde","Queso","Guacamole"].includes(name); }
     function isDip(name){ return ["Salsa Roja","Salsa Verde","Guacamole","Queso"].includes(name); }
-    function isTopping(name){
-      return isWet(name) || ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"].includes(name);
+    function isDryTopping(name){
+      return ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Avocado"].includes(name)
+        || isCheese(name)
+        || name==="Sour Cream";
     }
-    function isDryTopping(name){ return isTopping(name) && !isWet(name) && !isCheese(name); }
 
     function ingredientCategory(name){
       if(isWild(name)) return "wild";
@@ -1049,169 +1091,36 @@
       }[cat] || cat;
     }
 
-    /* ===== Difficulty helpers ===== */
-    function diff(){ return state.settings.difficulty || "Easy"; }
-    function isLooseDiff(){
-      const d = diff();
-      return (d==="Beginner" || d==="Easy" || d==="Medium");
-    }
-    function isStrictDiff(){ return !isLooseDiff(); }
-    function playerHasAutoPlate(){
-      const d = diff();
-      return (d==="Beginner" || d==="Easy");
-    }
-    function playerHasAutoRemix(){
-      return diff()==="Beginner";
-    }
+    /* ===== Scoring / recipes =====
+       Philosophy:
+       - Dishes have base points
+       - “Grill proteins” (Fish, Chicken Fajita, Beef Fajita) add +1 to base when used as the protein (2pt protein vibe)
+       - Extra tiles on ORIGINAL plays: +1 per extra beyond recipe minimum (when allowed)
+       - Extra tiles on REMIXES: +1 per tile added (no other bonuses)
+       - Lauren’s Lunch: double lettuce on ORIGINAL play = +5; on remix = toast only
+    */
+    const GRILL_PROTEINS = new Set(["Fish","Chicken Fajita","Beef Fajita"]);
 
-    /* ===== Scoring helpers ===== */
-    const GRILL_PROTEINS = new Set(["Fish","Chicken Fajita","Beef Fajita"]); // treated as 2 pts (=> +1 bonus)
-    function minTilesForRecipe(recipeKey){
-      const r = recipeByKey(recipeKey);
-      if(!r) return 0;
-      if(r.kind === "taco") return 5;
-      if(r.kind === "breakfastTaco") return 2; // tortilla + egg
-      if(r.kind === "chorizoTaco") return 4;
-      if(r.kind === "chipsDip") return 2;
-      if(r.kind === "pico") return 4;
-      if(r.kind === "ench") return 4;
-      return 0;
-    }
-    function grillBonusForTiles(tileObjs){
-      const proteinTile = tileObjs.find(t => !isWild(t.name) && isProtein(t.name));
-      if(!proteinTile) return 0;
-      return GRILL_PROTEINS.has(proteinTile.name) ? 1 : 0;
-    }
-    function hasDoubleLettuce(tileObjs){
-      const c = tileObjs.filter(t => !isWild(t.name) && t.name==="Lettuce").length;
-      return c >= 2;
-    }
-    function computeServePoints(recipeKey, tileObjs){
-      const r = recipeByKey(recipeKey);
-      const base = r?.pts || 0;
-      const min = minTilesForRecipe(recipeKey);
-      const extras = Math.max(0, (tileObjs?.length || 0) - min);
-      const grill = grillBonusForTiles(tileObjs);
-      const lauren = hasDoubleLettuce(tileObjs) ? 5 : 0; // original serves only
-      return base + extras + grill + lauren;
-    }
-    function awardRemixBonusPoints(pid, tilesAddedCount){
-      const m = state.match;
-      const pl = m.players[pid];
-      const n = Math.max(0, tilesAddedCount|0);
-      if(!pl || n<=0) return 0;
-      pl.score += n; // points never taken away
-      pl.remixGainThisHand = (pl.remixGainThisHand || 0) + n;
-      return n;
-    }
+    const RECIPES = [
+      { key:"breakfastTaco", name:"Breakfast Taco", base:3, kind:"breakfast" },
+      { key:"hardTaco",      name:"Hard Shell Taco", base:5, kind:"taco", tortilla:"Corn Tortillas" },
+      { key:"softTaco",      name:"Soft Taco",       base:5, kind:"taco", tortilla:"Flour Tortillas" },
+      { key:"chorizoTaco",   name:"Chorizo Taco",    base:8, kind:"chorizo" },
+      { key:"chipsDip",      name:"Chips & Dip",     base:5, kind:"chipsDip" },
+      { key:"pico",          name:"Pico de Gallo",   base:8, kind:"pico" },
+      { key:"ench",          name:"Enchiladas",      base:10,kind:"ench" },
+    ];
+    function recipeByKey(k){ return RECIPES.find(r=>r.key===k); }
 
-    /* ===== Validation ===== */
-    function validateDish(recipeKey, tileObjs, ctx){
-      const r = recipeByKey(recipeKey);
-      if(!r) return { ok:false, reason:"Unknown recipe." };
-
-      const names = tileObjs.map(t=>t.name);
-      const wildCount = names.filter(isWild).length;
-      const nonWild = names.filter(n=>!isWild(n));
-
-      function count(fn){ return nonWild.filter(fn).length; }
-      function hasAny(fn){ return count(fn) > 0 || wildCount > 0; }
-
-      // Common wet lock (unless loose difficulty? we keep the core mechanic consistent)
-      if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen){
-        if(nonWild.some(isWet)) return { ok:false, reason:"Wet toppings locked until Kitchen Open." };
-      }
-
-      if(r.kind==="taco"){
-        // Must use correct tortilla (or wild stands in ONLY if you don't already have a tortilla)
-        const hasReqTortilla = nonWild.includes(r.tortilla) || (wildCount>0 && !nonWild.some(isTortilla));
-        if(!hasReqTortilla) return { ok:false, reason:`Use ${r.tortilla}.` };
-
-        if(!hasAny(isProtein)) return { ok:false, reason:"Needs 1 protein." };
-
-        const dryTopCount = nonWild.filter(isDryTopping).length;
-        if(dryTopCount !== RULES.tacoDryToppingsRequired && wildCount < Math.max(0, RULES.tacoDryToppingsRequired - dryTopCount)){
-          return { ok:false, reason:`Needs ${RULES.tacoDryToppingsRequired} dry toppings.` };
-        }
-
-        // Caps/uniques
-        if(count(isTortilla) > 1) return { ok:false, reason:"Only 1 tortilla." };
-        if(count(isProtein) > 1) return { ok:false, reason:"Only 1 protein." };
-        if(count(isCheese) > 1) return { ok:false, reason:"Only 1 cheese." };
-        if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
-
-        // Extras allowed for scoring/discard (up to 7 total)
-        if(tileObjs.length < 5 || tileObjs.length > 7) return { ok:false, reason:"Use 5–7 tiles." };
-        return { ok:true };
-      }
-
-      if(r.kind==="breakfastTaco"){
-        // tortilla + egg required only; toppings optional with limits
-        // egg should NOT be globally required elsewhere; only here.
-        if(!(nonWild.some(isTortilla) || wildCount>0)) return { ok:false, reason:"Needs a tortilla." };
-        if(!(nonWild.includes("Egg") || wildCount>0)) return { ok:false, reason:"Needs egg." };
-
-        // disallowed items
-        const banned = new Set(["Sour Cream","Charro Beans","Black Beans"]);
-        if(nonWild.some(n=>banned.has(n))) return { ok:false, reason:"That ingredient doesn't go on Breakfast Tacos." };
-
-        // wet max 1 (single topping)
-        if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
-
-        // keep it tidy: 2–6 tiles
-        if(tileObjs.length < 2 || tileObjs.length > 6) return { ok:false, reason:"Use 2–6 tiles." };
-        return { ok:true };
-      }
-
-      if(r.kind==="chorizoTaco"){
-        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
-        const hasTort = count(isTortilla) >= 1 || wildCount>=1;
-        const hasChor = nonWild.includes("Chorizo") || wildCount>=1;
-        const hasOnion = nonWild.includes("Onion") || wildCount>=1;
-        const hasCil = nonWild.includes("Cilantro") || wildCount>=1;
-        if(!hasTort) return { ok:false, reason:"Needs tortilla." };
-        if(!hasChor) return { ok:false, reason:"Needs chorizo." };
-        if(!hasOnion) return { ok:false, reason:"Needs onion." };
-        if(!hasCil) return { ok:false, reason:"Needs cilantro." };
-        return { ok:true };
-      }
-
-      if(r.kind==="chipsDip"){
-        if(tileObjs.length !== 2) return { ok:false, reason:"Needs 2 tiles." };
-        const hasChips = nonWild.includes("Tortilla Chips") || wildCount>=1;
-        const hasDip = nonWild.filter(isDip).length >= 1 || wildCount>=1;
-        if(!hasChips) return { ok:false, reason:"Needs Tortilla Chips." };
-        if(!hasDip) return { ok:false, reason:"Needs a dip (salsa/queso/guac)." };
-        return { ok:true };
-      }
-
-      if(r.kind==="pico"){
-        // no extras allowed
-        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
-        const okTom = nonWild.includes("Tomato") || wildCount>=1;
-        const okOn  = nonWild.includes("Onion") || wildCount>=1;
-        const okCil = nonWild.includes("Cilantro") || wildCount>=1;
-        const okLim = nonWild.includes("Lime Juice") || wildCount>=1;
-        if(!okTom || !okOn || !okCil || !okLim) return { ok:false, reason:"Needs Tomato, Onion, Cilantro, Lime." };
-        return { ok:true };
-      }
-
-      if(r.kind==="ench"){
-        // fixed 4 for now
-        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
-        const hasTort = nonWild.filter(isTortilla).length >= 1 || wildCount>=1;
-        const hasProt = nonWild.filter(isProtein).length >= 1 || wildCount>=1;
-        const hasChee = nonWild.filter(isCheese).length >= 1 || wildCount>=1;
-        const hasSau  = nonWild.filter(isSauce).length >= 1 || wildCount>=1;
-        if(!hasTort) return { ok:false, reason:"Needs tortillas." };
-        if(!hasProt) return { ok:false, reason:"Needs protein." };
-        if(!hasChee) return { ok:false, reason:"Needs shredded cheese." };
-        if(!hasSau)  return { ok:false, reason:"Needs sauce." };
-        return { ok:true };
-      }
-
-      return { ok:false, reason:"Unknown recipe." };
-    }
+    /* ===== Rules ===== */
+    const RULES = {
+      openKitchenTurnPts: 10,
+      wetLockedUntilKitchen: true,
+      // taco dry toppings required: loose vs strict
+      tacoDryLoose: 1,
+      tacoDryStrict: 3,
+      starterPassDishKey: "chipsDip",
+    };
 
     /* ===== State ===== */
     function defaultState(){
@@ -1227,38 +1136,31 @@
           decks:2,
           tutorialHidden:false,
         },
+        flags:{
+          sawFirstDraw:false,
+        },
         match: null,
         ui:{
           page:"gameplay",
-          firstDrawSeen:false,
-          tutIndex:0,
         }
       };
     }
 
-    function persist(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+    function persist(){
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    }
     function load(){
       try{
         const raw = localStorage.getItem(LS_KEY);
         if(!raw) return null;
         return JSON.parse(raw);
-      }catch(e){ return null; }
+      }catch(e){
+        return null;
+      }
     }
     let state = load() || defaultState();
 
-    /* ===== Deck / Match ===== */
-    function buildDeck(decks=2){
-      const tiles = [];
-      for(let d=0; d<decks; d++){
-        for(const [name,count] of DECK_ING_COUNTS){
-          for(let i=0;i<count;i++){
-            tiles.push({ id: nowId("t"), name });
-          }
-        }
-      }
-      return shuffle(tiles);
-    }
-
+    /* ===== Players / match ===== */
     function mkPlayer(id, name, isHuman, color){
       return {
         id, name, isHuman,
@@ -1267,15 +1169,12 @@
         servedThisHand: 0,
         hand: [],
         didDrawThisTurn: false,
-        starterPassUsed: false,
-
-        // prep selection (tile ids) — up to 10
-        prepIds: [],
-
-        // logs
-        logThisHand: [],             // [{type:'serve'|'remix', name, points, from?}]
+        // ✅ crash fix: always have arrays used by render logic
+        prepSelectedIds: [],   // player’s prep window selections (ids)
+        logThisHand: [],       // events list
         remixGainThisHand: 0,
         remixLossThisHand: 0,
+        starterPassUsed:false,
       };
     }
 
@@ -1283,28 +1182,13 @@
       const tilesPer = state.settings.tilesPerPlayer;
       for(const pid of Object.keys(m.players)){
         m.players[pid].hand = [];
-        m.players[pid].prepIds = [];
+        m.players[pid].prepSelectedIds = [];
         for(let i=0;i<tilesPer;i++){
           const t = m.bag.pop();
           if(!t) break;
           m.players[pid].hand.push(t);
         }
       }
-    }
-
-    function ensureUniqueCpuColors(){
-      const used = new Set([state.settings.accent.toLowerCase()]);
-      const pickPool = ACCENTS.map(a=>a.val.toLowerCase());
-      const unique = [];
-      for(const c of CPU_BASE_COLORS){
-        let col = c.toLowerCase();
-        if(used.has(col)){
-          col = pickPool.find(x=>!used.has(x)) || col;
-        }
-        used.add(col);
-        unique.push(col);
-      }
-      return unique;
     }
 
     function newMatch(){
@@ -1316,19 +1200,19 @@
         handIndex: 1,
         kitchenOpen: false,
         bag: buildDeck(state.settings.decks),
-        publicLine: [],
+        publicLine: [],   // {id, owner, ownerName, recipeKey, name, basePts, points, tiles:[{id,name}], isRemix:false}
         players: {},
         activePid: "P1",
         servedThisTurnPts: 0,
       };
 
       m.players["P1"] = mkPlayer("P1","You", true, state.settings.accent);
-
       if(pCount >= 2) m.players["P2"] = mkPlayer("P2","Chef Mike", false, cpuCols[0]);
       if(pCount >= 3) m.players["P3"] = mkPlayer("P3","Salsa Sam", false, cpuCols[1]);
       if(pCount >= 4) m.players["P4"] = mkPlayer("P4","Queso Queen", false, cpuCols[2]);
 
       dealInitial(m);
+      beginTurn("P1");
 
       state.match = m;
       state.ui.page = "gameplay";
@@ -1337,216 +1221,34 @@
       toast("New match started.");
     }
 
-    function p1(){ return state.match.players["P1"]; }
-    function playerColor(pid){ return state.match.players[pid]?.color || "#ffffff"; }
-
-    /* ===== Turn helpers ===== */
     function beginTurn(pid){
       const m = state.match;
       const p = m.players[pid];
-      if(!p) return;
       p.didDrawThisTurn = false;
       m.servedThisTurnPts = 0;
-      // keep prep selection but user might want to continue; we keep it.
+      // keep prep selections (player can plan), but you can clear if you prefer:
+      // p.prepSelectedIds = [];
     }
 
-    /* ===== Prep selection + auto verification ===== */
+    function p1(){ return state.match.players["P1"]; }
+
+    /* ===== Selected tiles ===== */
     function selectedTilesFor(pid){
+      // ✅ bulletproof: never map undefined
       const m = state.match;
-      const pl = m.players[pid];
-      return pl.prepIds
-        .map(id=> pl.hand.find(t=>t.id===id))
-        .filter(Boolean);
+      const p = m?.players?.[pid];
+      const ids = (p?.prepSelectedIds || []);
+      const hand = (p?.hand || []);
+      return ids.map(id => hand.find(t => t.id === id)).filter(Boolean);
     }
 
-    function detectLoadedDish(tileObjs, ctx){
-      if(!tileObjs || tileObjs.length===0) return null;
-
-      // strict = require exact “as selected” validity; loose = still require validity, but messaging is friendlier
-      let best = null;
-      for(const r of RECIPES){
-        const v = validateDish(r.key, tileObjs, ctx);
-        if(!v.ok) continue;
-        const pts = computeServePoints(r.key, tileObjs);
-        if(!best || pts > best.points){
-          best = { recipeKey:r.key, name:r.name, points:pts };
-        }
-      }
-      return best;
+    function setPage(p){
+      state.ui.page = p;
+      persist();
+      render();
     }
 
-    /* ===== Publish (Order Up) ===== */
-    function publishFromPrep(pid){
-      const m = state.match;
-      const pl = m.players[pid];
-      const ctx = { kitchenOpen: m.kitchenOpen };
-
-      const tiles = selectedTilesFor(pid);
-      const loaded = detectLoadedDish(tiles, ctx);
-      if(!loaded) return { ok:false, msg:"No qualifying dish loaded." };
-
-      // starter pass: Chips & Dip can be served once before kitchen opens without enabling remix
-      const isStarter = (loaded.recipeKey === RULES.starterPassDishKey && !pl.starterPassUsed);
-
-      // compute served points with bonuses (original serves only)
-      const servePts = computeServePoints(loaded.recipeKey, tiles);
-
-      const pub = {
-        id: nowId("pub"),
-        owner: pid,
-        ownerName: pl.name,
-        recipeKey: loaded.recipeKey,
-        name: loaded.name,
-        points: servePts,
-        tiles: tiles.map(t=>({id:t.id, name:t.name})),
-        isRemix: false,
-        from: null
-      };
-      m.publicLine.push(pub);
-
-      // remove tiles from hand
-      for(const t of tiles){
-        const idx = pl.hand.findIndex(h=>h.id===t.id);
-        if(idx>=0) pl.hand.splice(idx,1);
-      }
-      pl.prepIds = []; // clear prep table after publish
-
-      // apply points (fixed; never removed)
-      pl.score += servePts;
-      pl.servedThisHand += servePts;
-      pl.logThisHand.push({ type:"serve", name:loaded.name, points: servePts });
-
-      // double lettuce toast (original only, already scored in servePts)
-      if(hasDoubleLettuce(tiles)){
-        toast("Lauren's Lunch", 5000);
-      }
-
-      // Kitchen open math (non-starter points contribute while closed)
-      if(!m.kitchenOpen){
-        if(isStarter){
-          pl.starterPassUsed = true;
-        }else{
-          m.servedThisTurnPts += servePts;
-        }
-      }else{
-        m.servedThisTurnPts += servePts;
-      }
-
-      if(!m.kitchenOpen && m.servedThisTurnPts >= RULES.kitchenOpenThresholdPts){
-        m.kitchenOpen = true;
-        toast("🔥 Kitchen Open!");
-      }
-
-      return { ok:true, msg:"Order up!" };
-    }
-
-    /* ===== Remix (add from hand only) ===== */
-    function canAddTileToDish(pubDish, tileObj, ctx){
-      // We treat remix as: add a tile from your hand to someone’s existing dish
-      // as long as the resulting dish is still valid and within max caps.
-      const rKey = pubDish.recipeKey;
-      const r = recipeByKey(rKey);
-      if(!r) return false;
-
-      // Only allow recipes that have capacity for extras (taco + breakfast taco)
-      const maxByKind = {
-        taco: 7,
-        breakfastTaco: 6
-      };
-      const max = maxByKind[r.kind] || null;
-      if(!max) return false;
-
-      const curTiles = pubDish.tiles.map(x=>({ id:x.id, name:x.name }));
-      if(curTiles.length >= max) return false;
-
-      const nextTiles = curTiles.concat([{ id: tileObj.id, name: tileObj.name }]);
-
-      // validate with kitchen state (wet lock)
-      const v = validateDish(rKey, nextTiles, ctx);
-      return v.ok;
-    }
-
-    function findBestRemixForPlayer(pid){
-      const m = state.match;
-      const pl = m.players[pid];
-      const ctx = { kitchenOpen: m.kitchenOpen };
-      if(!m.kitchenOpen) return null; // remix only when kitchen open
-
-      // Look for best single-move: add up to 2 tiles from hand to a dish that can take them.
-      // Net points = number of tiles added (1 pt each). No one loses points.
-      let best = null;
-
-      // candidate dishes (prefer those that are not yours, but allow both)
-      for(const dish of m.publicLine){
-        for(const tile of pl.hand){
-          if(!canAddTileToDish(dish, tile, ctx)) continue;
-
-          // maybe attempt a second tile for +2
-          let second = null;
-          for(const tile2 of pl.hand){
-            if(tile2.id===tile.id) continue;
-            // simulate add 1 then add 2
-            const tempDish = { ...dish, tiles: dish.tiles.concat([{id: tile.id, name: tile.name}]) };
-            if(canAddTileToDish(tempDish, tile2, ctx)){
-              second = tile2;
-              break;
-            }
-          }
-
-          const gain = second ? 2 : 1;
-          const cand = { dishId:dish.id, addIds: second ? [tile.id, second.id] : [tile.id] , gain };
-          if(!best || cand.gain > best.gain) best = cand;
-          if(best && best.gain===2) return best;
-        }
-      }
-      return best;
-    }
-
-    function applyRemix(pid, remixPlan){
-      const m = state.match;
-      const pl = m.players[pid];
-      const ctx = { kitchenOpen: m.kitchenOpen };
-      const dish = m.publicLine.find(d=>d.id===remixPlan.dishId);
-      if(!dish) return { ok:false, msg:"Remix target not found." };
-
-      const addTiles = remixPlan.addIds
-        .map(id=> pl.hand.find(t=>t.id===id))
-        .filter(Boolean);
-
-      if(addTiles.length !== remixPlan.addIds.length) return { ok:false, msg:"Missing tiles for remix." };
-
-      // validate each add is still valid
-      let cur = { ...dish, tiles: dish.tiles.slice() };
-      for(const t0 of addTiles){
-        if(!canAddTileToDish(cur, t0, ctx)) return { ok:false, msg:"That remix no longer qualifies." };
-        cur.tiles = cur.tiles.concat([{id:t0.id, name:t0.name}]);
-      }
-
-      // apply to public line dish
-      dish.tiles = cur.tiles;
-
-      // remove from hand
-      for(const t0 of addTiles){
-        const idx = pl.hand.findIndex(h=>h.id===t0.id);
-        if(idx>=0) pl.hand.splice(idx,1);
-      }
-
-      // award points (+1 per tile added)
-      const pts = awardRemixBonusPoints(pid, addTiles.length);
-      pl.logThisHand.push({ type:"remix", name:`Remix: ${dish.name}`, points: pts, from: dish.ownerName });
-
-      // Lauren toast (remix = toast only, no +5)
-      const nextTiles = dish.tiles.map(x=>({id:x.id, name:x.name}));
-      if(hasDoubleLettuce(nextTiles)){
-        toast("Lauren's Lunch", 5000);
-      }else{
-        toast("Remix served.", 1400);
-      }
-
-      return { ok:true, msg:`Remix +${pts}` };
-    }
-
-    /* ===== One draw per turn (hard gate) ===== */
+    /* ===== Draw gate ===== */
     function drawTile(pid){
       const m = state.match;
       const pl = m.players[pid];
@@ -1558,10 +1260,508 @@
       const t0 = m.bag.splice(idx, 1)[0];
       pl.hand.push(t0);
       pl.didDrawThisTurn = true;
-      return { ok:true, tile:t0, msg:`Drew: ${t0.name}` };
+
+      // first draw flag (for tutorial)
+      if(pid==="P1" && !state.flags.sawFirstDraw){
+        state.flags.sawFirstDraw = true;
+      }
+
+      return { ok:true, tile: t0 };
     }
 
-    /* ===== End turn ===== */
+    /* ===== Validation / detection ===== */
+    function diffCtx(){
+      return {
+        kitchenOpen: state.match.kitchenOpen,
+        difficulty: state.settings.difficulty || "Easy",
+        strict: isStrict(state.settings.difficulty),
+        loose: isLoose(state.settings.difficulty),
+      };
+    }
+
+    function countOcc(names){
+      const m = {};
+      for(const n of names) m[n] = (m[n]||0)+1;
+      return m;
+    }
+
+    function includesOrWild(names, want){
+      // “wild” can cover missing slots (loosely). We do not over-explain in UI.
+      const wc = names.filter(isWild).length;
+      if(names.includes(want)) return true;
+      return wc > 0;
+    }
+
+    // returns {ok, reason, recipeKey, name, base, points, usedIds, isBreakfast, grillBonus, extras, laurensLunch, computed}
+    function validateRecipeForSelection(recipeKey, tileObjs, ctx){
+      const r = recipeByKey(recipeKey);
+      if(!r) return { ok:false, reason:"Unknown recipe." };
+
+      const names = tileObjs.map(t=>t.name);
+      const occ = countOcc(names);
+
+      const wildCount = names.filter(isWild).length;
+      const nonWild = names.filter(n=>!isWild(n));
+
+      const hasWet = nonWild.some(isWet);
+      if(RULES.wetLockedUntilKitchen && !ctx.kitchenOpen && hasWet){
+        return { ok:false, reason:"Wet locked until Kitchen Open." };
+      }
+
+      // helper
+      const reqDry = ctx.strict ? RULES.tacoDryStrict : RULES.tacoDryLoose;
+
+      // Breakfast Taco: tortilla + egg only required
+      if(r.kind==="breakfast"){
+        // required: any tortilla + egg
+        const hasTort = nonWild.some(isTortilla) || wildCount>0;
+        const hasEgg  = nonWild.some(isEgg) || wildCount>0;
+        if(!hasTort || !hasEgg) return { ok:false, reason:"Needs tortilla + egg." };
+
+        // restrictions
+        if(nonWild.includes("Sour Cream") || nonWild.includes("Charro Beans") || nonWild.includes("Black Beans")){
+          return { ok:false, reason:"Breakfast taco: no sour cream/charro/black beans." };
+        }
+
+        // wet: max 1
+        if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
+
+        // dry toppings can be doubled (i.e., allow 2x same dry). we’ll cap overall selection to keep clean:
+        if(tileObjs.length > 8) return { ok:false, reason:"Too many tiles." };
+
+        // scoring
+        const base = r.base;
+        const points = base; // extras are already “toppings” here, but we keep base only (simple)
+        return { ok:true, recipeKey:r.key, name:r.name, base, points, grillBonus:0, extras:0, laurensLunch:false };
+      }
+
+      // Chips & Dip: exactly 2
+      if(r.kind==="chipsDip"){
+        if(tileObjs.length !== 2) return { ok:false, reason:"Needs 2 tiles." };
+        const hasChips = nonWild.includes("Tortilla Chips") || wildCount>0;
+        const hasDip   = nonWild.some(isDip) || wildCount>0;
+        if(!hasChips) return { ok:false, reason:"Needs chips." };
+        if(!hasDip) return { ok:false, reason:"Needs a dip." };
+        return { ok:true, recipeKey:r.key, name:r.name, base:r.base, points:r.base, grillBonus:0, extras:0, laurensLunch:false };
+      }
+
+      // Pico: exactly 4, no extras
+      if(r.kind==="pico"){
+        if(tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
+        const okTom = nonWild.includes("Tomato") || wildCount>0;
+        const okOn  = nonWild.includes("Onion") || wildCount>0;
+        const okCil = nonWild.includes("Cilantro") || wildCount>0;
+        const okLim = nonWild.includes("Lime Juice") || wildCount>0;
+        if(!okTom || !okOn || !okCil || !okLim) return { ok:false, reason:"Needs Tomato, Onion, Cilantro, Lime." };
+        return { ok:true, recipeKey:r.key, name:r.name, base:r.base, points:r.base, grillBonus:0, extras:0, laurensLunch:false };
+      }
+
+      // Enchiladas: tortillas + protein + sauce + cheese, plus up to 3 toppings (mess cap)
+      if(r.kind==="ench"){
+        // minimum 4
+        if(tileObjs.length < 4) return { ok:false, reason:"Needs more tiles." };
+
+        const hasTort = nonWild.some(isTortilla) || wildCount>0;
+        const hasProt = nonWild.some(isProtein)  || wildCount>0;
+        const hasSau  = nonWild.some(isSauce)    || wildCount>0;
+        const hasChee = nonWild.some(isCheese)   || wildCount>0;
+
+        if(!hasTort) return { ok:false, reason:"Needs tortillas." };
+        if(!hasProt) return { ok:false, reason:"Needs protein." };
+        if(!hasSau)  return { ok:false, reason:"Needs sauce." };
+        if(!hasChee) return { ok:false, reason:"Needs cheese." };
+
+        // cap extras
+        if(tileObjs.length > 7) return { ok:false, reason:"Too many toppings." };
+
+        const base = r.base;
+        let grillBonus = 0;
+        const prot = nonWild.find(n=>isProtein(n) && !isEgg(n));
+        if(prot && GRILL_PROTEINS.has(prot)) grillBonus = 1;
+
+        const extras = Math.max(0, tileObjs.length - 4);
+        const points = base + grillBonus + extras; // extras = 1 each on original play
+        return { ok:true, recipeKey:r.key, name:r.name, base, points, grillBonus, extras, laurensLunch:false };
+      }
+
+      // Chorizo Taco: tortilla + chorizo + onion + cilantro (4)
+      if(r.kind==="chorizo"){
+        if(tileObjs.length < 4) return { ok:false, reason:"Needs more tiles." };
+        // allow extras only on loose; strict wants exact 4
+        if(ctx.strict && tileObjs.length !== 4) return { ok:false, reason:"Needs 4 tiles." };
+
+        const hasTort = nonWild.some(isTortilla) || wildCount>0;
+        const hasChor = nonWild.includes("Chorizo") || wildCount>0;
+        const hasOni  = nonWild.includes("Onion") || wildCount>0;
+        const hasCil  = nonWild.includes("Cilantro") || wildCount>0;
+        if(!hasTort) return { ok:false, reason:"Needs tortilla." };
+        if(!hasChor) return { ok:false, reason:"Needs chorizo." };
+        if(!hasOni)  return { ok:false, reason:"Needs onion." };
+        if(!hasCil)  return { ok:false, reason:"Needs cilantro." };
+
+        const base = r.base;
+        const extras = ctx.loose ? Math.max(0, tileObjs.length - 4) : 0;
+        const points = base + extras;
+        return { ok:true, recipeKey:r.key, name:r.name, base, points, grillBonus:0, extras, laurensLunch:false };
+      }
+
+      // Taco (hard/soft): tortilla + protein + dry toppings (loose/strict)
+      if(r.kind==="taco"){
+        // minimum:
+        if(tileObjs.length < (ctx.strict ? 5 : 3)) return { ok:false, reason:"Needs more tiles." };
+        if(tileObjs.length > 8) return { ok:false, reason:"Too many tiles." };
+
+        // required tortilla (specific)
+        const hasReqTortilla = nonWild.includes(r.tortilla) || (wildCount>0 && !nonWild.some(isTortilla));
+        if(!hasReqTortilla) return { ok:false, reason:`Use ${r.tortilla}.` };
+
+        // protein required (egg is allowed as protein, but egg + tortilla should prefer breakfast detection)
+        if(!nonWild.some(isProtein) && wildCount===0) return { ok:false, reason:"Needs protein." };
+
+        // dry topping requirement
+        const dryCount = nonWild.filter(isDryTopping).length;
+        if(dryCount < reqDry && wildCount < (reqDry - dryCount)){
+          return { ok:false, reason:`Needs ${reqDry} dry toppings.` };
+        }
+
+        // wet max 1
+        if(nonWild.filter(isWet).length > 1) return { ok:false, reason:"Only 1 wet topping." };
+
+        // scoring
+        const base = r.base;
+        let grillBonus = 0;
+        const prot = nonWild.find(n=>isProtein(n) && !isEgg(n));
+        if(prot && GRILL_PROTEINS.has(prot)) grillBonus = 1;
+
+        const minReq = ctx.strict ? 5 : 3; // (tort+protein+dry) on loose
+        const extras = Math.max(0, tileObjs.length - minReq);
+        let points = base + grillBonus + extras;
+
+        // Lauren’s Lunch: double lettuce on original play = +5
+        const laurensLunch = (occ["Lettuce"]||0) >= 2;
+        if(laurensLunch) points += 5;
+
+        return { ok:true, recipeKey:r.key, name:r.name, base, points, grillBonus, extras, laurensLunch };
+      }
+
+      return { ok:false, reason:"No match." };
+    }
+
+    // automated best dish detection for current selection
+    function detectBestDish(tileObjs, ctx){
+      if(!tileObjs.length) return { ok:false, reason:"No dish detected yet." };
+
+      // Breakfast taco should trigger ONLY when egg + tortilla exists,
+      // otherwise egg should not force breakfast language.
+      const names = tileObjs.map(t=>t.name);
+      const hasEgg = names.includes("Egg") || names.some(isWild);
+      const hasTort = names.some(isTortilla) || names.some(isWild);
+
+      const keys = RECIPES.map(r=>r.key);
+
+      // prefer breakfast when egg+tort
+      const ordered = (hasEgg && hasTort)
+        ? ["breakfastTaco", ...keys.filter(k=>k!=="breakfastTaco")]
+        : keys.filter(k=>k!=="breakfastTaco").concat(["breakfastTaco"]);
+
+      let best = null;
+      for(const k of ordered){
+        const v = validateRecipeForSelection(k, tileObjs, ctx);
+        if(!v.ok) continue;
+        if(!best || v.points > best.points){
+          best = v;
+        }
+      }
+      if(!best) return { ok:false, reason:"No dish detected yet." };
+      return { ok:true, ...best };
+    }
+
+    /* ===== Publish (Order Up) ===== */
+    function publishSelectionAsDish(pid){
+      const m = state.match;
+      const pl = m.players[pid];
+      const ctx = diffCtx();
+
+      const selected = selectedTilesFor(pid);
+      const best = detectBestDish(selected, ctx);
+      if(!best.ok) return { ok:false, msg: best.reason };
+
+      const usedIds = (pl.prepSelectedIds || []).slice();
+      const usedTiles = usedIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
+
+      // remove from hand
+      for(const t of usedTiles){
+        const idx = pl.hand.findIndex(h=>h.id===t.id);
+        if(idx>=0) pl.hand.splice(idx,1);
+      }
+      pl.prepSelectedIds = [];
+
+      const pub = {
+        id: nowId("pub"),
+        owner: pid,
+        ownerName: pl.name,
+        recipeKey: best.recipeKey,
+        name: best.name,
+        basePts: best.base,
+        points: best.points,
+        tiles: usedTiles.map(t=>({id:t.id, name:t.name})),
+        isRemix: false
+      };
+      m.publicLine.push(pub);
+
+      // scoring fixed on original plays
+      pl.score += best.points;
+      pl.servedThisHand += best.points;
+      pl.logThisHand.push({ type:"serve", name: best.name, points: best.points });
+
+      // kitchen open gate
+      // Starter Pass: Chips & Dip can be served once before kitchen opens without counting toward openKitchenTurnPts
+      let turnPts = best.points;
+      if(!m.kitchenOpen){
+        if(best.recipeKey === RULES.starterPassDishKey && !pl.starterPassUsed){
+          pl.starterPassUsed = true;
+          turnPts = 0;
+        }
+      }
+      m.servedThisTurnPts += turnPts;
+      if(!m.kitchenOpen && m.servedThisTurnPts >= RULES.openKitchenTurnPts){
+        m.kitchenOpen = true;
+        toast("🔥 Kitchen Open!");
+      }
+
+      // Lauren’s Lunch toast timing
+      if(best.laurensLunch){
+        toast("Lauren’s Lunch", 5000);
+      }
+
+      return { ok:true, dish: pub };
+    }
+
+    /* ===== Remix (simple, from-hand only, points cannot be removed) =====
+       We implement a clean MVP remix:
+       - Only when kitchen is open
+       - Only from your hand selection
+       - You add your selected tiles onto ONE existing public dish (first best match)
+       - You gain +1 point per tile added
+       - Other players' points unchanged (fixed, cannot be taken away)
+       - Lauren’s Lunch on remix: toast only (no +5)
+    */
+    function findBestRemix(pid){
+      const m = state.match;
+      const pl = m.players[pid];
+      if(!m.kitchenOpen) return null;
+
+      const selected = selectedTilesFor(pid);
+      if(selected.length === 0) return null;
+
+      // Candidate: add toppings to any taco or ench dish on the line (simple)
+      let best = null;
+
+      for(const d of (m.publicLine||[])){
+        if(!d || !d.tiles) continue;
+
+        const recipe = recipeByKey(d.recipeKey);
+        if(!recipe) continue;
+
+        // only allow adding tiles that are toppings (or anything in loose mode)
+        const addable = selected.filter(t=>{
+          if(isWild(t.name)) return true;
+          if(isStrict(state.settings.difficulty)){
+            // strict: only dry/wet toppings (no extra tortillas/proteins)
+            return isDryTopping(t.name) || isWet(t.name);
+          }
+          return true;
+        });
+        if(addable.length === 0) continue;
+
+        // cap added tiles to keep it tidy
+        const cap = 4;
+        const take = addable.slice(0, cap);
+        const gain = take.length; // +1 per tile on remix
+
+        // “wild savor” for player isn’t a thing; CPU uses it later
+        if(!best || gain > best.gain){
+          best = { dishId: d.id, dishName: d.name, addIds: take.map(t=>t.id), gain };
+        }
+      }
+      if(!best || best.gain < 1) return null;
+      return best;
+    }
+
+    function applyRemix(pid, remixPlan, awardPoints=true){
+      const m = state.match;
+      const pl = m.players[pid];
+      const target = (m.publicLine||[]).find(x=>x.id===remixPlan.dishId);
+      if(!target) return { ok:false, msg:"No target." };
+
+      const addTiles = remixPlan.addIds.map(id=> pl.hand.find(t=>t.id===id)).filter(Boolean);
+      if(addTiles.length === 0) return { ok:false, msg:"No tiles." };
+
+      // remove from hand
+      for(const t of addTiles){
+        const idx = pl.hand.findIndex(h=>h.id===t.id);
+        if(idx>=0) pl.hand.splice(idx,1);
+      }
+      // also clear from prep selection
+      pl.prepSelectedIds = (pl.prepSelectedIds||[]).filter(id => !remixPlan.addIds.includes(id));
+
+      // add to public dish tiles
+      target.tiles = (target.tiles||[]).concat(addTiles.map(t=>({id:t.id, name:t.name})));
+      target.isRemix = true;
+
+      // scoring: +1 per added tile
+      if(awardPoints){
+        pl.score += addTiles.length;
+        pl.remixGainThisHand += addTiles.length;
+        pl.logThisHand.push({ type:"remix", name:`Remix: ${target.name}`, points:addTiles.length, from: target.ownerName });
+      }
+
+      // achievement toast: Lauren’s Lunch on remix (no +5)
+      const occ = countOcc(addTiles.map(t=>t.name));
+      if((occ["Lettuce"]||0) >= 2){
+        toast("Lauren’s Lunch", 5000);
+      } else {
+        toast("Remix!", 1600);
+      }
+
+      return { ok:true };
+    }
+
+    /* ===== Auto Plate ===== */
+    function computeBestPlateFromHand(pid){
+      const m = state.match;
+      const pl = m.players[pid];
+      const ctx = diffCtx();
+
+      const hand = pl.hand || [];
+      if(hand.length === 0) return null;
+
+      // search across recipes, build a candidate selection using minimal wilds
+      let best = null;
+
+      function scoreCandidate(recipeKey, ids){
+        const tiles = ids.map(id=>hand.find(t=>t.id===id)).filter(Boolean);
+        const v = validateRecipeForSelection(recipeKey, tiles, ctx);
+        if(!v.ok) return null;
+        // prefer higher points, then fewer wilds
+        const wilds = tiles.filter(t=>isWild(t.name)).length;
+        return { recipeKey, ids, points:v.points, name:v.name, wilds };
+      }
+
+      // greedy selectors (simple & reliable for MVP)
+      function pickOne(name){
+        const t = hand.find(x=>x.name===name);
+        return t?.id || null;
+      }
+      function pickAny(pred){
+        const t = hand.find(x=>pred(x.name));
+        return t?.id || null;
+      }
+      function pickWild(){
+        const t = hand.find(x=>x.name==="Grocery Run");
+        return t?.id || null;
+      }
+      function pickMany(pred, n, avoidIds){
+        const out = [];
+        for(const t of hand){
+          if(out.length>=n) break;
+          if(avoidIds?.has(t.id)) continue;
+          if(pred(t.name)) out.push(t.id);
+        }
+        return out;
+      }
+
+      // candidates
+      for(const r of RECIPES){
+        let ids = [];
+        const used = new Set();
+
+        if(r.key==="breakfastTaco"){
+          const tort = pickAny(isTortilla) || pickWild();
+          if(tort){ ids.push(tort); used.add(tort); }
+          const egg = pickOne("Egg") || pickWild();
+          if(egg && !used.has(egg)){ ids.push(egg); used.add(egg); }
+
+          // optionally add a couple toppings if loose and available (but avoid beans & sour cream)
+          if(isLoose(ctx.difficulty)){
+            const tops = pickMany(n => (isDryTopping(n) || isWet(n)) && !["Sour Cream","Charro Beans","Black Beans"].includes(n), 2, used);
+            for(const id of tops){ ids.push(id); used.add(id); }
+          }
+        }
+        else if(r.kind==="chipsDip"){
+          const chips = pickOne("Tortilla Chips") || pickWild();
+          const dip = pickAny(isDip) || pickWild();
+          if(chips){ ids.push(chips); used.add(chips); }
+          if(dip && !used.has(dip)){ ids.push(dip); used.add(dip); }
+        }
+        else if(r.kind==="pico"){
+          const need = ["Tomato","Onion","Cilantro","Lime Juice"];
+          for(const n of need){
+            const id = pickOne(n) || pickWild();
+            if(id && !used.has(id)){ ids.push(id); used.add(id); }
+          }
+        }
+        else if(r.kind==="ench"){
+          const tort = pickAny(isTortilla) || pickWild();
+          const prot = pickAny(n=>isProtein(n) && !isEgg(n)) || pickWild();
+          const sauc = pickAny(isSauce) || pickWild();
+          const chee = pickAny(isCheese) || pickWild();
+          for(const id of [tort,prot,sauc,chee]){
+            if(id && !used.has(id)){ ids.push(id); used.add(id); }
+          }
+          if(isLoose(ctx.difficulty)){
+            const extras = pickMany(n=>isDryTopping(n) || isWet(n), 2, used);
+            for(const id of extras){ ids.push(id); used.add(id); }
+          }
+        }
+        else if(r.kind==="chorizo"){
+          const tort = pickAny(isTortilla) || pickWild();
+          const chor = pickOne("Chorizo") || pickWild();
+          const oni = pickOne("Onion") || pickWild();
+          const cil = pickOne("Cilantro") || pickWild();
+          for(const id of [tort,chor,oni,cil]){
+            if(id && !used.has(id)){ ids.push(id); used.add(id); }
+          }
+          if(isLoose(ctx.difficulty)){
+            const extra = pickMany(n=>isDryTopping(n) || isWet(n), 1, used);
+            for(const id of extra){ ids.push(id); used.add(id); }
+          }
+        }
+        else if(r.kind==="taco"){
+          const tort = pickOne(r.tortilla) || pickWild();
+          const prot = pickAny(n=>isProtein(n) && !isEgg(n)) || pickWild();
+          if(tort){ ids.push(tort); used.add(tort); }
+          if(prot && !used.has(prot)){ ids.push(prot); used.add(prot); }
+
+          const reqDry = isStrict(ctx.difficulty) ? RULES.tacoDryStrict : RULES.tacoDryLoose;
+          const dry = pickMany(n=>isDryTopping(n), reqDry, used);
+          for(const id of dry){ ids.push(id); used.add(id); }
+
+          // extras (only if loose)
+          if(isLoose(ctx.difficulty)){
+            const extra = pickMany(n=>isDryTopping(n) || isWet(n), 2, used);
+            for(const id of extra){ ids.push(id); used.add(id); }
+          }
+        }
+
+        // preserve Grocery Run: prefer candidates with fewer wilds
+        const cand = scoreCandidate(r.key, ids);
+        if(!cand) continue;
+        if(!best || cand.points > best.points || (cand.points===best.points && cand.wilds < best.wilds)){
+          best = cand;
+        }
+      }
+
+      return best;
+    }
+
+    /* ===== Turn / CPU ===== */
+    function cpuDelayMs(){
+      const diff = state.settings.difficulty || "Easy";
+      const base = DIFF_DELAY_MS[diff] ?? 2200;
+      return Math.max(450, base + randInt(220));
+    }
+
     function endTurn(pid){
       const m = state.match;
       if(m.activePid !== pid) return;
@@ -1571,7 +1771,6 @@
       const next = order[(i+1)%order.length];
       m.activePid = next;
       beginTurn(next);
-
       persist();
       render();
 
@@ -1582,227 +1781,100 @@
       }
     }
 
-    function cpuDelayMs(){
-      const d = state.settings.difficulty || "Easy";
-      const base = DIFF_DELAY_MS[d] ?? 2200;
-      return Math.max(450, base + randInt(220));
-    }
-
-    /* ===== CPU: best dish search (simple, deterministic enough) ===== */
-    function idsByName(pl, name){
-      return pl.hand.filter(t=>t.name===name).map(t=>t.id);
-    }
-    function firstIdByNameOrWild(pl, name, allowWild=true){
-      const exact = pl.hand.find(t=>t.name===name);
-      if(exact) return exact.id;
-      if(!allowWild) return null;
-      return pl.hand.find(t=>t.name==="Grocery Run")?.id || null;
-    }
-    function anyIdFromNamesOrWild(pl, names, allowWild=true){
-      for(const n of names){
-        const id = pl.hand.find(t=>t.name===n)?.id;
-        if(id) return id;
-      }
-      if(!allowWild) return null;
-      return pl.hand.find(t=>t.name==="Grocery Run")?.id || null;
-    }
-
-    function buildCandidateDishFromHand(pl, recipeKey, ctx, allowWild=true, preserveWild=true){
-      const r = recipeByKey(recipeKey);
-      if(!r) return null;
-
-      const pickNonWild = (name)=> pl.hand.find(t=>t.name===name && t.name!=="Grocery Run")?.id || null;
-      const pickWild = ()=> pl.hand.find(t=>t.name==="Grocery Run")?.id || null;
-
-      const take = (name)=>{
-        // preserveWild means: try exact first; use wild only if necessary
-        const exact = pickNonWild(name);
-        if(exact) return exact;
-        if(!allowWild) return null;
-        if(preserveWild){
-          return pickWild();
-        }
-        return pickWild() || exact;
-      };
-
-      let ids = [];
-
-      if(r.kind==="chipsDip"){
-        const chips = take("Tortilla Chips");
-        const dip = anyIdFromNamesOrWild(pl, ["Salsa Roja","Salsa Verde","Guacamole","Queso"], allowWild);
-        if(chips && dip) ids = [chips,dip];
-      }
-      else if(r.kind==="pico"){
-        const tom = take("Tomato"), oni = take("Onion"), cil = take("Cilantro"), lim = take("Lime Juice");
-        if(tom && oni && cil && lim) ids = [tom,oni,cil,lim];
-      }
-      else if(r.kind==="ench"){
-        const tort = anyIdFromNamesOrWild(pl, ["Flour Tortillas","Corn Tortillas"], allowWild);
-        const prot = anyIdFromNamesOrWild(pl, ["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Beef Fajita","Chorizo"], allowWild);
-        const chee = anyIdFromNamesOrWild(pl, ["Shredded yellow Cheese","Shredded white cheese"], allowWild);
-        const sauc = anyIdFromNamesOrWild(pl, ["Salsa Roja","Salsa Verde"], allowWild);
-        if(tort && prot && chee && sauc) ids = [tort,prot,chee,sauc];
-      }
-      else if(r.kind==="chorizoTaco"){
-        const tort = anyIdFromNamesOrWild(pl, ["Flour Tortillas","Corn Tortillas"], allowWild);
-        const chor = take("Chorizo"), oni = take("Onion"), cil = take("Cilantro");
-        if(tort && chor && oni && cil) ids = [tort,chor,oni,cil];
-      }
-      else if(r.kind==="breakfastTaco"){
-        const tort = anyIdFromNamesOrWild(pl, ["Flour Tortillas","Corn Tortillas"], allowWild);
-        const egg = take("Egg");
-        if(tort && egg){
-          ids = [tort, egg];
-          // optional extras up to 6
-          const max = 6;
-          const banned = new Set(["Sour Cream","Charro Beans","Black Beans"]);
-          const wants = ["Lettuce","Lettuce","Onion","Tomato","Cilantro","Jalapenos","Avocado","Shredded yellow Cheese","Shredded white cheese","Salsa Roja","Salsa Verde","Queso","Guacamole","Rice","Refried Beans"];
-          for(const n of wants){
-            if(ids.length>=max) break;
-            const tId = pl.hand.find(x=>x.name===n && !ids.includes(x.id))?.id;
-            if(tId){
-              const tileObj = pl.hand.find(x=>x.id===tId);
-              if(tileObj && !banned.has(tileObj.name)){
-                // wet max 1
-                const wetAlready = ids.map(id=>pl.hand.find(t=>t.id===id)?.name).filter(Boolean).some(isWet);
-                if(isWet(tileObj.name) && wetAlready) continue;
-                ids.push(tId);
-              }
-            }
-          }
-        }
-      }
-      else if(r.kind==="taco"){
-        const tort = take(r.tortilla);
-        const prot = anyIdFromNamesOrWild(pl, ["Fish","Ground Beef","Shredded Chicken","Carne Guisada","Al Pastor","Carnitas","Egg","Chicken Fajita","Beef Fajita","Chorizo"], allowWild);
-        if(tort && prot){
-          ids.push(tort, prot);
-
-          // 3 dry toppings required
-          const dryTopNames = ["Lettuce","Onion","Tomato","Cilantro","Jalapenos","Sour Cream","Avocado","Shredded yellow Cheese","Shredded white cheese"];
-          const max = 7;
-
-          let dryCount = 0;
-          for(const n of dryTopNames){
-            if(dryCount>=RULES.tacoDryToppingsRequired) break;
-            const id = pl.hand.find(x=>x.name===n && !ids.includes(x.id))?.id;
-            if(id){
-              ids.push(id);
-              if(isDryTopping(n)) dryCount++;
-              else if(isCheese(n)){} // cheese optional, doesn't count as dryTop
-            }
-          }
-          // use wild if still short on dry toppings
-          while(dryCount < RULES.tacoDryToppingsRequired && allowWild){
-            const w = pl.hand.find(x=>x.name==="Grocery Run" && !ids.includes(x.id))?.id;
-            if(!w) break;
-            ids.push(w);
-            dryCount++;
-          }
-
-          // optional extras up to 7 (prefer second lettuce for Lauren bonus)
-          const extraOrder = ["Lettuce","Lettuce","Avocado","Shredded yellow Cheese","Shredded white cheese","Salsa Roja","Salsa Verde","Queso","Guacamole","Rice"];
-          for(const n of extraOrder){
-            if(ids.length>=max) break;
-            const tId = pl.hand.find(x=>x.name===n && !ids.includes(x.id))?.id;
-            if(!tId) continue;
-            const tileObj = pl.hand.find(x=>x.id===tId);
-            // wet max 1
-            const wetAlready = ids.map(id=>pl.hand.find(t=>t.id===id)?.name).filter(Boolean).some(isWet);
-            if(tileObj && isWet(tileObj.name) && wetAlready) continue;
-            ids.push(tId);
-          }
-        }
-      }
-
-      if(!ids.length) return null;
-
-      const tileObjs = ids.map(id=>pl.hand.find(t=>t.id===id)).filter(Boolean);
-      const v = validateDish(recipeKey, tileObjs, ctx);
-      if(!v.ok) return null;
-
-      const pts = computeServePoints(recipeKey, tileObjs);
-      return { recipeKey, name:r.name, ids, pts };
-    }
-
-    function findBestDishFromHand(pl, ctx, allowWild=true, preserveWild=true){
-      let best = null;
-      for(const r of RECIPES){
-        const cand = buildCandidateDishFromHand(pl, r.key, ctx, allowWild, preserveWild);
-        if(!cand) continue;
-        if(!best || cand.pts > best.pts) best = cand;
-      }
-      return best;
-    }
-
     function cpuAct(pid){
       const m = state.match;
       const pl = m.players[pid];
       if(!pl || pl.isHuman) return;
 
-      const ctx = { kitchenOpen: m.kitchenOpen };
-      const d = diff();
+      const diff = state.settings.difficulty || "Easy";
+      const strict = isStrict(diff);
 
-      // CPU remix in Difficult & Master Chef (when kitchen open)
-      if((d==="Difficult" || d==="Master Chef") && m.kitchenOpen){
-        const plan = findBestRemixForPlayer(pid);
-        if(plan && plan.gain >= RULES.remixMinPoints){
-          applyRemix(pid, plan);
-          persist(); render();
+      // CPU: attempt best plate; on Difficult/Master Chef can also remix
+      // Wild-Savor on for Difficult/Master Chef: only spend Grocery Run if payoff >= +4 vs best non-wild dish
+      const wildSavor = strict;
+
+      // evaluate best dish with and without using wild tiles
+      function bestPlate(allowWild){
+        const originalHand = pl.hand.slice();
+        if(!allowWild){
+          pl.hand = pl.hand.filter(t=>t.name!=="Grocery Run");
+        }
+        const best = computeBestPlateFromHand(pid);
+        pl.hand = originalHand;
+        return best;
+      }
+
+      const withWild = bestPlate(true);
+      const noWild   = bestPlate(false);
+
+      let chosen = withWild;
+
+      if(wildSavor && withWild && noWild){
+        const delta = withWild.points - noWild.points;
+        if(delta < 4){
+          chosen = noWild;
+        }
+      }
+
+      // try remix first if strict and kitchen open and we have a decent gain
+      if(strict && m.kitchenOpen && (m.publicLine||[]).length){
+        // quick CPU remix: select up to 2 toppings from hand and add for +2
+        const tops = pl.hand.filter(t=> (isDryTopping(t.name) || isWet(t.name)) && !isWild(t.name)).slice(0, 3);
+        if(tops.length >= 2){
+          // target most recent dish
+          const target = m.publicLine[m.publicLine.length-1];
+          const plan = { dishId: target.id, dishName: target.name, addIds: tops.slice(0,3).map(t=>t.id), gain: Math.min(3, tops.length) };
+          applyRemix(pid, plan, true);
           endTurn(pid);
           return;
         }
       }
 
-      // Wild-Savor ON in Difficult/Master: only use wild if improvement >= +4 vs best non-wild
-      if(d==="Difficult" || d==="Master Chef"){
-        const bestNoWild = findBestDishFromHand(pl, ctx, false, true);
-        const bestWithWild = findBestDishFromHand(pl, ctx, true, true);
-
-        let chosen = bestWithWild;
-        if(bestWithWild && bestNoWild){
-          const delta = bestWithWild.pts - bestNoWild.pts;
-          if(delta < 4){
-            chosen = bestNoWild;
-          }
-        }else if(bestNoWild){
-          chosen = bestNoWild;
-        }
-
-        if(chosen){
-          // use prepIds as internal plate
-          pl.prepIds = chosen.ids.slice(0,10);
-          const res = publishFromPrep(pid);
-          if(res.ok){
-            toast(`${pl.name}: ${chosen.name}`, 1400);
-          }
-          persist(); render();
-          endTurn(pid);
-          return;
-        }
-      }else{
-        // easier CPU: just pick best dish (wild allowed)
-        const chosen = findBestDishFromHand(pl, ctx, true, true);
-        if(chosen){
-          pl.prepIds = chosen.ids.slice(0,10);
-          const res = publishFromPrep(pid);
-          if(res.ok){
-            toast(`${pl.name}: ${chosen.name}`, 1400);
-          }
-          persist(); render();
-          endTurn(pid);
-          return;
+      // dish play
+      if(chosen && chosen.ids && chosen.ids.length){
+        pl.prepSelectedIds = chosen.ids.slice();
+        publishSelectionAsDish(pid);
+      } else {
+        // draw
+        if(m.bag.length>0 && !pl.didDrawThisTurn){
+          const res = drawTile(pid);
+          if(res.ok) toast(`${pl.name} drew a tile.`, 1100);
         }
       }
 
-      // else draw once
-      const r = drawTile(pid);
-      if(r.ok) toast(`${pl.name} drew a tile.`, 1100);
-      persist(); render();
       endTurn(pid);
     }
 
-    /* ===== Tile picker modal (solid, shimmer, flip reveal) ===== */
+    /* ===== Prep selection ===== */
+    function togglePrepSelect(pid, tileId){
+      const m = state.match;
+      const pl = m.players[pid];
+      if(m.activePid !== pid) { toast("Not your turn."); return; }
+
+      pl.prepSelectedIds = pl.prepSelectedIds || [];
+      const idx = pl.prepSelectedIds.indexOf(tileId);
+
+      if(idx >= 0){
+        pl.prepSelectedIds.splice(idx,1);
+      }else{
+        // cap at 10 placeholders
+        if(pl.prepSelectedIds.length >= 10){
+          toast("Prep window is full.");
+          return;
+        }
+        pl.prepSelectedIds.push(tileId);
+      }
+      persist();
+      render();
+    }
+
+    function clearPrep(pid){
+      const pl = state.match.players[pid];
+      pl.prepSelectedIds = [];
+      persist(); render();
+    }
+
+    /* ===== Draw modal ===== */
     function bestFitCols(n){
       if(n >= 25) return 5;
       const c = Math.ceil(Math.sqrt(n));
@@ -1842,21 +1914,24 @@
       const grid = `
         <div class="drawGrid" id="drawGrid" style="grid-template-columns: repeat(${cols}, 1fr);">
           ${Array.from({length: shown}).map((_,i)=>`
-            <div class="tileBack" data-draw-pick="${i}">
-              <div class="tileBackInner">${appName}</div>
-              <div class="tileFace" aria-hidden="true">
-                <div class="name" data-face-name>—</div>
+            <div class="tileCard" data-draw-pick="${i}">
+              <div class="tileFlip" id="flip_${i}">
+                <div class="tileFace tileBack">
+                  <div class="tileBackNum">${i+1}/${shown}</div>
+                  <div class="tileBackInner">${appName}</div>
+                </div>
+                <div class="tileFace tileFront">
+                  <div class="frontName" id="front_${i}">—</div>
+                </div>
               </div>
             </div>
           `).join("")}
         </div>
       `;
 
-      openModal(
-        t("drawTile"),
-        meta + grid,
-        [{ text: t("cancel"), className:"ghost", onClick: closeModal }]
-      );
+      openModal(t("drawTile"), meta + grid, [
+        { text: t("cancel"), className:"ghost", onClick: closeModal }
+      ]);
 
       modalMode = "draw";
 
@@ -1865,295 +1940,372 @@
         const pick = e.target.closest("[data-draw-pick]");
         if(!pick) return;
 
+        const idx = parseInt(pick.getAttribute("data-draw-pick"),10);
+        const flip = $("flip_"+idx);
+        if(!flip) return;
+
         const gridEl = $("drawGrid");
         if(gridEl) gridEl.classList.add("busy");
+
+        // visual focus
+        flip.classList.add("tilePickOutline");
+
         modalMode = "draw_busy";
 
+        // perform actual draw (random)
         const res = drawTile("P1");
         if(!res.ok){
-          toast(res.msg);
           closeModal();
+          toast(res.msg);
           persist(); render();
           return;
         }
 
-        // reveal on the chosen tile (flip)
-        const tileObj = res.tile;
-        const cat = ingredientCategory(tileObj.name);
-        const faceName = pick.querySelector("[data-face-name]");
-        if(faceName){
-          faceName.textContent = tileObj.name;
-          faceName.className = `name slotFilled cat-${cat}`;
-        }
+        // set front text to revealed tile name
+        const front = $("front_"+idx);
+        if(front) front.textContent = res.tile.name;
 
-        // trigger flip
-        requestAnimationFrame(()=>{
-          pick.classList.add("flipping");
-        });
+        // flip animation
+        requestAnimationFrame(()=> flip.classList.add("reveal"));
 
-        persist();
-        render(); // update hand behind modal
-
-        // close after reveal delay (do NOT close immediately)
+        // after reveal, close modal (don’t close immediately)
         setTimeout(()=>{
           closeModal();
-          toast(res.msg);
-          // show tutorial after FIRST draw (only once, unless user hid it)
-          if(!state.ui.firstDrawSeen && !state.settings.tutorialHidden){
-            state.ui.firstDrawSeen = true;
-            persist();
-            openTutorial();
-          }else{
-            state.ui.firstDrawSeen = true;
-            persist();
+          persist();
+          render();
+
+          // after closing, show tutorial after FIRST draw (if not hidden)
+          if(state.flags.sawFirstDraw && !state.settings.tutorialHidden){
+            openTutorialModal();
           }
-        }, 950);
+        }, 1150);
       };
     }
 
     /* ===== Tutorial ===== */
-    const TUTORIAL_SLIDES = [
-      {
-        h:"Your next move",
-        p:"Head to Prep and build an entrée or appetizer using the ingredients in your hand. When a valid dish is loaded, Order Up! becomes available."
-      },
-      {
-        h:"Opening the Kitchen",
-        p:"When the total points you serve in a single turn hits the threshold, the Kitchen opens. That unlocks wet ingredients."
-      },
-      {
-        h:"Remixing",
-        p:"Once the Kitchen is open, you can add tiles from your hand onto dishes in the window (if the dish still qualifies). Added tiles are worth +1 each. Nobody loses points."
-      },
-      {
-        h:"Bonuses",
-        p:"Bonuses only score on original plays. Double Lettuce triggers Lauren’s Lunch on serves (and shows as a toast on remixes)."
-      },
-      {
-        h:"Difficulty differences",
-        p:"Beginner: Auto-Plate + Auto-Remix available. Easy: Auto-Plate available. Medium: no auto helpers. Difficult/Master: strict play; CPU can remix; CPU uses wild cards carefully."
-      }
-    ];
+    function openTutorialModal(){
+      // prevent stacking
+      if($("modalWrap").classList.contains("on")) closeModal();
 
-    function openTutorial(startIndex=0){
-      state.ui.tutIndex = startIndex;
-      persist();
-      const wrap = $("tutWrap");
-      const swipe = $("tutSwipe");
-      swipe.innerHTML = TUTORIAL_SLIDES.map(s=>`
-        <div class="tutSlide">
-          <h4>${escapeHtml(s.h)}</h4>
-          <p>${escapeHtml(s.p)}</p>
-        </div>
-      `).join("");
+      modalMode = "tutorial";
+      const pages = [
+        {
+          title: "Next step",
+          text: "Use the ingredients in your hand to load your Prep Window. When a dish is detected, Order Up becomes available."
+        },
+        {
+          title: "Opening the kitchen",
+          text: "Serve 10+ points in a single turn to open the kitchen. Once it’s open, wet toppings become available."
+        },
+        {
+          title: "Remixing",
+          text: "When the kitchen is open, you can improve the public line using tiles from your hand. Remix points are additive."
+        },
+        {
+          title: "Bonuses",
+          text: "Some combinations trigger fun bonuses and achievements. (Example: double lettuce shows Lauren’s Lunch.)"
+        },
+        {
+          title: "Difficulty",
+          text: "Beginner/Easy/Medium are forgiving and include helpers. Difficult/Master Chef are strict and CPUs remix smarter."
+        }
+      ];
 
-      wrap.classList.add("on");
-      updateTutorialUI();
-
-      // basic swipe
-      let startX = null;
-      swipe.onpointerdown = (e)=>{
-        startX = e.clientX;
-        swipe.setPointerCapture(e.pointerId);
-      };
-      swipe.onpointerup = (e)=>{
-        if(startX===null) return;
-        const dx = e.clientX - startX;
-        startX = null;
-        if(Math.abs(dx) < 40) return;
-        if(dx < 0) tutorialNext();
-        else tutorialPrev();
-      };
-    }
-
-    function closeTutorial(){
-      $("tutWrap").classList.remove("on");
-    }
-
-    function updateTutorialUI(){
-      const i = Math.max(0, Math.min(TUTORIAL_SLIDES.length-1, state.ui.tutIndex|0));
-      state.ui.tutIndex = i;
-      persist();
-      $("tutPager").textContent = `${i+1}/${TUTORIAL_SLIDES.length}`;
-      const swipe = $("tutSwipe");
-      swipe.style.transform = `translateX(${-i*100}%)`;
-      swipe.style.transition = "transform .28s ease";
-      $("tutPrev").disabled = (i===0);
-      $("tutNext").disabled = (i===TUTORIAL_SLIDES.length-1);
-    }
-
-    function tutorialNext(){
-      state.ui.tutIndex = Math.min(TUTORIAL_SLIDES.length-1, (state.ui.tutIndex|0) + 1);
-      updateTutorialUI();
-    }
-    function tutorialPrev(){
-      state.ui.tutIndex = Math.max(0, (state.ui.tutIndex|0) - 1);
-      updateTutorialUI();
-    }
-
-    $("tutNext").onclick = tutorialNext;
-    $("tutPrev").onclick = tutorialPrev;
-    $("tutDone").onclick = ()=> closeTutorial();
-    $("tutHide").onclick = ()=>{
-      state.settings.tutorialHidden = true;
-      persist();
-      closeTutorial();
-      toast("Tutorial hidden. You can reopen it in Settings.", 2200);
-    };
-    $("tutWrap").addEventListener("click",(e)=>{ if(e.target.id==="tutWrap") closeTutorial(); });
-
-    /* ===== UI actions ===== */
-    function setPage(p){
-      state.ui.page = p;
-      persist();
-      render();
-    }
-    function setNavActive(btnId){
-      ["navGame","navPrep","navScores","navSettings"].forEach(id=>{
-        $(id).classList.toggle("active", id===btnId);
-      });
-    }
-    $("navGame").onclick = ()=> setPage("gameplay");
-    $("navPrep").onclick = ()=> setPage("prep");
-    $("navScores").onclick = ()=> setPage("scores");
-    $("navSettings").onclick = ()=> setPage("settings");
-
-    $("btnNewMatchTop").onclick = ()=>{
-      openModal(
-        "New Match",
-        "Start a fresh match? This overwrites current match state.",
-        [
-          { text:"Cancel", className:"ghost", onClick: closeModal },
-          { text:"Start", className:"primary", onClick: ()=>{ closeModal(); newMatch(); } }
-        ]
-      );
-    };
-
-    $("btnPrep").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      setPage("prep");
-    };
-
-    $("btnOrderUp").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      const res = publishFromPrep("P1");
-      if(!res.ok){ toast(res.msg); return; }
-      persist(); render();
-      toast(res.msg);
-    };
-
-    $("btnEndTurn").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      endTurn("P1");
-    };
-
-    $("btnDraw").onclick = openDrawModal;
-
-    $("btnOrderUpFromPrep").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      const res = publishFromPrep("P1");
-      if(!res.ok){ toast(res.msg); return; }
-      persist(); render();
-      setPage("gameplay");
-      toast(res.msg);
-    };
-
-    $("btnAutoPlate").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      const pl = p1();
-      const ctx = { kitchenOpen: m.kitchenOpen };
-
-      // autoplate picks highest scoring dish; preserve wild when possible
-      const best = findBestDishFromHand(pl, ctx, true, true);
-      if(!best){
-        toast("No dish available to auto-plate.");
-        return;
-      }
-      pl.prepIds = best.ids.slice(0,10);
-      persist(); render();
-      toast(`Auto-Plate loaded: ${best.name}`);
-    };
-
-    $("btnAutoRemix").onclick = ()=>{
-      const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
-      if(!m.kitchenOpen){ toast("Remix unlocks when the Kitchen opens."); return; }
-
-      const plan = findBestRemixForPlayer("P1");
-      if(!plan || plan.gain < RULES.remixMinPoints){
-        toast("No remix available.");
-        return;
-      }
-
-      // confirmation modal with deltas (no one loses points)
-      const me = p1();
-      const dish = m.publicLine.find(d=>d.id===plan.dishId);
-      const addNames = plan.addIds.map(id=> me.hand.find(t=>t.id===id)?.name).filter(Boolean);
-
-      const after = me.score + plan.gain;
       const html = `
-        <div class="muted">Proposed Remix</div>
-        <div style="margin-top:10px; font-weight:1000;">Add: ${escapeHtml(addNames.join(", "))}</div>
-        <div class="muted small" style="margin-top:10px;">
-          Target: ${escapeHtml(dish?.name || "—")} • From: ${escapeHtml(dish?.ownerName || "—")}
+        <div class="tutWrap">
+          <div class="tutStrip" id="tutStrip">
+            ${pages.map(p=>`
+              <div class="tutPage">
+                <div class="tutTitle">${escapeHtml(p.title)}</div>
+                <div class="tutText">${escapeHtml(p.text)}</div>
+                <div class="hint" style="margin-top:12px;">Swipe to continue.</div>
+              </div>
+            `).join("")}
+          </div>
         </div>
-        <div class="row wrap" style="gap:10px; margin-top:12px;">
-          <span class="pill">You: <span class="mono">${me.score}</span> → <span class="mono">${after}</span></span>
-          <span class="pill muted">Others: no score changes</span>
+        <div class="tutDots" id="tutDots">
+          ${pages.map((_,i)=> `<div class="dot ${i===0?"on":""}"></div>`).join("")}
         </div>
       `;
 
-      openModal(
-        "Auto-Remix",
-        html,
-        [
-          { text:"Cancel", className:"ghost", onClick: closeModal },
-          { text:"Accept", className:"primary", onClick: ()=>{
-              closeModal();
-              const res = applyRemix("P1", plan);
-              if(!res.ok) toast(res.msg);
-              persist(); render();
-            }
-          }
-        ]
-      );
-    };
+      openModal("Tutorial", html, [
+        { text: t("hide"), className:"ghost", onClick: ()=>{ state.settings.tutorialHidden = true; persist(); closeModal(); } },
+        { text: t("close"), className:"primary", onClick: ()=>{ persist(); closeModal(); } }
+      ]);
 
-    $("btnViewTutorial").onclick = ()=> openTutorial(0);
+      const strip = $("tutStrip");
+      const dots = $("tutDots")?.querySelectorAll(".dot") || [];
+      function updateDots(){
+        const x = strip.scrollLeft;
+        const w = strip.clientWidth || 1;
+        const idx = Math.round(x / w);
+        dots.forEach((d,i)=> d.classList.toggle("on", i===idx));
+      }
+      strip.addEventListener("scroll", ()=> requestAnimationFrame(updateDots));
+    }
 
-    /* ===== Click hand tiles to toggle into Prep Table ===== */
-    $("handTiles").addEventListener("click",(e)=>{
-      const el = e.target.closest("[data-htile]");
-      if(!el) return;
+    /* ===== Menu guide content ===== */
+    function renderMenuGuide(){
+      const lines = [
+        `<div class="label">Breakfast Taco (3 pts)</div>
+         <div class="hint">Tortilla + Egg required. Wet: max 1. Dry toppings can be doubled. No Sour Cream / Charro Beans / Black Beans.</div>`,
+        `<div class="label">Hard Shell Taco (base 5 pts)</div>
+         <div class="hint">Corn tortilla + protein + dry toppings. Strict mode requires more toppings.</div>`,
+        `<div class="label">Soft Taco (base 5 pts)</div>
+         <div class="hint">Flour tortilla + protein + dry toppings.</div>`,
+        `<div class="label">Chorizo Taco (base 8 pts)</div>
+         <div class="hint">Tortilla + Chorizo + Onion + Cilantro.</div>`,
+        `<div class="label">Chips & Dip (5 pts)</div>
+         <div class="hint">Tortilla Chips + (Salsa/Guac/Queso). Starter Pass usable once before kitchen opens.</div>`,
+        `<div class="label">Pico de Gallo (8 pts)</div>
+         <div class="hint">Tomato + Onion + Cilantro + Lime Juice. No extras.</div>`,
+        `<div class="label">Enchiladas (base 10 pts)</div>
+         <div class="hint">Tortillas + Protein + Sauce + Cheese. Up to 3 toppings.</div>`,
+      ].join(`<div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>`);
 
+      $("menuGuideBody").innerHTML = lines;
+    }
+
+    /* ===== Rendering ===== */
+    function phaseText(){
       const m = state.match;
-      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      if(m.kitchenOpen) return { title:"Kitchen Open", desc:"Wet toppings unlocked. Remix is enabled." };
+      if(m.publicLine.length > 0) return { title:"Appetizers Out", desc:"Build toward 10+ points in a single turn to open the kitchen." };
+      return { title:"Not Seated Yet", desc:"Serve 10+ points in one turn to open the kitchen." };
+    }
 
-      const pl = p1();
-      const id = el.getAttribute("data-htile");
-      if(!id) return;
+    function playerColor(pid){
+      const m = state.match;
+      return m.players[pid]?.color || "#ffffff";
+    }
 
-      const idx = pl.prepIds.indexOf(id);
-      if(idx>=0){
-        pl.prepIds.splice(idx,1);
-      }else{
-        if(pl.prepIds.length >= 10){
-          toast("Prep Table is full (10).");
-          return;
-        }
-        pl.prepIds.push(id);
+    function renderPublicLine(){
+      const m = state.match;
+      const el = $("publicLine");
+
+      $("lineSummary").textContent = `${m.publicLine.length} dish${m.publicLine.length===1?"":"es"}`;
+
+      if(!m.publicLine.length){
+        el.innerHTML = `<div class="muted small">No dishes in the window yet.</div>`;
+        return;
       }
 
-      persist();
-      render();
-    });
+      const groups = groupBy(m.publicLine, d=> d.name);
+      el.innerHTML = Object.entries(groups).map(([menuItem, dishes])=>{
+        const total = dishes.reduce((t,d)=>t+(d.points||0),0);
+        return `
+          <div class="pubGroup">
+            <div class="pubGroupTitle">
+              <div>${escapeHtml(menuItem)}</div>
+              <span class="badge">Total <span class="mono">${total}</span></span>
+            </div>
+            ${dishes.map(d=>{
+              const col = playerColor(d.owner);
+              const tintA = hexToRgba(col,.28);
+              const tiles = (d.tiles||[]).map(ti=>{
+                const cat = ingredientCategory(ti.name);
+                const wild = isWild(ti.name) ? "wild" : "";
+                return `<span class="tile ${wild} cat-${cat}" style="cursor:default;">${escapeHtml(ti.name)}</span>`;
+              }).join("");
+              return `
+                <div class="pubDishRow" style="--tintA:${tintA};">
+                  <div class="pubDishMeta">
+                    <div>${escapeHtml(d.ownerName)}${d.isRemix ? " • Remix" : ""}</div>
+                    <span class="badge">${d.points} pts</span>
+                  </div>
+                  <div class="tiles" style="margin-top:8px;">${tiles}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }).join("");
+    }
 
-    /* ===== Settings ===== */
+    function renderGameplay(){
+      const m = state.match;
+      const myTurn = (m.activePid==="P1");
+
+      document.documentElement.style.setProperty("--accent", state.settings.accent);
+      document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
+      $("verPill").textContent = VERSION;
+
+      $("navGame").querySelector(".tx").textContent = t("gameplay");
+      $("navPrep").querySelector(".tx").textContent = t("prep");
+      $("navScores").querySelector(".tx").textContent = t("scores");
+      $("navSettings").querySelector(".tx").textContent = t("settings");
+
+      $("btnPrep").textContent = t("prepDish");
+      $("btnEndTurn").textContent = t("endTurn");
+      $("btnOrderUp").textContent = t("orderUp");
+
+      // Pulse Prep a Dish on your turn
+      $("btnPrep").classList.toggle("pulse", myTurn);
+
+      $("tilesRemainBadge").textContent = `Tiles Remaining ${m.bag.length}`;
+      $("kitchenBadge").textContent = m.kitchenOpen ? "Kitchen Open" : "Kitchen Closed";
+      $("handBadge").textContent = `Hand ${m.handIndex}/${state.settings.handsTotal}`;
+      $("turnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
+
+      const ph = phaseText();
+      $("phaseTitle").textContent = ph.title;
+      $("phaseDesc").textContent = ph.desc;
+
+      // Gameplay Order Up enabled if selection currently qualifies (even from gameplay screen)
+      const sel = selectedTilesFor("P1");
+      const best = detectBestDish(sel, diffCtx());
+      const canOrder = myTurn && best.ok;
+      $("btnOrderUp").disabled = !canOrder;
+      $("btnOrderUp").classList.toggle("pulseOrder", canOrder);
+
+      $("btnPrep").disabled = !myTurn;
+      $("btnEndTurn").disabled = !myTurn;
+
+      renderPublicLine();
+    }
+
+    function renderPrep(){
+      const m = state.match;
+      const pl = p1();
+      const myTurn = (m.activePid==="P1");
+
+      $("prepTurnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
+      $("handCountHint").textContent = `${(pl.hand||[]).length} tiles`;
+
+      // Draw state
+      $("btnDraw").textContent = t("drawTile");
+      $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn || m.bag.length===0;
+      $("btnDraw").classList.toggle("pulse", myTurn && !pl.didDrawThisTurn && m.bag.length>0);
+
+      // Auto-Plate: Beginner/Easy only
+      const diff = state.settings.difficulty || "Easy";
+      const canAutoPlate = myTurn && ["Beginner","Easy"].includes(diff);
+      $("btnAutoPlate").style.display = canAutoPlate ? "inline-flex" : "none";
+
+      // Auto-Remix: Beginner only
+      const canAutoRemix = myTurn && diff==="Beginner" && m.kitchenOpen;
+      $("btnAutoRemix").style.display = canAutoRemix ? "inline-flex" : "none";
+
+      // Fill prep slots (10 neutral placeholders)
+      const ids = (pl.prepSelectedIds || []).slice(0,10);
+      $("prepLoadedHint").textContent = `${ids.length}/10 loaded`;
+
+      const selected = selectedTilesFor("P1");
+      const ctx = diffCtx();
+      const best = detectBestDish(selected, ctx);
+
+      const slotsHtml = Array.from({length:10}).map((_,i)=>{
+        const tObj = selected[i];
+        if(!tObj){
+          return `<div class="slot"><div class="sHint">Empty</div></div>`;
+        }
+        const cat = ingredientCategory(tObj.name);
+        return `<div class="slot filled" data-prep-remove="${escapeHtml(tObj.id)}">
+          <div class="sName">${escapeHtml(tObj.name)}</div>
+          <div class="muted2 small" style="margin-top:6px;">${escapeHtml(categoryLabel(cat))}</div>
+        </div>`;
+      }).join("");
+      $("prepSlots").innerHTML = slotsHtml;
+
+      // status + Order Up enable
+      $("prepStatus").textContent = best.ok ? `${best.name} detected.` : best.reason;
+
+      const canOrder = myTurn && best.ok;
+      $("btnOrderUpFromPrep").disabled = !canOrder;
+      $("btnOrderUpFromPrep").classList.toggle("pulseOrder", canOrder);
+      $("btnOrderUpFromPrep").textContent = t("orderUp");
+
+      // Auto-Plate enable/disable
+      if(canAutoPlate){
+        const plate = computeBestPlateFromHand("P1");
+        $("btnAutoPlate").disabled = !plate;
+      }
+
+      // Auto-Remix enable/disable (Beginner only)
+      if(canAutoRemix){
+        const plan = findBestRemix("P1");
+        $("btnAutoRemix").disabled = !plan;
+      }
+
+      // Hand grouping + selection highlight
+      const grouped = groupBy(pl.hand||[], t => ingredientCategory(t.name));
+      const order = ["tortilla","protein","cheese","wet","drytop","wild","other"];
+      $("handTiles").innerHTML = `
+        <div class="handGroups">
+          ${order.filter(cat => (grouped[cat]||[]).length).map(cat=>{
+            const tiles = grouped[cat];
+            return `
+              <div class="handGroup">
+                <div class="handGroupTitle">
+                  <span>${escapeHtml(categoryLabel(cat))}</span>
+                  <span class="count">${tiles.length}</span>
+                </div>
+                <div class="tiles">
+                  ${tiles.map(ti=>{
+                    const inPrep = (pl.prepSelectedIds||[]).includes(ti.id);
+                    const wild = isWild(ti.name) ? "wild" : "";
+                    return `
+                      <span class="tile ${inPrep?"sel":""} ${wild} cat-${cat}" data-htile="${escapeHtml(ti.id)}">
+                        ${escapeHtml(ti.name)}
+                      </span>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      renderMenuGuide();
+    }
+
+    function renderScores(){
+      const m = state.match;
+      const pl = p1();
+
+      $("scoreModePill").textContent = state.settings.mode==="campaign" ? "Campaign" : "Standard";
+      $("scoreCurrent").textContent = `Current: ${pl.score}`;
+      $("scoreServedMuted").textContent = `Served this hand: ${pl.servedThisHand}`;
+
+      const players = Object.values(m.players);
+      $("scoreList").innerHTML = players.map(p=>{
+        const col = playerColor(p.id);
+        const tintA = hexToRgba(col,.18);
+
+        const dishLines = (p.logThisHand || []).map(ev=>{
+          const extra = ev.type==="remix" ? ` <span class="muted2 small">(from ${escapeHtml(ev.from || "—")})</span>` : "";
+          return `<div class="row sp" style="gap:12px; margin-top:8px;">
+            <div style="font-weight:900;">${escapeHtml(ev.name)}${extra}</div>
+            <span class="badge">${ev.points}</span>
+          </div>`;
+        }).join("") || `<div class="muted small">No dishes served yet this hand.</div>`;
+
+        const net = (p.remixGainThisHand || 0) - (p.remixLossThisHand || 0);
+        const netTxt = net === 0 ? "0" : (net > 0 ? `+${net}` : `${net}`);
+
+        return `
+          <details class="acc" style="margin-top:12px; background: rgba(255,255,255,.03);">
+            <summary>
+              <span>${escapeHtml(p.name)}${p.id==="P1" ? " (You)" : ""}</span>
+              <span class="badge">Score ${p.score}</span>
+            </summary>
+            <div class="accBody" style="position:relative; overflow:hidden;">
+              <div style="position:absolute; inset:0; background: linear-gradient(135deg, ${tintA}, transparent 70%); opacity:.9; pointer-events:none;"></div>
+              <div style="position:relative; z-index:1;">
+                <div class="row wrap" style="gap:10px; margin-top:6px;">
+                  <span class="pill">Served: ${p.servedThisHand}</span>
+                  <span class="pill">Remix Net: ${netTxt}</span>
+                </div>
+                <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
+                ${dishLines}
+              </div>
+            </div>
+          </details>
+        `;
+      }).join("");
+    }
+
     function fillSettings(){
       $("selDifficulty").innerHTML = DIFFS.map(d=> `<option value="${d}">${d}</option>`).join("");
       $("selDifficulty").value = state.settings.difficulty;
@@ -2169,9 +2321,187 @@
       $("selLang").value = state.settings.lang;
     }
 
+    function setNavActive(btnId){
+      ["navGame","navPrep","navScores","navSettings"].forEach(id=>{
+        $(id).classList.toggle("active", id===btnId);
+      });
+    }
+
+    function render(){
+      if(!state.match) newMatch();
+
+      ["pageGameplay","pagePrep","pageScores","pageSettings"].forEach(id=> $(id).classList.remove("on"));
+      if(state.ui.page==="gameplay"){ $("pageGameplay").classList.add("on"); setNavActive("navGame"); }
+      if(state.ui.page==="prep"){ $("pagePrep").classList.add("on"); setNavActive("navPrep"); }
+      if(state.ui.page==="scores"){ $("pageScores").classList.add("on"); setNavActive("navScores"); }
+      if(state.ui.page==="settings"){ $("pageSettings").classList.add("on"); setNavActive("navSettings"); }
+
+      fillSettings();
+      renderGameplay();
+      renderPrep();
+      renderScores();
+    }
+
+    /* ===== Wire buttons ===== */
+    $("navGame").onclick = ()=> setPage("gameplay");
+    $("navPrep").onclick = ()=> setPage("prep");
+    $("navScores").onclick = ()=> setPage("scores");
+    $("navSettings").onclick = ()=> setPage("settings");
+
+    $("btnNewMatchTop").onclick = ()=>{
+      openModal(
+        "New Match",
+        "Start a fresh match? This overwrites current match state.",
+        [
+          { text: t("cancel"), className:"ghost", onClick: closeModal },
+          { text: t("start"), className:"primary", onClick: ()=>{ closeModal(); newMatch(); } }
+        ]
+      );
+    };
+
+    $("btnPrep").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      setPage("prep");
+    };
+
+    $("btnEndTurn").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      endTurn("P1");
+    };
+
+    $("btnOrderUp").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+
+      // Try original dish first; if not valid, try remix plan (if kitchen open)
+      const sel = selectedTilesFor("P1");
+      const best = detectBestDish(sel, diffCtx());
+      if(best.ok){
+        const res = publishSelectionAsDish("P1");
+        if(!res.ok){ toast(res.msg || "No qualifying dish."); return; }
+        persist(); render();
+        toast("Order up!");
+        return;
+      }
+
+      // fallback to remix
+      const plan = findBestRemix("P1");
+      if(plan){
+        const out = applyRemix("P1", plan, true);
+        if(out.ok){
+          persist(); render();
+          toast("Remix!", 1400);
+          return;
+        }
+      }
+
+      toast("No qualifying dish.");
+    };
+
+    $("btnDraw").onclick = openDrawModal;
+
+    $("btnOrderUpFromPrep").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+
+      const sel = selectedTilesFor("P1");
+      const best = detectBestDish(sel, diffCtx());
+      if(best.ok){
+        const res = publishSelectionAsDish("P1");
+        if(!res.ok){ toast(res.msg || "No qualifying dish."); return; }
+        persist(); render();
+        setPage("gameplay");
+        toast("Order up!");
+        return;
+      }
+
+      const plan = findBestRemix("P1");
+      if(plan){
+        const out = applyRemix("P1", plan, true);
+        if(out.ok){
+          persist(); render();
+          setPage("gameplay");
+          return;
+        }
+      }
+
+      toast("No qualifying dish.");
+    };
+
+    $("btnClearPrep").onclick = ()=> clearPrep("P1");
+
+    $("btnAutoPlate").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      const diff = state.settings.difficulty || "Easy";
+      if(!["Beginner","Easy"].includes(diff)) return;
+
+      const best = computeBestPlateFromHand("P1");
+      if(!best){ toast("No valid plate found."); return; }
+
+      // preserve Grocery Run philosophy is handled by scoring tie-break (fewer wilds)
+      p1().prepSelectedIds = best.ids.slice(0,10);
+      persist(); render();
+      toast("Auto-Plate loaded.");
+    };
+
+    $("btnAutoRemix").onclick = ()=>{
+      const m = state.match;
+      if(m.activePid !== "P1"){ toast("Not your turn."); return; }
+      if(!m.kitchenOpen){ toast("Kitchen is closed."); return; }
+      if(state.settings.difficulty !== "Beginner") return;
+
+      const plan = findBestRemix("P1");
+      if(!plan){ toast("No remix detected."); return; }
+
+      const players = Object.values(m.players);
+      const deltas = players.map(p=> ({ name:p.name, delta: (p.id==="P1"? plan.gain : 0) }));
+      const deltaLines = deltas.map(d=> `
+        <div class="row sp" style="gap:10px; margin-top:8px;">
+          <div style="font-weight:900;">${escapeHtml(d.name)}</div>
+          <span class="badge">${d.delta>=0?"+":""}${d.delta}</span>
+        </div>
+      `).join("");
+
+      openModal(
+        "Auto-Remix",
+        `<div class="muted">Proposed: add ${plan.gain} tile(s) onto <b>${escapeHtml(plan.dishName)}</b>.</div>
+         <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
+         <div class="muted2 small">Score deltas</div>
+         ${deltaLines}`,
+        [
+          { text: t("cancel"), className:"ghost", onClick: closeModal },
+          { text: "Accept", className:"primary", onClick: ()=>{
+              closeModal();
+              const out = applyRemix("P1", plan, true);
+              if(out.ok){ persist(); render(); }
+            }
+          }
+        ]
+      );
+    };
+
+    $("handTiles").addEventListener("click",(e)=>{
+      const el = e.target.closest("[data-htile]");
+      if(!el) return;
+      togglePrepSelect("P1", el.getAttribute("data-htile"));
+    });
+
+    $("prepSlots").addEventListener("click",(e)=>{
+      const el = e.target.closest("[data-prep-remove]");
+      if(!el) return;
+      const id = el.getAttribute("data-prep-remove");
+      const pl = p1();
+      pl.prepSelectedIds = (pl.prepSelectedIds||[]).filter(x=>x!==id);
+      persist(); render();
+    });
+
+    /* ===== Settings controls ===== */
     $("selMode").onchange = ()=>{ state.settings.mode = $("selMode").value; persist(); render(); toast("Mode updated."); };
     $("selPlayers").onchange = ()=>{ state.settings.players = parseInt($("selPlayers").value,10); persist(); render(); toast("Players updated."); };
-    $("selDifficulty").onchange = ()=>{ state.settings.difficulty = $("selDifficulty").value; persist(); render(); toast("Difficulty updated."); };
+    $("selDifficulty").onchange = ()=>{ state.settings.difficulty = $("selDifficulty").value; persist(); render(); };
     $("inpHands").onchange = ()=>{ state.settings.handsTotal = Math.max(1, Math.min(12, parseInt($("inpHands").value,10) || 12)); persist(); render(); };
     $("inpTilesPerPlayer").onchange = ()=>{ state.settings.tilesPerPlayer = Math.max(8, Math.min(24, parseInt($("inpTilesPerPlayer").value,10) || 16)); persist(); render(); };
     $("selDecks").onchange = ()=>{ state.settings.decks = parseInt($("selDecks").value,10) || 2; persist(); render(); };
@@ -2194,307 +2524,9 @@
 
     $("selLang").onchange = ()=>{ state.settings.lang = $("selLang").value; persist(); render(); };
 
-    /* ===== Rendering ===== */
-    function phaseText(){
-      const m = state.match;
-      if(m.kitchenOpen) return { title:"Kitchen Open", desc:"Wet ingredients unlocked. Remix enabled." };
-      if(m.publicLine.length > 0) return { title:"Appetizers Out", desc:`Serve ${RULES.kitchenOpenThresholdPts}+ points in a single turn to open the kitchen.` };
-      return { title:"Not Seated Yet", desc:`Serve ${RULES.kitchenOpenThresholdPts}+ points in one turn to open the kitchen.` };
-    }
+    $("btnViewTutorial").onclick = ()=> openTutorialModal();
 
-    function renderPublicLine(){
-      const m = state.match;
-      const el = $("publicLine");
-
-      $("lineSummary").textContent = `${m.publicLine.length} dish${m.publicLine.length===1?"":"es"}`;
-
-      if(!m.publicLine.length){
-        el.innerHTML = `<div class="muted small">No dishes in the window yet.</div>`;
-        return;
-      }
-
-      const groups = groupBy(m.publicLine, d=> d.name);
-      el.innerHTML = Object.entries(groups).map(([menuItem, dishes])=>{
-        const total = dishes.reduce((t,d)=>t+d.points,0);
-        return `
-          <div class="pubGroup">
-            <div class="pubGroupTitle">
-              <div>${escapeHtml(menuItem)}</div>
-              <span class="badge">Total <span class="mono">${total}</span></span>
-            </div>
-            ${dishes.map(d=>{
-              const col = playerColor(d.owner);
-              const tintA = hexToRgba(col,.28);
-              const tiles = d.tiles.map(ti=>{
-                const cat = ingredientCategory(ti.name);
-                const wet = isWet(ti.name) ? "wet" : "";
-                const wild = isWild(ti.name) ? "wild" : "";
-                return `<span class="tile ${wet} ${wild} cat-${cat}">${escapeHtml(ti.name)}</span>`;
-              }).join("");
-              return `
-                <div class="pubDishRow" style="--tintA:${tintA};">
-                  <div class="pubDishMeta">
-                    <div>${escapeHtml(d.ownerName)}${d.isRemix ? " • Remix" : ""}</div>
-                    <span class="badge">${d.points} pts</span>
-                  </div>
-                  <div class="tiles" style="margin-top:8px;">${tiles}</div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderMenuGuide(){
-      const m = state.match;
-      const ctx = { kitchenOpen: m.kitchenOpen };
-      const wet = ctx.kitchenOpen ? "Unlocked" : "Locked until Kitchen Open";
-
-      $("menuGuide").innerHTML = `
-        <div class="muted small">Wet toppings: <span class="mono">${wet}</span></div>
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-
-        <div style="font-weight:1000;">Tacos</div>
-        <div class="muted small" style="margin-top:6px;">
-          Hard/Soft: correct tortilla + 1 protein + ${RULES.tacoDryToppingsRequired} dry toppings (5–7 tiles total). Extras score +1 each on original serves.
-        </div>
-
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-
-        <div style="font-weight:1000;">Breakfast Taco</div>
-        <div class="muted small" style="margin-top:6px;">
-          Tortilla + Egg required (2–6 tiles). Optional toppings allowed. No Sour Cream, Charro Beans, or Black Beans.
-        </div>
-
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-
-        <div style="font-weight:1000;">Chips &amp; Dip</div>
-        <div class="muted small" style="margin-top:6px;">
-          Tortilla Chips + any dip (Salsa/Guac/Queso).
-        </div>
-
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-
-        <div style="font-weight:1000;">Pico de Gallo</div>
-        <div class="muted small" style="margin-top:6px;">
-          Tomato + Onion + Cilantro + Lime (exactly 4).
-        </div>
-
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-
-        <div style="font-weight:1000;">Enchiladas</div>
-        <div class="muted small" style="margin-top:6px;">
-          Tortillas + Protein + Sauce + Shredded Cheese (exactly 4).
-        </div>
-
-        <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-
-        <div style="font-weight:1000;">Chorizo Taco</div>
-        <div class="muted small" style="margin-top:6px;">
-          Tortilla + Chorizo + Onion + Cilantro (exactly 4).
-        </div>
-      `;
-    }
-
-    function renderPrep(){
-      const m = state.match;
-      const pl = p1();
-      const myTurn = (m.activePid==="P1");
-      const ctx = { kitchenOpen: m.kitchenOpen };
-
-      $("prepTurnBadge").textContent = myTurn ? "Your Turn" : `${m.players[m.activePid].name}'s Turn`;
-      $("handCountHint").textContent = `${pl.hand.length} tiles`;
-
-      // Draw button
-      $("btnDraw").textContent = t("drawTile");
-      $("btnDraw").disabled = !myTurn || pl.didDrawThisTurn || m.bag.length===0;
-      if(!pl.didDrawThisTurn && myTurn && m.bag.length>0) $("btnDraw").classList.add("pulse");
-      else $("btnDraw").classList.remove("pulse");
-
-      // Auto helpers by difficulty
-      const showPlate = playerHasAutoPlate();
-      const showRemix = playerHasAutoRemix();
-      $("btnAutoPlate").style.display = showPlate ? "block" : "none";
-      $("btnAutoRemix").style.display = showRemix ? "block" : "none";
-
-      // Auto-plate enabled when any dish exists
-      if(showPlate){
-        const best = findBestDishFromHand(pl, ctx, true, true);
-        $("btnAutoPlate").disabled = !myTurn || !best;
-        $("btnAutoPlate").classList.toggle("pulse", !!best && myTurn);
-      }
-      // Auto-remix enabled when any remix net >=1
-      if(showRemix){
-        const plan = (myTurn && m.kitchenOpen) ? findBestRemixForPlayer("P1") : null;
-        const ok = !!plan && plan.gain >= RULES.remixMinPoints;
-        $("btnAutoRemix").disabled = !ok;
-        $("btnAutoRemix").classList.toggle("pulse", ok);
-      }
-
-      // Prep slots (10 neutral placeholders)
-      const selected = selectedTilesFor("P1");
-      const slots = Array.from({length:10}).map((_,i)=>{
-        const t0 = selected[i];
-        if(!t0){
-          return `<div class="slotValue">Empty</div>`;
-        }
-        const cat = ingredientCategory(t0.name);
-        return `<div class="slotValue slotFilled cat-${cat}">${escapeHtml(t0.name)}</div>`;
-      }).join("");
-      $("prepSlots").innerHTML = slots;
-
-      // Hand grouping (categorized in hand, but prep starts blank)
-      const grouped = groupBy(pl.hand, t => ingredientCategory(t.name));
-      const order = ["tortilla","protein","cheese","wet","drytop","wild","other"];
-
-      $("handTiles").innerHTML = `
-        <div class="handGroups">
-          ${order.filter(cat => (grouped[cat]||[]).length).map(cat=>{
-            const tiles = grouped[cat];
-            return `
-              <div class="handGroup">
-                <div class="handGroupTitle">
-                  <span>${escapeHtml(categoryLabel(cat))}</span>
-                  <span class="count">${tiles.length}</span>
-                </div>
-                <div class="tiles">
-                  ${tiles.map(ti=>{
-                    const inPrep = pl.prepIds.includes(ti.id);
-                    const wet = isWet(ti.name) ? "wet" : "";
-                    const wild = isWild(ti.name) ? "wild" : "";
-                    return `
-                      <span class="tile ${inPrep?"sel":""} ${wet} ${wild} cat-${cat}" data-htile="${escapeHtml(ti.id)}">
-                        ${escapeHtml(ti.name)}
-                      </span>
-                    `;
-                  }).join("")}
-                </div>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      `;
-
-      // Auto verification -> Order Up enable
-      const loaded = detectLoadedDish(selected, ctx);
-      const canOrder = myTurn && !!loaded;
-      $("btnOrderUpFromPrep").disabled = !canOrder;
-      $("btnOrderUpFromPrep").classList.toggle("pulseOrder", canOrder);
-      $("btnOrderUpFromPrep").textContent = t("orderUp");
-
-      if(!selected.length){
-        $("prepLoadedHint").textContent = "Select ingredients from your hand to load a dish.";
-      }else if(loaded){
-        $("prepLoadedHint").textContent = `Loaded: ${loaded.name}`;
-      }else{
-        // strict vs loose messaging
-        $("prepLoadedHint").textContent = isLooseDiff()
-          ? "Almost there — adjust ingredients until a dish loads."
-          : "Not a valid dish — adjust ingredients.";
-      }
-
-      renderMenuGuide();
-    }
-
-    function renderScores(){
-      const m = state.match;
-      const pl = p1();
-
-      $("scoreModePill").textContent = state.settings.mode==="campaign" ? "Campaign" : "Standard";
-      $("scoreCurrent").textContent = `Current: ${pl.score}`;
-      $("scoreServedMuted").textContent = `Served this hand: ${pl.servedThisHand}`;
-
-      const players = Object.values(m.players);
-
-      $("scoreList").innerHTML = players.map(p=>{
-        const col = playerColor(p.id);
-        const tintA = hexToRgba(col,.18);
-
-        const dishLines = (p.logThisHand || []).map(ev=>{
-          const extra = ev.type==="remix" ? ` <span class="muted2 small">(from ${escapeHtml(ev.from || "—")})</span>` : "";
-          return `<div class="row sp" style="gap:12px; margin-top:8px;">
-            <div style="font-weight:900;">${escapeHtml(ev.name)}${extra}</div>
-            <span class="badge">${ev.points}</span>
-          </div>`;
-        }).join("") || `<div class="muted small">No dishes served yet this hand.</div>`;
-
-        const net = (p.remixGainThisHand || 0) - (p.remixLossThisHand || 0);
-        const netTxt = net === 0 ? "0" : (net > 0 ? `+${net}` : `${net}`);
-
-        return `
-          <details class="acc" style="margin-top:12px; background: rgba(255,255,255,.03);">
-            <summary>
-              <span>${escapeHtml(p.name)}${p.id==="P1" ? " (You)" : ""}</span>
-              <span class="badge" style="background: rgba(0,0,0,.30);">Score ${p.score}</span>
-            </summary>
-            <div class="accBody" style="position:relative; overflow:hidden;">
-              <div style="position:absolute; inset:0; background: linear-gradient(135deg, ${tintA}, transparent 70%); opacity:.9; pointer-events:none;"></div>
-              <div style="position:relative; z-index:1;">
-                <div class="row wrap" style="gap:10px; margin-top:6px;">
-                  <span class="pill">Served: ${p.servedThisHand}</span>
-                  <span class="pill">Remix Net: ${netTxt}</span>
-                </div>
-                <div style="height:1px; background: rgba(255,255,255,.06); margin: 12px 0;"></div>
-                ${dishLines}
-              </div>
-            </div>
-          </details>
-        `;
-      }).join("");
-    }
-
-    function renderGameplay(){
-      const m = state.match;
-      const myTurn = (m.activePid==="P1");
-      const ctx = { kitchenOpen: m.kitchenOpen };
-      const selected = selectedTilesFor("P1");
-      const loaded = detectLoadedDish(selected, ctx);
-
-      document.documentElement.style.setProperty("--accent", state.settings.accent);
-      document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
-      $("verPill").textContent = VERSION;
-
-      $("navGame").querySelector(".tx").textContent = t("gameplay");
-      $("navPrep").querySelector(".tx").textContent = t("prep");
-      $("navScores").querySelector(".tx").textContent = t("scores");
-      $("navSettings").querySelector(".tx").textContent = t("settings");
-
-      $("btnPrep").textContent = t("prepDish");
-      $("btnEndTurn").textContent = t("endTurn");
-
-      const ph = phaseText();
-      $("phaseTitle").textContent = ph.title;
-      $("phaseDesc").textContent = ph.desc;
-      $("turnLine").textContent = myTurn ? "Your turn." : `${m.players[m.activePid].name}'s turn.`;
-
-      const canOrder = myTurn && !!loaded;
-      $("btnOrderUp").textContent = t("orderUp");
-      $("btnOrderUp").disabled = !canOrder;
-      $("btnOrderUp").classList.toggle("pulseOrder", canOrder);
-
-      $("btnPrep").disabled = !myTurn;
-      $("btnEndTurn").disabled = !myTurn;
-
-      renderPublicLine();
-    }
-
-    function render(){
-      if(!state.match) newMatch();
-
-      ["pageGameplay","pagePrep","pageScores","pageSettings"].forEach(id=> $(id).classList.remove("on"));
-      if(state.ui.page==="gameplay"){ $("pageGameplay").classList.add("on"); setNavActive("navGame"); }
-      if(state.ui.page==="prep"){ $("pagePrep").classList.add("on"); setNavActive("navPrep"); }
-      if(state.ui.page==="scores"){ $("pageScores").classList.add("on"); setNavActive("navScores"); }
-      if(state.ui.page==="settings"){ $("pageSettings").classList.add("on"); setNavActive("navSettings"); }
-
-      fillSettings();
-      renderGameplay();
-      renderPrep();
-      renderScores();
-    }
-
-    /* ===== Init ===== */
+    /* ===== Boot ===== */
     function boot(){
       document.documentElement.style.setProperty("--accent", state.settings.accent);
       document.documentElement.style.setProperty("--accentSoft", hexToRgba(state.settings.accent, .14));
@@ -2505,9 +2537,17 @@
         if(state.match.players["P2"]) state.match.players["P2"].color = cpuCols[0];
         if(state.match.players["P3"]) state.match.players["P3"].color = cpuCols[1];
         if(state.match.players["P4"]) state.match.players["P4"].color = cpuCols[2];
+
+        // ensure arrays exist (extra safety for older saves)
+        for(const pid of Object.keys(state.match.players)){
+          const p = state.match.players[pid];
+          p.prepSelectedIds = p.prepSelectedIds || [];
+          p.hand = p.hand || [];
+          p.logThisHand = p.logThisHand || [];
+        }
       }
 
-      if(state.match) beginTurn(state.match.activePid);
+      if(!state.match) newMatch();
       render();
     }
 
