@@ -173,6 +173,12 @@
       bottom: calc(var(--navH) + env(safe-area-inset-bottom));
       z-index: 30;
     }
+
+    /* Mobile: actions tray can be tall (buttons + prep table). Disable sticky to prevent overlap. */
+    @media (max-width: 520px), (max-height: 720px){
+      .actionsTray{ position: static; bottom: auto; }
+    }
+
     .actionsStack{ display:flex; flex-direction:column; gap:10px; }
 
     /* Hand pills */
@@ -621,6 +627,10 @@
       background: rgba(255,255,255,.05);
     }
     .dot.on{ background: rgba(0,229,255,.45); border-color: rgba(0,229,255,.55); }
+  
+    @media (max-width: 520px){
+      button, .tile, .navBtn { touch-action: manipulation; }
+    }
   </style>
 </head>
 
@@ -893,7 +903,7 @@
 
   <script>
 /* =====================================================
-  Taco Ria (GitHub-ready) v0.9.1.2.28
+  Taco Ria (GitHub-ready) v0.9.1.2.29
   Mobile compatibility build (no optional chaining / ?? / ||= / replaceAll)
   Fixes “buttons dead on mobile” caused by unsupported JS syntax on some mobile browsers.
   Also removes visible version numbers per request.
@@ -902,7 +912,7 @@
 (function(){
   "use strict";
 
-  var VERSION = "v0.9.1.2.28";
+  var VERSION = "v0.9.1.2.29";
   var LS_KEY  = "taco_ria_state_v091226_mobilefix";
 
   function $(id){ return document.getElementById(id); }
@@ -1853,7 +1863,7 @@
 
   function computeAutoPlateFromHand(pid){
     var diff = state.settings.difficulty || "Easy";
-    if(diff==="Difficult" || diff==="MasterChef") return null;
+    if(diff==="Difficult" || diff==="Master Chef") return null;
 
     if(diff==="Medium"){
       var first = computeAnyPlateFromHand(pid, false);
@@ -1929,10 +1939,9 @@
     if(wildSavor){
       bestNo = computeBestPlateFromHand(pid, false);
     }
-if(bestWith && bestNo){
-        var delta = bestWith.points - bestNo.points;
-        if(delta < 4) bestWith = bestNo;
-      }
+    if(bestWith && bestNo){
+      var delta = bestWith.points - bestNo.points;
+      if(delta < 4) bestWith = bestNo;
     }
 
     if(bestWith && bestWith.ids && bestWith.ids.length){
