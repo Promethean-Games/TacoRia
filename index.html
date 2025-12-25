@@ -162,6 +162,7 @@
     }
     .pulse{ animation: pulseGlow 1.55s ease-in-out infinite; }
     .pulseOrder{ animation: pulseGlow 1.25s ease-in-out infinite; }
+    .inactive{ opacity:.55; }
 
     /* Sticky action tray above bottom nav */
     .actionsTray{
@@ -301,6 +302,31 @@
     .field{ margin-top:10px; }
     .label{ font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:900; }
     .hint{ font-size:12px; color:var(--muted); margin-top:8px; line-height: 1.35; }
+
+    .controllerRow{
+      flex:1;
+      min-width: 200px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.30);
+    }
+    .controllerRow span:first-child{
+      font-weight:900;
+      color: rgba(255,255,255,.85);
+    }
+    .controllerKey{
+      padding:6px 12px;
+      border-radius:8px;
+      background: rgba(0,229,255,.18);
+      border:1px solid rgba(0,229,255,.35);
+      color: var(--accent);
+      font-weight:900;
+      font-size:12px;
+    }
 
     select, input[type="number"]{
       width:100%;
@@ -528,41 +554,14 @@
 
     /* Default: NO shimmer. Enable only in Difficult/Master via body.strictShimmer */
     .tileBack{
-      background:
-        radial-gradient(340px 140px at 25% 0%, rgba(255,255,255,.08), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: url('attached_assets/image_1766622696657.png') center/cover no-repeat;
       cursor:pointer;
-    }
-    .tileBack::before{
-      content:"";
-      position:absolute; inset:-40px;
-      background:
-        radial-gradient(520px 240px at 10% 0%, rgba(0,229,255,.16), transparent 60%),
-        radial-gradient(520px 240px at 90% 10%, rgba(255,255,255,.06), transparent 65%);
-      opacity:.55;
-      pointer-events:none;
-    }
-    .tileBack::after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
-      opacity:.55;
-      pointer-events:none;
     }
 
     body.strictShimmer .tileBack{ animation: slowBreath 4.6s ease-in-out infinite; }
-    body.strictShimmer .tileBack::before{ animation: slowShimmer 7.8s ease-in-out infinite; }
 
     .tileBackInner{
-      position:relative;
-      z-index:1;
-      width:100%;
-      font-weight:1000;
-      letter-spacing:.2px;
-      color: rgba(243,244,246,.78);
-      font-size: 13px;
-      line-height:1.1;
-      padding: 0 6px;
+      display: none;
     }
     .tilePickOutline{
       outline: 2px solid rgba(0,229,255,.55);
@@ -668,20 +667,10 @@
           <div class="card">
             <div class="actionsStack">
               <button class="primary jumbo" id="btnPrep">Prep a Dish</button>
-              <button class="primary jumbo" id="btnOrderUp">Order Up!</button>
               <button class="danger jumbo" id="btnEndTurn">End Turn</button>
             </div>
             <div class="muted small" style="margin-top:10px;" id="actionHint">
               Prep your ingredients, then Order Up. One draw per turn.
-            </div>
-
-            <div class="prepRow" style="margin-top:12px;">
-              <div class="prepTop">
-                <div style="font-weight:1000;">Prep Table</div>
-                <div class="muted2 small" id="gpPrepLoadedHint">0/10 loaded</div>
-              </div>
-              <div class="prepSlots" id="gpPrepSlots"></div>
-              <div class="muted small" style="margin-top:10px;" id="gpPrepStatus">No dish detected yet.</div>
             </div>
           </div>
         </div>
@@ -911,6 +900,60 @@
               <div class="hint">Hide stops auto-popups. You can always reopen it here.</div>
               <div class="field">
                 <button class="ghost" id="btnToggleTutorialHidden">Hide Tutorial: Off</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="acc">
+            <summary>
+              <span>USB Controller</span>
+              <span class="muted2 small">Default Inputs</span>
+            </summary>
+            <div class="accBody">
+              <div class="label">ACTION BUTTONS</div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>A Button</span><span class="controllerKey">X</span></div>
+                <div class="controllerRow"><span>B Button</span><span class="controllerKey">B</span></div>
+              </div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>Start</span><span class="controllerKey">Start</span></div>
+                <div class="controllerRow"><span>Z Trigger</span><span class="controllerKey">LT</span></div>
+              </div>
+
+              <div class="label" style="margin-top:16px;">SHOULDER BUTTONS</div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>L Trigger</span><span class="controllerKey">LB</span></div>
+                <div class="controllerRow"><span>R Trigger</span><span class="controllerKey">RB</span></div>
+              </div>
+
+              <div class="label" style="margin-top:16px;">C-BUTTONS</div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>C-Up</span><span class="controllerKey">R3</span></div>
+                <div class="controllerRow"><span>C-Down</span><span class="controllerKey">Y</span></div>
+              </div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>C-Left</span><span class="controllerKey">A</span></div>
+                <div class="controllerRow"><span>C-Right</span><span class="controllerKey">L3</span></div>
+              </div>
+
+              <div class="label" style="margin-top:16px;">D-PAD</div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>D-Up</span><span class="controllerKey">D-Pad Up</span></div>
+                <div class="controllerRow"><span>D-Down</span><span class="controllerKey">D-Pad Down</span></div>
+              </div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>D-Left</span><span class="controllerKey">D-Pad Left</span></div>
+                <div class="controllerRow"><span>D-Right</span><span class="controllerKey">D-Pad Right</span></div>
+              </div>
+
+              <div class="label" style="margin-top:16px;">ANALOG STICK</div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>Stick Up</span><span class="controllerKey">LY-</span></div>
+                <div class="controllerRow"><span>Stick Down</span><span class="controllerKey">LY+</span></div>
+              </div>
+              <div class="row wrap" style="gap:10px; margin-bottom:12px;">
+                <div class="controllerRow"><span>Stick Left</span><span class="controllerKey">LX-</span></div>
+                <div class="controllerRow"><span>Stick Right</span><span class="controllerKey">LX+</span></div>
               </div>
             </div>
           </details>
@@ -2249,34 +2292,6 @@
     el.innerHTML = html;
   }
 
-  function renderGameplayPrepTable(){
-    if(!$("gpPrepSlots")) return;
-    var pl = p1();
-    var ids = (pl.prepSelectedIds || []).slice(0,10);
-    $("gpPrepLoadedHint").textContent = ids.length + "/10 loaded";
-
-    var selected = selectedTilesFor("P1");
-    var ctx = diffCtx();
-    var best = detectBestDish(selected, ctx);
-
-    var slotsHtml = "";
-    for(var i=0;i<10;i++){
-      var tObj = selected[i];
-      if(!tObj){
-        slotsHtml += '<div class="slot" style="cursor:default;"><div class="sHint">Empty</div></div>';
-      }else{
-        var cat = ingredientCategory(tObj.name);
-        slotsHtml += ''
-          + '<div class="slot filled" data-prep-remove-gp="' + escapeHtml(tObj.id) + '">'
-          +   '<div class="sName">' + escapeHtml(tObj.name) + '</div>'
-          +   '<div class="muted2 small" style="margin-top:6px;">' + escapeHtml(categoryLabel(cat)) + '</div>'
-          + '</div>';
-      }
-    }
-    $("gpPrepSlots").innerHTML = slotsHtml;
-    $("gpPrepStatus").textContent = best.ok ? (best.name + " detected.") : best.reason;
-  }
-
   function renderGameplay(){
     var m = state.match;
     var myTurn = (m.activePid === "P1");
@@ -2293,7 +2308,6 @@
 
     $("btnPrep").textContent = t("prepDish");
     $("btnEndTurn").textContent = t("endTurn");
-    $("btnOrderUp").textContent = t("orderUp");
 
     $("btnPrep").classList.toggle("pulse", myTurn);
 
@@ -2306,18 +2320,10 @@
     $("phaseTitle").textContent = ph.title;
     $("phaseDesc").textContent = ph.desc;
 
-    var sel = selectedTilesFor("P1");
-    var best = detectBestDish(sel, diffCtx());
-    var canOrder = myTurn && best.ok;
-
-    $("btnOrderUp").disabled = !canOrder;
-    $("btnOrderUp").classList.toggle("pulseOrder", canOrder);
-
     $("btnPrep").disabled = !myTurn;
     $("btnEndTurn").disabled = !myTurn;
 
     renderPublicLineInto("publicLine", false, null);
-    renderGameplayPrepTable();
   }
 
   function renderPrep(){
@@ -2358,8 +2364,8 @@
     $("prepStatus").textContent = best.ok ? (best.name + " detected.") : best.reason;
 
     var canOrder = myTurn && best.ok;
-    $("btnOrderUpFromPrep").disabled = !canOrder;
     $("btnOrderUpFromPrep").classList.toggle("pulseOrder", canOrder);
+    $("btnOrderUpFromPrep").classList.toggle("inactive", !canOrder);
     $("btnOrderUpFromPrep").textContent = t("orderUp");
 
     // auto-plate visibility
@@ -2632,10 +2638,37 @@
         toast("Order up!");
         return;
       }
-      toast("No qualifying dish.");
+      
+      if(sel.length === 0){
+        toast("Tip: Select tiles from your hand first, then Order Up!");
+      } else {
+        var tip = getOrderUpTip(sel);
+        toast(tip);
+      }
     }
 
-    $("btnOrderUp").onclick = function(){ orderUpCommon(false); };
+    function getOrderUpTip(sel){
+      if(sel.length < 3) return "Tip: Most dishes need at least 3 tiles.";
+      
+      var hasTortilla = false, hasProtein = false, hasCheese = false;
+      var wetCount = 0;
+      for(var i = 0; i < sel.length; i++){
+        var name = sel[i].name;
+        if(isTortilla(name) || isWild(name)) hasTortilla = true;
+        if(isProtein(name) || isWild(name)) hasProtein = true;
+        if(isCheese(name)) hasCheese = true;
+        if(isWet(name)) wetCount++;
+      }
+      
+      if(wetCount > 1) return "Tip: Only 1 wet topping allowed per dish!";
+      if(!hasTortilla && !hasProtein) return "Tip: Add a tortilla or protein to start a dish.";
+      if(!hasTortilla) return "Tip: Most tacos need a tortilla (Soft, Hard, or Flour).";
+      if(!hasProtein) return "Tip: Add a protein like Chicken, Steak, or Carnitas.";
+      if(!hasCheese) return "Tip: Try adding cheese to complete your dish.";
+      
+      return "Tip: Check your ingredients - something's missing for a valid dish.";
+    }
+
     $("btnOrderUpFromPrep").onclick = function(){ orderUpCommon(true); };
 
     $("btnDraw").onclick = openDrawModal;
@@ -2675,24 +2708,6 @@
       pl.prepSelectedIds = next;
       persist(); render();
     });
-
-    // remove from prep table on Gameplay view
-    if($("gpPrepSlots")){
-      $("gpPrepSlots").addEventListener("click", function(e){
-        var el = e.target;
-        while(el && el !== document.body && !el.getAttribute("data-prep-remove-gp")) el = el.parentElement;
-        if(!el) return;
-        var tid = el.getAttribute("data-prep-remove-gp");
-        if(!tid) return;
-        var pl = p1();
-        var next = [];
-        for(var i=0;i<(pl.prepSelectedIds||[]).length;i++){
-          if(pl.prepSelectedIds[i] !== tid) next.push(pl.prepSelectedIds[i]);
-        }
-        pl.prepSelectedIds = next;
-        persist(); render();
-      });
-    }
 
     // remix: select one hand tile
     $("remixHandTiles").addEventListener("click", function(e){
